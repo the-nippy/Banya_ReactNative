@@ -15,8 +15,8 @@ import {
 
 } from 'react-native';
 
-import Toolbar from '../component/header/Toolbar';
-import SwipeableItem from '../component/swipeable/SwipeableItem';
+import Toolbar from '../../component/header/Toolbar';
+import SwipeableItem from '../../component/swipeable/SwipeableItem';
 
 const ListData = [
   {key: 'a'},
@@ -24,7 +24,7 @@ const ListData = [
 ]
 
 
-export default class extends PureComponent {
+export default class HomePage extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -40,9 +40,10 @@ export default class extends PureComponent {
   _keyExtractor = (item, index) => item.id;
 
   //渲染列表项
-  _renderItem = (item) => {
+  _renderItem = (item, index) => {
     return (
       <SwipeableItem
+        key={index}
         title={'系统消息'}
         note={'2019.5.4'}
         content={'AAA'}

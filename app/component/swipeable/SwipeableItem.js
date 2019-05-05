@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle1: {
     // flex:1,
-    // width: 75,
+    width: 75,
     backgroundColor: '#ff7687',
     height: ITEM_HEIGHT,
     justifyContent: 'center',
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle2: {
     // flex:1,
-    // width: 75,
+    width: 75,
     backgroundColor: '#b9ffb4',
     height: ITEM_HEIGHT,
     justifyContent: 'center',
