@@ -9,6 +9,7 @@
   "dependencies": {
     "react": "16.8.3",
     "react-native": "0.59.4",
+    "react-native-check-box": "^2.1.7",
     "react-native-gesture-handler": "^1.1.0",
     "react-native-swipeable": "^0.6.0",
     "react-navigation": "^3.9.1"

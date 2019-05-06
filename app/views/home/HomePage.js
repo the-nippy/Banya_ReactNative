@@ -15,6 +15,8 @@ import {
 
 } from 'react-native';
 
+//多选框
+import CheckBox from 'react-native-check-box';
 import Toolbar from '../../component/header/Toolbar';
 import SwipeableItem from '../../component/swipeable/SwipeableItem';
 
@@ -30,6 +32,7 @@ export default class HomePage extends PureComponent {
     super(props);
     this.state = {
       isEditMode: false,
+      isChecked: false,
     }
   }
 
@@ -65,6 +68,28 @@ export default class HomePage extends PureComponent {
               this.setState({isEditMode: !mode})
             }
           }}/>
+        <View style={{paddingVertical: 10}}>
+          <CheckBox
+            style={{flex: 1, padding: 10}}
+            onClick={() => {
+              this.setState({
+                isChecked: !this.state.isChecked
+              })
+            }}
+            isChecked={this.state.isChecked}
+            leftText={"CheckBox"}
+          />
+          <CheckBox
+            style={{flex: 1, padding: 10}}
+            onClick={() => {
+              this.setState({
+                isChecked: !this.state.isChecked
+              })
+            }}
+            isChecked={this.state.isChecked}
+            leftText={"CheckBox"}
+          />
+        </View>
         <FlatList
           data={ListData}
           extraData={this.state.isEditMode}
