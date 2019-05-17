@@ -117,33 +117,35 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 5,
+    marginTop: 5,
     height: ITEM_HEIGHT,
     backgroundColor: '#FFF'
   },
   buttonStyle1: {
-    // flex:1,
-    width: 75,
+    flex:1,
+    marginTop: 5,
     backgroundColor: '#ff7687',
     height: ITEM_HEIGHT,
     justifyContent: 'center',
-    alignItems: 'center',
+    paddingLeft: 25,
+    // alignItems: 'center',
   },
   buttonStyle2: {
-    // flex:1,
-    width: 75,
+    flex:1,
+    marginTop: 5,
     backgroundColor: '#b9ffb4',
     height: ITEM_HEIGHT,
     justifyContent: 'center',
-    alignItems: 'center',
+    paddingLeft: 25,
+    // alignItems: 'center',
   },
   headImage: {
     marginRight: 5,
   },
   rightTexts: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center'
+    // justifyContent: 'space-between',
+    // alignItems: 'center'
   }
 
 })

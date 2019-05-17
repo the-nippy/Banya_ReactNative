@@ -19,11 +19,40 @@ import {
 import CheckBox from 'react-native-check-box';
 import Toolbar from '../../component/header/Toolbar';
 import SwipeableItem from '../../component/swipeable/SwipeableItem';
+import Swipeable from 'react-native-swipeable';
+
 
 const ListData = [
   {key: 'a'},
   {key: 'b'}
 ]
+
+
+function Example1({onOpen, onClose}) {
+  return (
+    <Swipeable
+      leftContent={(
+        <View style={[styles.leftSwipeItem, {backgroundColor: 'lightskyblue'}]}>
+          <Text>Pull action</Text>
+        </View>
+      )}
+      rightButtons={[
+        <TouchableOpacity style={[styles.rightSwipeItem, {backgroundColor: 'lightseagreen'}]}>
+          <Text>1</Text>
+        </TouchableOpacity>,
+        <TouchableOpacity style={[styles.rightSwipeItem, {backgroundColor: 'orchid'}]}>
+          <Text>2</Text>
+        </TouchableOpacity>
+      ]}
+      onRightButtonsOpenRelease={onOpen}
+      onRightButtonsCloseRelease={onClose}
+    >
+      <View style={[styles.listItem, {backgroundColor: 'salmon'}]}>
+        <Text>Example 1</Text>
+      </View>
+    </Swipeable>
+  );
+}
 
 
 export default class HomePage extends PureComponent {
@@ -33,6 +62,7 @@ export default class HomePage extends PureComponent {
     this.state = {
       isEditMode: false,
       isChecked: false,
+      currentlyOpenSwipeable: null
     }
   }
 
@@ -56,6 +86,20 @@ export default class HomePage extends PureComponent {
   }
 
   render() {
+
+    const {currentlyOpenSwipeable} = this.state;
+    const itemProps = {
+      onOpen: (event, gestureState, swipeable) => {
+        if (currentlyOpenSwipeable && currentlyOpenSwipeable !== swipeable) {
+          //当前的滑动条回到初始状态
+          currentlyOpenSwipeable.recenter();
+        }
+
+        this.setState({currentlyOpenSwipeable: swipeable});
+      },
+      onClose: () => this.setState({currentlyOpenSwipeable: null})
+    };
+
     return (
       <View style={styles.container}>
         <Toolbar
@@ -90,6 +134,7 @@ export default class HomePage extends PureComponent {
             leftText={"CheckBox"}
           />
         </View>
+        <Example1 {...itemProps}/>
         <FlatList
           data={ListData}
           extraData={this.state.isEditMode}
@@ -106,5 +151,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#e4e4e4',
 
-  }
+  },
+  listItem: {
+    height: 75,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  leftSwipeItem: {
+    flex: 1,
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    paddingRight: 20
+  },
+  rightSwipeItem: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingLeft: 25
+    // alignItems:'center'
+  },
+
 })
