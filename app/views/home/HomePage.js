@@ -104,7 +104,12 @@ export default class HomePage extends PureComponent {
       <View style={styles.container}>
         <Toolbar
           title='消息测试'
-          hideLeftButtons={true}
+          leftButtons={{
+            text:'天气',
+            onPress:()=>{
+              this.props.navigation.navigate('Weather')
+            }
+          }}
           rightButtons={{
             text: '编辑',
             onPress: () => {
@@ -112,28 +117,7 @@ export default class HomePage extends PureComponent {
               this.setState({isEditMode: !mode})
             }
           }}/>
-        <View style={{paddingVertical: 10}}>
-          <CheckBox
-            style={{flex: 1, padding: 10}}
-            onClick={() => {
-              this.setState({
-                isChecked: !this.state.isChecked
-              })
-            }}
-            isChecked={this.state.isChecked}
-            leftText={"CheckBox"}
-          />
-          <CheckBox
-            style={{flex: 1, padding: 10}}
-            onClick={() => {
-              this.setState({
-                isChecked: !this.state.isChecked
-              })
-            }}
-            isChecked={this.state.isChecked}
-            leftText={"CheckBox"}
-          />
-        </View>
+
         <Example1 {...itemProps}/>
         <FlatList
           data={ListData}
