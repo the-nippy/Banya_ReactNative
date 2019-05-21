@@ -16,7 +16,6 @@ import {
 } from 'react-native';
 
 //多选框
-import CheckBox from 'react-native-check-box';
 import Toolbar from '../../component/header/Toolbar';
 import SwipeableItem from '../../component/swipeable/SwipeableItem';
 import Swipeable from 'react-native-swipeable';

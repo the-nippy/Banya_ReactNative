@@ -1,11 +1,11 @@
 import React, {PureComponent} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-// import {withNavigation} from 'react-navigation';
+import {withNavigation} from 'react-navigation';
 import PropTypes from 'prop-types';
 import styles from './Toolbar.style';
 import TextButton from '../button/TextButton';
 
-const ICON_BACK = require('../../constant/image/circle_drashed_32px.png');
+const ICON_BACK = require('../../constant/image/icon-back-white_64.png');
 const fallbackView = <View/>;
 
 class Toolbar extends PureComponent {
@@ -122,5 +122,5 @@ class Toolbar extends PureComponent {
   };
 }
 
-// export default withNavigation(Toolbar);
-export default Toolbar;
+export default withNavigation(Toolbar);
+// export default Toolbar;

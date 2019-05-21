@@ -16,7 +16,7 @@ export default StyleSheet.create({
   container: {
     height: TOOLBAR_HEIGHT,
     paddingTop: PADDING_TOP,
-    backgroundColor: 'black',
+    backgroundColor: '#ff4d10',
   },
   titleContainer: {
     flex: 1,

@@ -6,6 +6,7 @@ import {
   View,
   FlatList,
   StyleSheet,
+  TextInput,
 } from 'react-native';
 import Toolbar from '../../component/header/Toolbar';
 import {WEATHER_URL, WEATHER_KEY} from '../../constant/config';
@@ -53,6 +54,16 @@ export default class Weather extends PureComponent {
     );
   }
 
+  //搜索城市
+  searchCity = () => {
+
+  }
+
+  //搜索文本改变
+  onSearchTextChange = (text) => {
+    this.setState({cityText: text})
+  }
+
   _keyExtractor = (item, index) => item.id;
 
   _renderItem = ({item}, index) => {
@@ -89,14 +100,29 @@ export default class Weather extends PureComponent {
         <Toolbar
           title={'天气'}
         />
-        <View style={{backgroundColor: '#e4e4e4'}}>
-          <TouchableOpacity>
+        <View style={{paddingHorizontal: 8}}>
+          <TouchableOpacity
+            style={{height: 40, justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#e4e4e4'}}
+            onPress={() => {
+              this.setState({isCityShow: !this.state.isCityShow})
+            }}>
             <Text>{'当前城市' + this.state.currentCity}</Text>
             {/*<Image source={''}/>*/}
           </TouchableOpacity>
-          {this.state.isCityShow
-            ? <View>
-
+          {this.state.isCityShow ?
+            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 5}}>
+              <TextInput style={{borderWidth: 1, borderRadius: 3, width: 200, height: 36,}}
+                         onChangeText={this.onSearchTextChange}
+              />
+              <TouchableOpacity
+                style={{
+                  width: 70,
+                  height: 35,
+                  backgroundColor: '#6899ff',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+                onPress={this.searchCity}><Text>{'搜索'}</Text></TouchableOpacity>
             </View>
             : null}
         </View>
