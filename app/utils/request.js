@@ -5,33 +5,44 @@ import {WEATHER_URL, WEATHER_KEY} from '../constant/config';
  *
  * */
 
+
+//请求天气
 async function requestWeatherData(cityName) {
   if (!cityName) {
     return new Error('cityName为空');
   }
   let weatherList = [];
-  await fetch(WEATHER_URL + "?city=" + cityName + "&key=" + WEATHER_KEY, {method: 'GET'})
-    .then(res => {
-      res.json().then(res => {
-        weatherList = res.result?.future;
-        if (weatherList) {
-          console.info('[request]weather', weatherList)
-        } else {
-          console.info('[getWeather]', '当前天气数据空')
-          return new Error('ERROR')
-        }
+  //通过返回一个Promise   resolve
+  return new Promise((resolve, reject) => {
+    fetch(WEATHER_URL + "?city=" + cityName + "&key=" + WEATHER_KEY, {method: 'GET'})
+      .then(res => {
+        res.json().then(res => {
+          // console.info('', res)
+          if (res.error_code && res.error_code === 207301) {
+            reject(new Error(res.reason));
+          }
+          weatherList = res.result?.future;
+          if (weatherList) {
+            console.info('[request]weather', weatherList)
+            resolve(weatherList);
+          } else {
+            // console.info('[getWeather]', '当前天气数据空' + weatherList)
+            reject(new Error('ERROR_no_data'))
+          }
+        }, err => {
+          console.info('errjson', err)
+          reject(err)
+        })
       }, err => {
-        console.info('errjson', err)
-        return new Error('ERROR')
+        console.info('err', err)
+        reject(err)
       })
-    }, err => {
-      console.info('err', err)
-      return new Error('ERROR')
-    })
+  })
+
 }
 
 
-export default async function request(uri, method, params) {
+export function request(uri, method, params) {
 
   fetch(uri, {
     method: method,

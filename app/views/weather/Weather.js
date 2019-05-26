@@ -8,15 +8,22 @@ import {
   StyleSheet,
   TextInput,
 } from 'react-native';
+
+import {connect} from 'react-redux';
 import Toolbar from '../../component/header/Toolbar';
+import {changeCity, getWeatherByCity} from '../../redux/constant';
 import {WEATHER_URL, WEATHER_KEY} from '../../constant/config';
 import request from '../../utils/request';
+
+import {ShowToast} from '../../utils/toast';
+
+const ICON_UP = require('../../constant/image/up_arrow_16px.png');
 
 const Dimension = require('Dimensions');
 const SCREEN_WIDTH = Dimension.get('window').width;
 
 
-export default class Weather extends PureComponent {
+class Weather extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -31,32 +38,25 @@ export default class Weather extends PureComponent {
 
   componentWillMount() {
 
-    this.fetchDWeatherData();
+    this.freshWeatherData()
+    // this.fetchDWeatherData();
   }
 
-  fetchDWeatherData = async () => {
-    // todo  get请求参数拼接
-    const city = this.state.currentCity;
-    fetch('http://apis.juhe.cn/simpleWeather/query?city=' + city + '&key=3d4b6b460d38f52a0afb316b1f154ae3', {method: 'GET'}).then(
-      res => {
-        res.json().then(
-          result => {
-            this.setState({listData: result.result.future})
-            console.info('[]result', result.result.future)
-          },
-          err => {
-            console.info('err', err)
-          }
-        )
-        // console.info('res', JSON.stringify())
-      },
-      err => console.info('err', err)
-    );
+  freshWeatherData = () => {
+    this.props.getWeatherByCity(this.props.cityName);
   }
+
 
   //搜索城市
   searchCity = () => {
 
+    const cityText = this.state.cityText;
+    if (!cityText) {
+      return;
+    }
+    this.props.changeCity(cityText);
+    this.props.getWeatherByCity(cityText);
+    ShowToast('已切换至' + cityText);
   }
 
   //搜索文本改变
@@ -87,7 +87,7 @@ export default class Weather extends PureComponent {
         >
           <View style={styles.textItem}><Text>{time}</Text></View>
           <View style={styles.textItem}><Text>{item.temperature}</Text></View>
-          <View style={styles.textItem}><Text>{item.weather}</Text></View>
+          <View style={styles.textItemDes}><Text>{item.weather}</Text></View>
           <View style={styles.textItem}><Text>{item.direct}</Text></View>
         </View>
       </View>
@@ -102,33 +102,44 @@ export default class Weather extends PureComponent {
         />
         <View style={{paddingHorizontal: 8}}>
           <TouchableOpacity
-            style={{height: 40, justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#e4e4e4'}}
+            style={{
+              height: 40,
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              // backgroundColor: '#e4e4e4'
+            }}
             onPress={() => {
               this.setState({isCityShow: !this.state.isCityShow})
             }}>
-            <Text>{'当前城市' + this.state.currentCity}</Text>
-            {/*<Image source={''}/>*/}
+            <Text style={{fontSize: 18, color: '#19324d'}}>{'当前城市 : ' + this.props.cityName}</Text>
+            <Image style={this.state.isCityShow ? styles.searchImage_up : styles.searchImage_down}
+                   source={ICON_UP}/>
           </TouchableOpacity>
           {this.state.isCityShow ?
             <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 5}}>
-              <TextInput style={{borderWidth: 1, borderRadius: 3, width: 200, height: 36,}}
-                         onChangeText={this.onSearchTextChange}
+              <TextInput
+                style={styles.searchInput}
+                numberOfLines={1}
+                underlineColorAndroid="transparent"
+                placeholder={'请输入城市'}
+                onChangeText={this.onSearchTextChange}
               />
               <TouchableOpacity
-                style={{
-                  width: 70,
-                  height: 35,
-                  backgroundColor: '#6899ff',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}
-                onPress={this.searchCity}><Text>{'搜索'}</Text></TouchableOpacity>
+                style={styles.searchButton}
+                onPress={this.searchCity}><Text>{'确认'}</Text></TouchableOpacity>
             </View>
             : null}
         </View>
 
+        <View style={[styles.weatherTextTitle, {
+          borderTopWidth: (this.state.isCityShow ? 0 : 1)
+        }]}>
+          <Text style={{fontSize: 16,}}>{'最近五日天气详情：'}</Text>
+        </View>
+
         <FlatList
-          data={this.state.listData}
+          data={this.props.weatherList}
           extraData={this.state.currentCity}
           keyExtractor={this._keyExtractor}
           renderItem={this._renderItem}
@@ -138,10 +149,58 @@ export default class Weather extends PureComponent {
   }
 }
 
+
+export default connect((state) => ({
+  cityName: state.constant.cityName,
+  weatherList: state.constant.weatherList,
+}), {changeCity, getWeatherByCity})(Weather);
+
+
 const styles = StyleSheet.create({
   textItem: {
-    width: (SCREEN_WIDTH - 40) / 4,
+    width: (SCREEN_WIDTH - 80) / 4,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  textItemDes: {
+    width: (SCREEN_WIDTH - 80) / 4 + 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  searchInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 3,
+    width: 200,
+    height: 35,
+    paddingVertical: 0,
+    paddingLeft: 5,
+    borderColor: '#333'
+  },
+  searchButton: {
+    width: 85,
+    height: 35,
+    backgroundColor: '#6899ff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 15,
+    borderRadius: 3,
+  },
+  searchImage_up: {
+    // width: 30,
+    // height: 30,
+  },
+  searchImage_down: {
+    // width: 30,
+    // height: 30,
+    transform: [{rotate: '180deg'}]
+  },
+  weatherTextTitle: {
+    marginHorizontal: 8,
+    marginTop: 10,
+    borderTopColor: '#0e0d24',
+    height: 50,
+    justifyContent: 'center',
   }
+
 })
