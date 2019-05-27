@@ -1,4 +1,9 @@
-import {WEATHER_URL, WEATHER_KEY} from '../constant/config';
+import {
+  WEATHER_URL,
+  WEATHER_KEY,
+  HISTORY_URL,
+  HISTORY_KEY,
+} from '../constant/config';
 
 /**
  * fetch 数据需要 json() 转化为json数据
@@ -42,6 +47,29 @@ async function requestWeatherData(cityName) {
 }
 
 
+async function requestTodayInHistory(month, day) {
+  if (!month || !day) {
+    return;
+  }
+  return new Promise((resolve, reject) => {
+    fetch(HISTORY_URL + '?' + 'v=1.0' + '&month=' + month + '&day=' + day + '&key=' + HISTORY_KEY)
+      .then(res => {
+          res.json().then(
+            result => {
+              console.info('[requestTodayInHistory]', result)
+            },
+            err => {
+              reject(err)
+            }
+          )
+        },
+        err => {
+          reject(err)
+        })
+  });
+}
+
+
 export function request(uri, method, params) {
 
   fetch(uri, {
@@ -66,4 +94,6 @@ export function request(uri, method, params) {
 
 export {
   requestWeatherData,
+  requestTodayInHistory,
+
 }
