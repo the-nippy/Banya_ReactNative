@@ -54,18 +54,23 @@ async function requestTodayInHistory(month, day) {
   return new Promise((resolve, reject) => {
     fetch(HISTORY_URL + '?' + 'v=1.0' + '&month=' + month + '&day=' + day + '&key=' + HISTORY_KEY)
       .then(res => {
-          res.json().then(
-            result => {
-              console.info('[requestTodayInHistory]', result)
-            },
-            err => {
-              reject(err)
+        res.json().then(
+          res => {
+            // console.info('[requestTodayInHistory]', res)
+            let historyInfoList = res?.result;
+            if (historyInfoList) {
+              // console.info('[requestTodayInHistory]', historyInfoList)
+              resolve(historyInfoList);
+            } else {
+              // console.info('[getWeather]', '当前天气数据空' + weatherList)
+              reject(new Error('ERROR_no_data'))
             }
-          )
-        },
-        err => {
-          reject(err)
-        })
+          }, err => {
+            reject(err)
+          })
+      }, err => {
+        reject(err)
+      })
   });
 }
 

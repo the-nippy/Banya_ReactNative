@@ -11,7 +11,10 @@
  *
  * */
 import {WEATHER_URL, WEATHER_KEY} from '../constant/config';
-import {requestWeatherData} from '../utils/request';
+import {
+  requestWeatherData,
+  requestTodayInHistory
+} from '../utils/request';
 import {ShowToast} from "../utils/toast";
 
 const INITIAL_STATE = {
@@ -23,6 +26,9 @@ const INITIAL_STATE = {
 const CHANGE_CITY = 'CHANGE_CITY';
 //改变天气数据
 const CHANGE_WEATHER = 'CHANGE_WEATHER';
+
+//历史上的今天
+const HISTORY_INFO = 'HISTORY_INFO';
 
 //处理的reducer
 export default function (state = INITIAL_STATE, action) {
@@ -38,6 +44,11 @@ export default function (state = INITIAL_STATE, action) {
       const state2 = {...state};
       state2.weatherList = action.weatherList;
       return state2;
+
+    case HISTORY_INFO:
+      const state3 = {...state};
+      state3.historyInfoList = action.historyInfoList;
+      return state3;
 
     default:
       return state;
@@ -66,6 +77,21 @@ export function getWeatherByCity(cityName) {
     } catch (e) {
       console.info('ERROR', e.message)
       ShowToast(e.message)
+    }
+  }
+}
+
+export function getHistoryOfToday(month, day) {
+  return async function (dispatch) {
+    try {
+      const historyInfoList = await requestTodayInHistory(month, day)
+      console.info('[redux-constant]getHistoryOfToday', historyInfoList)
+      dispatch({
+        type: HISTORY_INFO,
+        historyInfoList: historyInfoList
+      })
+    } catch (e) {
+      ShowToast(e.message);
     }
   }
 }

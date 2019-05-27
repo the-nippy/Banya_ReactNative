@@ -19,7 +19,8 @@ import {
 import Toolbar from '../../component/header/Toolbar';
 import SwipeableItem from '../../component/swipeable/SwipeableItem';
 import Swipeable from 'react-native-swipeable';
-
+import {connect} from 'react-redux';
+import {getHistoryOfToday} from '../../redux/constant';
 
 const ListData = [
   {key: 'a'},
@@ -54,7 +55,7 @@ function Example1({onOpen, onClose}) {
 }
 
 
-export default class HomePage extends PureComponent {
+class HomePage extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -65,8 +66,17 @@ export default class HomePage extends PureComponent {
     }
   }
 
-  componentDidMount(): void {
+  componentWillMount(): void {
+    this.fetchHistoryInfoList()
+  }
 
+  fetchHistoryInfoList = () => {
+    this.props.getHistoryOfToday(5, 27);
+  }
+
+  //
+  toHistory = () => {
+    this.props.navigation.navigate('History', {})
   }
 
   _keyExtractor = (item, index) => item.id;
@@ -104,8 +114,8 @@ export default class HomePage extends PureComponent {
         <Toolbar
           title='消息测试'
           leftButtons={{
-            text:'天气',
-            onPress:()=>{
+            text: '天气',
+            onPress: () => {
               this.props.navigation.navigate('Weather')
             }
           }}
@@ -116,6 +126,12 @@ export default class HomePage extends PureComponent {
               this.setState({isEditMode: !mode})
             }
           }}/>
+
+        <TouchableOpacity
+          onPress={this.toHistory}
+        >
+          <Text>历史上的今天</Text>
+        </TouchableOpacity>
 
         <Example1 {...itemProps}/>
         <FlatList
@@ -128,6 +144,13 @@ export default class HomePage extends PureComponent {
     );
   }
 }
+
+export default connect((state) => ({
+    historyInfoList: state.constant.historyInfoList
+  }), {
+    getHistoryOfToday,
+  }
+)(HomePage)
 
 const styles = StyleSheet.create({
   container: {

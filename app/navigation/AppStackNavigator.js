@@ -3,10 +3,13 @@ import {createStackNavigator} from 'react-navigation';
 import HomePage from '../views/home/HomePage';
 //天气
 import Weather from '../views/weather/Weather';
+//历史上的今天
+import History from '../views/history/History';
 
 const routeConfigMap = {
-  Home:HomePage,
+  Home: HomePage,
   Weather,
+  History
 
 };
 
