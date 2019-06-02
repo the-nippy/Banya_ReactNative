@@ -61,6 +61,9 @@ import {
   Image,
 } from 'react-native';
 
+import Modal from 'react-native-modal';
+import Swiper from 'react-native-swiper';
+
 import {createDrawerNavigator, createAppContainer} from 'react-navigation';
 
 class MyHomeScreen extends PureComponent {
