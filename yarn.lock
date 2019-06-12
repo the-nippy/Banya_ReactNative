@@ -4960,6 +4960,13 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.npm.taobao.org/react-lifecycles-compat/download/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha1-TxonOv38jzSIqMUWv9p4+HI1I2I=
 
+react-native-animatable@^1.3.1:
+  version "1.3.2"
+  resolved "https://registry.npm.taobao.org/react-native-animatable/download/react-native-animatable-1.3.2.tgz#4783ee1a73dc98815aef234ce6b819f80bfe7d80"
+  integrity sha1-R4PuGnPcmIFa7yNM5rgZ+Av+fYA=
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-gesture-handler@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npm.taobao.org/react-native-gesture-handler/download/react-native-gesture-handler-1.2.1.tgz#9c48fb1ab13d29cece24bbb77b1e847eebf27a2b"
@@ -4968,6 +4975,14 @@ react-native-gesture-handler@^1.2.1:
     hoist-non-react-statics "^2.3.1"
     invariant "^2.2.2"
     prop-types "^15.5.10"
+
+react-native-modal@^11.0.1:
+  version "11.0.1"
+  resolved "https://registry.npm.taobao.org/react-native-modal/download/react-native-modal-11.0.1.tgz#0c7e546557938981f188c56b80474ddfe7c9835c"
+  integrity sha1-DH5UZVeTiYHxiMVrgEdN3+fJg1w=
+  dependencies:
+    prop-types "^15.6.2"
+    react-native-animatable "^1.3.1"
 
 react-native-root-siblings@^3.0.0:
   version "3.2.1"
@@ -5001,6 +5016,13 @@ react-native-swipeable@^0.6.0:
   version "0.6.0"
   resolved "https://registry.npm.taobao.org/react-native-swipeable/download/react-native-swipeable-0.6.0.tgz#0fe551330018b83c754d27f505709a594f554370"
   integrity sha1-D+VRMwAYuDx1TSf1BXCaWU9VQ3A=
+  dependencies:
+    prop-types "^15.5.10"
+
+react-native-swiper@^1.5.14:
+  version "1.5.14"
+  resolved "https://registry.npm.taobao.org/react-native-swiper/download/react-native-swiper-1.5.14.tgz#1c6f949ca377186300f972bb0f30d24062c899aa"
+  integrity sha1-HG+UnKN3GGMA+XK7DzDSQGLImao=
   dependencies:
     prop-types "^15.5.10"
 

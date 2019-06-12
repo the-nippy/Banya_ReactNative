@@ -1,55 +1,3 @@
-// import React, {PureComponent} from 'react';
-// import {
-//   Platform,
-//   StyleSheet,
-//   Text,
-//   View,
-//   FlatList,
-//   TouchableOpacity,
-//   Image,
-// } from 'react-native';
-//
-// //多选框
-// import Toolbar from '../../component/header/Toolbar';
-// import SwipeableItem from '../../component/swipeable/SwipeableItem';
-// import Swipeable from 'react-native-swipeable';
-// import {connect} from 'react-redux';
-//
-// class History extends PureComponent {
-//
-//   constructor(props) {
-//     super(props);
-//   }
-//
-//   componentWillMount(): void {
-//   }
-//
-//   render() {
-//     const DATA = this.props.historyInfoList?.[2];
-//     console.info('pic', DATA.pic)
-//     return (
-//       <View>
-//         <Toolbar
-//           title={'历史上的今天'}
-//         />
-//         <View>
-//           <Image
-//             source={{uri: DATA.pic}}
-//             style={{width: 80, height: 80}}
-//           />
-//           <Text>{DATA.title}</Text>
-//           <Text>{DATA.des}</Text>
-//         </View>
-//       </View>
-//     );
-//   }
-// }
-//
-// export default connect(state => ({
-//   historyInfoList: state.constant.historyInfoList
-// }), {})(History)
-
-
 import React, {PureComponent} from 'react';
 import {
   Platform,
@@ -66,6 +14,8 @@ import Swiper from 'react-native-swiper';
 
 import {createDrawerNavigator, createAppContainer} from 'react-navigation';
 
+// import {DrawerNavigator} from 'react-navigation'
+
 class MyHomeScreen extends PureComponent {
   static navigationOptions = {
     drawerLabel: 'Home',
@@ -75,15 +25,22 @@ class MyHomeScreen extends PureComponent {
         style={[styles.icon, {tintColor: tintColor}]}
       />
     ),
+    drawerLockMode: 'unlocked',//设置是否响应手势
   };
 
   render() {
     return (
-      <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('Notifications')}
-      >
-        <Text>Go to notifications</Text>
-      </TouchableOpacity>
+      <View style={{flex: 1, backgroundColor: '#d0c44d'}}>
+
+        <TouchableOpacity
+          onPress={
+            // () => this.props.navigation.navigate('Notifications')
+            ()=>this.props.navigation.openDrawer()
+          }
+        >
+          <Text>Go to notifications</Text>
+        </TouchableOpacity>
+      </View>
     );
   }
 }
@@ -97,15 +54,23 @@ class MyNotificationsScreen extends React.Component {
         style={[styles.icon, {tintColor: tintColor}]}
       />
     ),
+    drawerLockMode: 'unlocked',//设置是否响应手势
   };
 
   render() {
     return (
-      <TouchableOpacity
-        onPress={() => this.props.navigation.goBack()}
-      >
-        <Text>Go back home</Text>
-      </TouchableOpacity>
+      <View style={{flex: 1, backgroundColor: '#99e'}}>
+        <TouchableOpacity
+          onPress={
+            // () => this.props.navigation.goBack()
+
+            ()=>this.props.navigation.openDrawer()
+
+          }
+        >
+          <Text>Go back home</Text>
+        </TouchableOpacity>
+      </View>
     );
   }
 }
@@ -117,14 +82,26 @@ const styles = StyleSheet.create({
   },
 });
 
-const MyDrawerNavigator = createDrawerNavigator({
-  Home: {
-    screen: MyHomeScreen,
+const MyDrawerNavigator = createDrawerNavigator(
+  {
+    Home: {screen: MyHomeScreen},
+    Notifications: {screen: MyNotificationsScreen},
   },
-  Notifications: {
-    screen: MyNotificationsScreen,
-  },
-});
 
-const MyApp = createAppContainer(MyDrawerNavigator);
+  {
+    initialRouteName: 'Home',
+    swipeEnabled: true,
+    animationEnabled: true,
+    lazy: false,
+
+    drawerLockMode: 'unlocked',//设置是否响应手势
+    tabBarPosition: 'bottom',
+    drawerWidth: 250, //抽屉的宽度或返回的功能。
+    drawerPosition: 'left', //选项是left或right。默认是left位置。
+    useNativeAnimations: false, //启用原生动画。默认是true。
+    drawerBackgroundColor: 'pink', //使用抽屉背景获取某种颜色。默认是white。
+  });
+
+// const MyApp = createAppContainer(MyDrawerNavigator);
+const MyApp = MyDrawerNavigator;
 export default MyApp;
