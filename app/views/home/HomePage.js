@@ -76,7 +76,8 @@ class HomePage extends PureComponent {
 
   //
   toHistory = () => {
-    this.props.navigation.navigate('History', {})
+    this.props.navigation.openDrawer()
+    // this.props.navigation.navigate('History', {})
   }
 
   _keyExtractor = (item, index) => item.id;

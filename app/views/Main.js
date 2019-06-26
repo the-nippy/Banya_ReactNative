@@ -9,6 +9,8 @@ import {
   Image,
 } from 'react-native';
 
+import HomePage from './home/HomePage';
+
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 
@@ -21,7 +23,7 @@ class MyHomeScreen extends PureComponent {
     drawerLabel: 'Home',
     drawerIcon: ({tintColor}) => (
       <Image
-        source={require('../../constant/image/circle_black_in_32px.png')}
+        source={require('../constant/image/circle_black_in_32px.png')}
         style={[styles.icon, {tintColor: tintColor}]}
       />
     ),
@@ -50,7 +52,7 @@ class MyNotificationsScreen extends React.Component {
     drawerLabel: 'Notifications',
     drawerIcon: ({tintColor}) => (
       <Image
-        source={require('../../constant/image/circle_check_32px.png')}
+        source={require('../constant/image/circle_check_32px.png')}
         style={[styles.icon, {tintColor: tintColor}]}
       />
     ),
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
 
 const MyDrawerNavigator = createDrawerNavigator(
   {
-    Home: {screen: MyHomeScreen},
+    Home: {screen: HomePage},
     Notifications: {screen: MyNotificationsScreen},
   },
 

@@ -45,8 +45,10 @@ export default StyleSheet.create({
     paddingHorizontal: 18,
   },
   backIcon: {
-    height: 19,
-    width: 11,
+    // height: 19,
+    // width: 11,
+    height: 18,
+    width: 18
   },
   iconButton: {
     flexDirection: 'row',
