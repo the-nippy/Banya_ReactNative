@@ -6,13 +6,12 @@ import Main from '../views/Main';
 //天气
 import Weather from '../views/weather/Weather';
 //历史上的今天
-import History from '../views/history/History';
+// import History from '../views/history/History';
 
 const routeConfigMap = {
   Main:Main,
   Home: HomePage,
   Weather,
-  History
 
 };
 
