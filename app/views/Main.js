@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import HomePage from './home/HomePage';
+import Weather from './weather/Weather';
 
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
@@ -37,7 +38,7 @@ class MyHomeScreen extends PureComponent {
         <TouchableOpacity
           onPress={
             // () => this.props.navigation.navigate('Notifications')
-            ()=>this.props.navigation.openDrawer()
+            () => this.props.navigation.openDrawer()
           }
         >
           <Text>Go to notifications</Text>
@@ -66,7 +67,7 @@ class MyNotificationsScreen extends React.Component {
           onPress={
             // () => this.props.navigation.goBack()
 
-            ()=>this.props.navigation.openDrawer()
+            () => this.props.navigation.openDrawer()
 
           }
         >
@@ -86,8 +87,9 @@ const styles = StyleSheet.create({
 
 const MyDrawerNavigator = createDrawerNavigator(
   {
-    Home: {screen: HomePage},
+    Home: {screen: HomePage, drawerLockMode: 'unlocked',},
     Notifications: {screen: MyNotificationsScreen},
+    Weather: {screen: Weather}
   },
 
   {

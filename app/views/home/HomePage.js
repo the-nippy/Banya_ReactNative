@@ -126,9 +126,10 @@ class HomePage extends PureComponent {
         <Toolbar
           title='消息测试'
           leftButtons={{
-            text: '天气',
+            text: '测试',
             onPress: () => {
-              this.props.navigation.navigate('Weather')
+              // this.props.navigation.navigate('Weather')
+              this.props.navigation.openDrawer();
             }
           }}
           rightButtons={{
