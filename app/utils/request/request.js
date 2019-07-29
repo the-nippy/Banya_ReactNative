@@ -3,7 +3,7 @@ import {
   WEATHER_KEY,
   HISTORY_URL,
   HISTORY_KEY,
-} from '../constant/config';
+} from '../../constant/config';
 
 /**
  * fetch 数据需要 json() 转化为json数据

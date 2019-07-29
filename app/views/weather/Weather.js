@@ -13,7 +13,7 @@ import {connect} from 'react-redux';
 import Toolbar from '../../component/header/Toolbar';
 import {changeCity, getWeatherByCity} from '../../redux/constant';
 import {WEATHER_URL, WEATHER_KEY} from '../../constant/config';
-import request from '../../utils/request';
+import request from '../../utils/request/request';
 
 import {ShowToast} from '../../utils/toast';
 
@@ -59,9 +59,18 @@ class Weather extends PureComponent {
     ShowToast('已切换至' + cityText);
   }
 
+  changeAText = (newText) => {
+    this.setState({text: newText})
+  }
+
+
   //搜索文本改变
   onSearchTextChange = (text) => {
     this.setState({cityText: text})
+    this.props.navigation.navigate('PageB', {textFunction: this.changeAText})
+
+    const {textFunction} = this.props.navigation.state.params;
+    textFunction('QQ_AQ');
   }
 
   _keyExtractor = (item, index) => item.id;

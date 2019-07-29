@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import styles from './Toolbar.style';
 import TextButton from '../button/TextButton';
 
-const ICON_BACK = require('../../constant/image/icon-back-white_64.png');
+const ICON_BACK = require('../../constant/image/back.png');
 const fallbackView = <View/>;
 
 class Toolbar extends PureComponent {

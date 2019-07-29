@@ -16,7 +16,7 @@ export default StyleSheet.create({
   container: {
     height: TOOLBAR_HEIGHT,
     paddingTop: PADDING_TOP,
-    backgroundColor: '#ff4d10',
+    backgroundColor: '#4b7bab',
   },
   titleContainer: {
     flex: 1,
@@ -42,7 +42,7 @@ export default StyleSheet.create({
   backButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 18,
+    paddingHorizontal: 12,
   },
   backIcon: {
     // height: 19,
@@ -56,7 +56,7 @@ export default StyleSheet.create({
     paddingHorizontal: 15,
   },
   buttonIcon: {
-    height: 20,
+    height: 18,
     width: 20,
   },
 });

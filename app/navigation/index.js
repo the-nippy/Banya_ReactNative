@@ -1,11 +1,14 @@
-import { createSwitchNavigator, createAppContainer } from 'react-navigation';
-import AppStackNavigator from './AppStackNavigator';
+import {createSwitchNavigator, createAppContainer} from 'react-navigation';
+// import AppStackNavigator from './AppStackNavigator';
+
+import AppDrawerNavigator from '../views/Main';
 // import SplashScreen from '../views/SplashScreen';
 // import Login from '../views/login/Login';
 
 const routeConfigMap = {
   // SplashScreen,
-  App: AppStackNavigator,
+  // App: AppStackNavigator,
+  App: AppDrawerNavigator,
   // Login,
 };
 

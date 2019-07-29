@@ -57,16 +57,17 @@ function Example1({onOpen, onClose}) {
 
 class HomePage extends PureComponent {
 
-  static navigationOptions = {
-    drawerLabel: 'Home',
-    drawerIcon: ({tintColor}) => (
-      <Image
-        source={require('../../constant/image/circle_check_32px.png')}
-        style={[styles.icon, {tintColor: tintColor}]}
-      />
-    ),
-    drawerLockMode: 'unlocked',//设置是否响应手势
-  };
+  // static navigationOptions = {
+  //   drawerLabel: 'Home',
+  //   gesturesEnabled: true,
+  //   drawerIcon: ({tintColor}) => (
+  //     <Image
+  //       source={require('../../constant/image/circle_check_32px.png')}
+  //       style={[styles.icon, {tintColor: tintColor}]}
+  //     />
+  //   ),
+  //   drawerLockMode: 'unlocked',//设置是否响应手势
+  // };
 
   constructor(props) {
     super(props);

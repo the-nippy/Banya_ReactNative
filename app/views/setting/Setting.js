@@ -8,7 +8,7 @@ import {
 
 } from 'react-native';
 
-export default class History extends PureComponent {
+export default class Setting extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -17,7 +17,7 @@ export default class History extends PureComponent {
   render() {
     return (
       <View>
-        <Text>历史页面</Text>
+        <Text>设置页面</Text>
       </View>
     );
   }

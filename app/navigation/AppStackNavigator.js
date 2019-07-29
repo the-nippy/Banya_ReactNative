@@ -9,7 +9,7 @@ import Main from '../views/Main';
 
 const routeConfigMap = {
   Main:Main,
-  Home: HomePage,
+  // Home: HomePage,
 
 };
 

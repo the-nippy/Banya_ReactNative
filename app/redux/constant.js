@@ -14,7 +14,7 @@ import {WEATHER_URL, WEATHER_KEY} from '../constant/config';
 import {
   requestWeatherData,
   requestTodayInHistory
-} from '../utils/request';
+} from '../utils/request/request';
 import {ShowToast} from "../utils/toast";
 
 const INITIAL_STATE = {
