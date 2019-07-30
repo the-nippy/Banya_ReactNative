@@ -14,6 +14,10 @@ import {
 import Toolbar from '../../component/header/Toolbar';
 
 const FUNCTIONS = ['Top250', '正在上映', '即将上映'];
+const ICON_250 = require('../../constant/image/movie/top250.png');
+const ICON_WILL = require('../../constant/image/movie/will.png');
+const ICON_PLAYING = require('../../constant/image/movie/playing.png');
+const Icons = [ICON_250, ICON_WILL, ICON_PLAYING];
 
 export default class Movie extends PureComponent {
 
@@ -70,10 +74,18 @@ export default class Movie extends PureComponent {
           >
             {FUNCTIONS.map((item, index) => {
               return (
-                <View style={{paddingHorizontal: 5, paddingVertical: 5}}>
-                  <TouchableOpacity onPress={() => {
-                    this.onFunctionsPress(index)
-                  }}>
+                <View
+                  key={index}
+                  style={{paddingHorizontal: 5, paddingVertical: 5}}>
+                  <TouchableOpacity
+                    style={{justifyContent: 'center', alignItems: 'center'}}
+                    onPress={() => {
+                      this.onFunctionsPress(index)
+                    }}>
+                    <Image source={Icons[index]} style={{
+                      width: 20, height: 20, backgroundColor: '#4b7bab', paddingHorizontal: 5,
+                      paddingVertical: 5
+                    }}/>
                     <Text>{item}</Text>
                   </TouchableOpacity>
                 </View>
