@@ -68,8 +68,17 @@ export default class Top250 extends PureComponent {
         <View
           style={styles.barContainer}>
           <View style={styles.changeImages}>
-            <ImageButton source={ICON_RIGHT} style={{transform: [{rotate: '180deg'}]}} isShow={false}/>
-            <ImageButton source={ICON_RIGHT}/>
+            <ImageButton
+              source={ICON_RIGHT} style={{transform: [{rotate: '180deg'}]}}
+              isShow={false}
+              onPress={() => {
+              }}
+            />
+            <ImageButton
+              source={ICON_RIGHT}
+              onPress={() => {
+              }}
+            />
           </View>
 
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>

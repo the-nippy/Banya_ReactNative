@@ -28,7 +28,10 @@ import History from './history/History';
 import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 
-import {createDrawerNavigator, createAppContainer, createStackNavigator, DrawerItems} from 'react-navigation';
+import {
+  createDrawerNavigator, createAppContainer, createStackNavigator, DrawerItems
+}
+  from 'react-navigation';
 
 
 const styles = StyleSheet.create({
@@ -48,22 +51,22 @@ const MovieMap = createStackNavigator({
 
 const MyDrawerNavigator = createDrawerNavigator(
   {
-    Movie: MovieMap,
-    // {
-    //   screen: Movie,
-    //   drawerLockMode: 'unlocked',
-    //   navigationOptions: ({navigation}) => ({
-    //     title: '主页',
-    //     gesturesEnabled: true,
-    //     drawerLockMode: 'unlocked',
-    //     drawerIcon: ({tintColor}) => (
-    //       <Image
-    //         source={require('../constant/image/circle_check_32px.png')}
-    //         style={[styles.icon, {tintColor: tintColor}]}
-    //       />
-    //     ),
-    //   })
-    // },
+    Movie:
+      {
+        screen: Movie,
+        //   drawerLockMode: 'unlocked',
+        //   navigationOptions: ({navigation}) => ({
+        //     title: '主页',
+        //     gesturesEnabled: true,
+        //     drawerLockMode: 'unlocked',
+        //     drawerIcon: ({tintColor}) => (
+        //       <Image
+        //         source={require('../constant/image/circle_check_32px.png')}
+        //         style={[styles.icon, {tintColor: tintColor}]}
+        //       />
+        //     ),
+        //   })
+      },
     Setting: {
       screen: Setting,
       navigationOptions: ({navigation}) => ({

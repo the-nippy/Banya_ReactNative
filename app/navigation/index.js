@@ -8,13 +8,13 @@ import AppDrawerNavigator from '../views/Main';
 const routeConfigMap = {
   // SplashScreen,
   // App: AppStackNavigator,
-  App: AppDrawerNavigator,
+  AppDrawerNavigator,
   // Login,
 };
 
 const switchConfig = {
   headerMode: 'none',
-  // initialRouteName: 'SplashScreen',
+  initialRouteName: 'AppDrawerNavigator',
 };
 
 const AppNavigator = createSwitchNavigator(routeConfigMap, switchConfig);
