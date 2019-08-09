@@ -1,11 +1,12 @@
 /**
  created by Lex. 2019/7/29
  **/
+
 import React, {PureComponent} from 'react';
 import {
   View,
   Text,
-
+  Image
 } from 'react-native';
 
 export default class History extends PureComponent {
@@ -21,4 +22,5 @@ export default class History extends PureComponent {
       </View>
     );
   }
+
 }

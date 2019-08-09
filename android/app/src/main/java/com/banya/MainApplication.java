@@ -1,4 +1,4 @@
-package com.newone;
+package com.banya;
 
 import android.app.Application;
 
