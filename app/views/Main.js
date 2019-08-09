@@ -53,19 +53,19 @@ const MyDrawerNavigator = createDrawerNavigator(
   {
     Movie:
       {
-        screen: Movie,
-        //   drawerLockMode: 'unlocked',
-        //   navigationOptions: ({navigation}) => ({
-        //     title: '主页',
-        //     gesturesEnabled: true,
-        //     drawerLockMode: 'unlocked',
-        //     drawerIcon: ({tintColor}) => (
-        //       <Image
-        //         source={require('../constant/image/circle_check_32px.png')}
-        //         style={[styles.icon, {tintColor: tintColor}]}
-        //       />
-        //     ),
-        //   })
+        screen: MovieMap,
+          drawerLockMode: 'unlocked',
+          navigationOptions: ({navigation}) => ({
+            title: '主页',
+            gesturesEnabled: true,
+            drawerLockMode: 'unlocked',
+            drawerIcon: ({tintColor}) => (
+              <Image
+                source={require('../constant/image/circle_check_32px.png')}
+                style={[styles.icon, {tintColor: tintColor}]}
+              />
+            ),
+          })
       },
     Setting: {
       screen: Setting,

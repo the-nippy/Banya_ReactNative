@@ -50,6 +50,7 @@ export default class Movie extends PureComponent {
       <View style={{flex: 1, backgroundColor: '#eee'}}>
         <Toolbar
           title={'电影'}
+          hideLeftButtons={true}
         />
         <ScrollView style={{flex: 1}}>
           <TouchableOpacity onPress={() => {

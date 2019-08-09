@@ -19,4 +19,5 @@ const switchConfig = {
 
 const AppNavigator = createSwitchNavigator(routeConfigMap, switchConfig);
 
-export default createAppContainer(AppNavigator);
+// export default createAppContainer(AppNavigator);
+export default createAppContainer(AppDrawerNavigator);
