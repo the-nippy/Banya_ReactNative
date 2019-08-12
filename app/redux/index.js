@@ -6,8 +6,9 @@ import storage from 'redux-persist/lib/storage'
 import {composeWithDevTools} from 'redux-devtools-extension/developmentOnly';
 
 //
-import constant from '../redux/constant';
+import constant from './constant';
 
+import movies from './movies';
 // import config from '../redux/config';
 // import user from '../redux/user';
 // import stores from '../redux/stores'
@@ -20,7 +21,8 @@ import constant from '../redux/constant';
 // import messageList from './messageList';
 
 const rootReducer = combineReducers({
- constant
+  constant,
+  movies,
 });
 
 const persistConfig = {

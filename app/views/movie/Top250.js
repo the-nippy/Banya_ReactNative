@@ -18,11 +18,18 @@ import {
   FlatList,
   ActivityIndicator,
 } from 'react-native';
+
+//组件
 import {Rating, AirbnbRating} from 'react-native-ratings';
 import Toolbar from '../../component/header/Toolbar';
 import ImageButton from '../../component/button/ImageButton';
+import {connect} from 'react-redux';
 
+//数据
 import {getTop250} from '../../utils/request/MovieR';
+import {appendNewTop250Data} from '../../redux/movies';
+
+//资源
 import {COLOR, WIDTH} from "../../utils/contants";
 
 const ICON_LEFT = require('../../constant/image/movie/left.png');
@@ -30,7 +37,7 @@ const ICON_RIGHT = require('../../constant/image/movie/right.png');
 const ICON_RIGHT_ARROW = require('../../constant/image/right_nullArrow.png');
 
 
-export default class Top250 extends PureComponent {
+class Top250 extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -49,7 +56,7 @@ export default class Top250 extends PureComponent {
 
   getStartIndex = (page) => {
     const start = 50 * this.state.page + 25 * this.state.nodeIndex;
-    
+
   }
 
   async componentWillMount(): void {
@@ -58,19 +65,21 @@ export default class Top250 extends PureComponent {
 
   //是追加数据时，拼接到原有数据
   freshData = async (start, end) => {
-    try {
-      // const start = this.state.start;
-      const count = end - start;
-      const data = await getTop250(start, count);
-
-      const originalData = this.state.top250List;
-      const newData = originalData.concat(data.subjects);
-
-      this.setState({top250List: newData})
-      console.info('data', data)
-    } catch (e) {
-      console.warn('top250', e);
-    }
+    // try {
+    //   // const start = this.state.start;
+    //   const count = end - start;
+    //   const data = await getTop250(start, count);
+    //
+    //   const originalData = this.state.top250List;
+    //   const newData = originalData.concat(data.subjects);
+    //
+    //   this.setState({top250List: newData})
+    //   console.info('data', data)
+    // } catch (e) {
+    //   console.warn('top250', e);
+    // }
+    await this.props.appendNewTop250Data(this.state.page,this.state.nodeIndex);
+    this.forceUpdate();
   }
 
   ratingCompleted(rating) {
@@ -78,14 +87,14 @@ export default class Top250 extends PureComponent {
   }
 
   reachListBottom = async () => {
-    console.info('到达底部')
-    if (this.state.top250List.length >= 50) {
-      this.setState({isBottomLoadingShow: false})
-    } else {
-      this.setState({isBottomLoadingShow: true});
-      await this.freshData(25, 50);
-      this.setState({isBottomLoadingShow: false})
-    }
+    // console.info('到达底部')
+    // if (this.state.top250List.length >= 50) {
+    //   this.setState({isBottomLoadingShow: false})
+    // } else {
+    //   this.setState({isBottomLoadingShow: true});
+    //   await this.freshData(25, 50);
+    //   this.setState({isBottomLoadingShow: false})
+    // }
   }
 
 
@@ -201,7 +210,7 @@ export default class Top250 extends PureComponent {
           </View>
 
           <Text numberOfLines={2} style={{flexDirection: 'row', alignItems: 'center', color: '#305058'}}>
-            {peoples.map((item, index) => (
+            {peoples?.map((item, index) => (
               <Text key={index}
                     onPress={() => {
                       console.info('Name', item.name)
@@ -227,6 +236,12 @@ export default class Top250 extends PureComponent {
   _keyExtractor = (item, index) => index.toString();
 
   render() {
+
+    //取出当前页的数据
+    const currentPageData = this.props.top250List[this.state.page];
+
+    console.info('[render]currentPageData',currentPageData)
+
     return (
       <View style={{flex: 1, backgroundColor: '#eee'}}>
         <Toolbar title={'Top250'}/>
@@ -254,7 +269,8 @@ export default class Top250 extends PureComponent {
 
         <FlatList
           keyExtractor={this._keyExtractor}
-          data={this.state.top250List}
+          data={currentPageData}
+          extraData={this.props.top250List.slice()}
           renderItem={this.renderTop250Item}
           onEndReachedThreshold={0.3}
           onEndReached={this.reachListBottom}
@@ -299,6 +315,12 @@ export default class Top250 extends PureComponent {
     );
   }
 }
+
+export default connect(state => ({
+  top250List: state.movies.top250,
+}), {
+  appendNewTop250Data,
+})(Top250);
 
 
 const styles = StyleSheet.create({
