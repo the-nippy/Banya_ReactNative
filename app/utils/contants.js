@@ -8,7 +8,13 @@ import {
 const WIDTH = Dimensions.get('window').width;
 const HEIGHT = Dimensions.get('window').height;
 
+const COLOR={
+  defaultColor:'#4b7bab',
+
+}
+
 export {
   WIDTH,
   HEIGHT,
+  COLOR,
 }

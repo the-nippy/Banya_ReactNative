@@ -16,15 +16,18 @@ import {
   ScrollView,
   StyleSheet,
   FlatList,
+  ActivityIndicator,
 } from 'react-native';
 import {Rating, AirbnbRating} from 'react-native-ratings';
 import Toolbar from '../../component/header/Toolbar';
 import ImageButton from '../../component/button/ImageButton';
 
 import {getTop250} from '../../utils/request/MovieR';
+import {COLOR} from "../../utils/contants";
 
 const ICON_LEFT = require('../../constant/image/movie/left.png');
 const ICON_RIGHT = require('../../constant/image/movie/right.png');
+const ICON_RIGHT_ARROW = require('../../constant/image/right_nullArrow.png');
 
 
 export default class Top250 extends PureComponent {
@@ -35,20 +38,32 @@ export default class Top250 extends PureComponent {
       //Top xx-xx
       start: 0,
       end: 25,
-      top250List: [{}],
+      page: 0,
+      // start: this.page,
+      top250List: [],
+      isBottomLoadingShow: false,
     }
   }
 
-  async componentWillMount(): void {
-    await this.freshData();
+  getStartIndex=(page)=>{
+
   }
 
-  freshData = async () => {
+  async componentWillMount(): void {
+    await this.freshData(this.state.start, this.state.end);
+  }
+
+  //是追加数据时，拼接到原有数据
+  freshData = async (start, end) => {
     try {
-      const start = this.state.start;
-      const count = this.state.end - this.state.start;
+      // const start = this.state.start;
+      const count = end - start;
       const data = await getTop250(start, count);
-      this.setState({top250List: data.subjects})
+
+      const originalData = this.state.top250List;
+      const newData = originalData.concat(data.subjects);
+
+      this.setState({top250List: newData})
       console.info('data', data)
     } catch (e) {
       console.warn('top250', e);
@@ -59,12 +74,70 @@ export default class Top250 extends PureComponent {
     console.log("Rating is: " + rating)
   }
 
+  reachListBottom = async () => {
+    console.info('到达底部')
+    if (this.state.top250List.length >= 50) {
+      this.setState({isBottomLoadingShow: false})
+    } else {
+      this.setState({isBottomLoadingShow: true});
+      await this.freshData(25, 50);
+      this.setState({isBottomLoadingShow: false})
+    }
+  }
+
+
+  showBottomView = () => {
+    if (this.state.isBottomLoadingShow) {
+      return (
+        <View>
+          <ActivityIndicator size={'large'}/>
+        </View>
+      );
+    } else {
+      return (
+        <View>
+          <TouchableOpacity>
+            <Text>加载下一页</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+  }
+
+
+  transformRateToValue = (rate) => {
+    let value = 0;
+    if (rate >= 9.2) {
+      value = 5;
+    } else if (rate >= 8.3) {
+      value = 4.5;
+    } else if (rate >= 7.5) {
+      value = 4;
+    } else if (rate >= 6.6) {
+      value = 3.5;
+    } else if (rate >= 6) {
+      value = 3;
+    } else if (rate >= 5) {
+      value = 2.5;
+    } else if (rate >= 4) {
+      value = 2;
+    } else if (rate >= 3) {
+      value = 1.5;
+    } else if (rate >= 2) {
+      value = 1;
+    } else {
+      value = 0.5
+    }
+    return value;
+  }
+
   renderTop250Item = ({item, index}) => {
 
     const ITEM_HEIGHT = 160;
     const ITEM_WIDTH = 110;
 
     const showOrgTitle = item.title == item.original_title;
+    const rateValue = item?.rating?.average;
 
     return (
       <View style={{
@@ -79,16 +152,18 @@ export default class Top250 extends PureComponent {
       }}>
         <Image source={{uri: item.images?.small}} style={{width: ITEM_WIDTH, height: ITEM_HEIGHT}}
                resizeMode='contain'/>
-        <View style={{height: ITEM_HEIGHT, justifyContent: 'space-between', paddingTop: 20, paddingHorizontal: 10}}>
+        <View style={{height: ITEM_HEIGHT, justifyContent: 'space-between', paddingTop: 15, paddingHorizontal: 10}}>
 
           <View>
             <Text style={styles.movie_title}>{item.title}</Text>
             {showOrgTitle ? null : <Text
+              numberOfLines={1}
               style={styles.movie_org_title}>{'(' + item.original_title + ')'}</Text>
             }
           </View>
 
-          <View style={{paddingLeft: 5}}>
+          <View
+            style={{paddingLeft: 5, flexDirection: 'row', alignItems: 'center'}}>
             <Rating
               readonly={true}
               type='star'
@@ -96,11 +171,13 @@ export default class Top250 extends PureComponent {
               // ratingColor='yellow'
               // ratingBackgroundColor='#c8c7c8'
               ratingCount={5}
-              fractions={16}
-              imageSize={15}
+              startingValue={this.transformRateToValue(rateValue)}
+              imageSize={13}
               style={{width: 60}}
               // style={{ paddingVertical: 10 }}
             />
+            <Text
+              style={{marginLeft: 10, fontSize: 13, color: '#000', fontWeight: 'bold'}}>{item?.rating?.average}</Text>
           </View>
 
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
@@ -114,8 +191,21 @@ export default class Top250 extends PureComponent {
 
           <View>{item.pubdates?.map((item, index) => (<Text key={index}>{item}</Text>))}</View>
 
-
         </View>
+
+        <View style={{
+          ...StyleSheet.absoluteFill,
+          alignItems: 'flex-end',
+        }}>
+          <Text style={{
+            backgroundColor: '#dea554',
+            paddingHorizontal: 6,
+            paddingVertical: 4,
+            borderBottomLeftRadius: 8,
+            borderTopRightRadius: 8
+          }}>{'No.' + (index + 1)}</Text>
+        </View>
+
       </View>
     );
   }
@@ -144,7 +234,7 @@ export default class Top250 extends PureComponent {
           </View>
 
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text> {'当前显示 Top' + this.state.start + '--Top' + this.state.end}</Text>
+            <Text> {'当前显示 Top' + (this.state.start) + '--Top' + this.state.end}</Text>
           </View>
         </View>
 
@@ -152,7 +242,45 @@ export default class Top250 extends PureComponent {
           keyExtractor={this._keyExtractor}
           data={this.state.top250List}
           renderItem={this.renderTop250Item}
+          onEndReachedThreshold={0.3}
+          onEndReached={this.reachListBottom}
+          ListFooterComponent={() => {
+            if (this.state.isBottomLoadingShow) {
+              return (
+                <View style={{height: 60, justifyContent: 'center', alignItems: 'center'}}>
+                  <ActivityIndicator size={'large'}/>
+                </View>
+              );
+            } else {
+              return (
+                <View style={{
+                  height: 60,
+                  justifyContent: 'flex-end',
+                  alignItems: 'center',
+                  flexDirection: 'row'
+                }}>
+                  <View style={{flexDirection: 'row', backgroundColor: COLOR.defaultColor, alignItems: 'center'}}>
+                    <Text style={{
+                      paddingHorizontal: 8,
+                      paddingVertical: 4,
+                      color: '#FFF',
+                      fontStyle: 'italic'
+                    }}>{'Top 51-100'}</Text>
+                    <Image source={ICON_RIGHT_ARROW}
+                           style={{backgroundColor: COLOR.defaultColor, height: 16, width: 28}}/>
+
+                  </View>
+                  <View style={{...StyleSheet.absoluteFill, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{fontSize: 15}}>到底了</Text>
+                  </View>
+                </View>
+              );
+            }
+          }}
         />
+
+        {/*{this.showBottomView()}*/}
+
       </View>
     );
   }
