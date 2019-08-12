@@ -293,12 +293,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 50
+    height: 40
   },
   barContainer: {
     marginHorizontal: 20,
     marginVertical: 10,
-    height: 50,
+    height: 40,
     flexDirection: 'row',
     backgroundColor: '#FFF',
     borderRadius: 10
