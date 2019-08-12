@@ -23,7 +23,7 @@ import Toolbar from '../../component/header/Toolbar';
 import ImageButton from '../../component/button/ImageButton';
 
 import {getTop250} from '../../utils/request/MovieR';
-import {COLOR} from "../../utils/contants";
+import {COLOR, WIDTH} from "../../utils/contants";
 
 const ICON_LEFT = require('../../constant/image/movie/left.png');
 const ICON_RIGHT = require('../../constant/image/movie/right.png');
@@ -39,14 +39,17 @@ export default class Top250 extends PureComponent {
       start: 0,
       end: 25,
       page: 0,
+      //每页50条数据，分两节  0  1
+      nodeIndex: 0,
       // start: this.page,
       top250List: [],
       isBottomLoadingShow: false,
     }
   }
 
-  getStartIndex=(page)=>{
-
+  getStartIndex = (page) => {
+    const start = 50 * this.state.page + 25 * this.state.nodeIndex;
+    
   }
 
   async componentWillMount(): void {
@@ -133,11 +136,13 @@ export default class Top250 extends PureComponent {
 
   renderTop250Item = ({item, index}) => {
 
-    const ITEM_HEIGHT = 160;
-    const ITEM_WIDTH = 110;
+    const ITEM_HEIGHT = 150;
+    const ITEM_WIDTH = 106;
 
     const showOrgTitle = item.title == item.original_title;
     const rateValue = item?.rating?.average;
+
+    const peoples = item.directors?.concat(item?.casts);
 
     return (
       <View style={{
@@ -152,7 +157,13 @@ export default class Top250 extends PureComponent {
       }}>
         <Image source={{uri: item.images?.small}} style={{width: ITEM_WIDTH, height: ITEM_HEIGHT}}
                resizeMode='contain'/>
-        <View style={{height: ITEM_HEIGHT, justifyContent: 'space-between', paddingTop: 15, paddingHorizontal: 10}}>
+        <View style={{
+          flex: 1,
+          height: ITEM_HEIGHT,
+          justifyContent: 'space-between',
+          paddingTop: 15,
+          paddingHorizontal: 10
+        }}>
 
           <View>
             <Text style={styles.movie_title}>{item.title}</Text>
@@ -181,15 +192,24 @@ export default class Top250 extends PureComponent {
           </View>
 
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text>{item.year}</Text>
+            <Text style={{marginRight: 8}}>{item.year}</Text>
             {item.genres?.map((item, index) => (
               <View key={index}>
-                <Text>{item}</Text>
+                <Text style={{marginHorizontal: 4, color: '#614d62'}}>{item}</Text>
               </View>)
             )}
           </View>
 
-          <View>{item.pubdates?.map((item, index) => (<Text key={index}>{item}</Text>))}</View>
+          <Text numberOfLines={2} style={{flexDirection: 'row', alignItems: 'center', color: '#305058'}}>
+            {peoples.map((item, index) => (
+              <Text key={index}
+                    onPress={() => {
+                      console.info('Name', item.name)
+                    }}
+                    style={{marginHorizontal: 3, fontSize: 13}}>{item.name + '  '}</Text>
+            ))}
+          </Text>
+
 
         </View>
 
@@ -197,13 +217,7 @@ export default class Top250 extends PureComponent {
           ...StyleSheet.absoluteFill,
           alignItems: 'flex-end',
         }}>
-          <Text style={{
-            backgroundColor: '#dea554',
-            paddingHorizontal: 6,
-            paddingVertical: 4,
-            borderBottomLeftRadius: 8,
-            borderTopRightRadius: 8
-          }}>{'No.' + (index + 1)}</Text>
+          <Text style={styles.textNumber}>{'No.' + (index + 1)}</Text>
         </View>
 
       </View>
@@ -297,7 +311,7 @@ const styles = StyleSheet.create({
   },
   barContainer: {
     marginHorizontal: 20,
-    marginVertical: 10,
+    marginVertical: 6,
     height: 40,
     flexDirection: 'row',
     backgroundColor: '#FFF',
@@ -312,5 +326,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     color: '#666'
+  },
+  textNumber: {
+    backgroundColor: '#dea554',
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+    borderBottomLeftRadius: 8,
+    borderTopRightRadius: 8
   }
 })
