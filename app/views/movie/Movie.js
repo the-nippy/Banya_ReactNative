@@ -13,12 +13,15 @@ import {
 
 import Toolbar from '../../component/header/Toolbar';
 import LinearView from '../../component/linear/LinearView';
+import {WIDTH} from "../../utils/contants";
 
 const FUNCTIONS = ['Top250', '正在上映', '即将上映'];
 const ICON_250 = require('../../constant/image/movie/top250.png');
 const ICON_WILL = require('../../constant/image/movie/will.png');
 const ICON_PLAYING = require('../../constant/image/movie/playing.png');
+const ICON_MENU = require('../../constant/image/movie/menu.png');
 const Icons = [ICON_250, ICON_WILL, ICON_PLAYING];
+
 
 export default class Movie extends PureComponent {
 
@@ -52,6 +55,14 @@ export default class Movie extends PureComponent {
         <Toolbar
           title={'电影'}
           hideLeftButtons={true}
+          leftButtons={[
+            {
+              icon: ICON_MENU,
+              onPress: () => {
+                this.props.navigation.openDrawer();
+              },
+            }
+          ]}
         />
         <ScrollView style={{flex: 1}}>
           <TouchableOpacity onPress={() => {
@@ -64,9 +75,9 @@ export default class Movie extends PureComponent {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'space-between',
-              marginHorizontal: 15,
-              paddingHorizontal: 15,
+              justifyContent: 'space-around',
+              // marginHorizontal: 15,
+              // paddingHorizontal: 15,
               height: 60,
               borderRadius: 8,
               backgroundColor: '#fff'
@@ -78,17 +89,25 @@ export default class Movie extends PureComponent {
               return (
                 <View
                   key={index}
-                  style={{paddingHorizontal: 5, paddingVertical: 5}}>
+                  style={{
+                    backgroundColor: '#4b7bab',
+                    // width: WIDTH/4,
+                    height: 40,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderRadius: 20,
+                    paddingHorizontal: 8,
+                  }}>
                   <TouchableOpacity
-                    style={{justifyContent: 'center', alignItems: 'center'}}
+                    style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}
                     onPress={() => {
                       this.onFunctionsPress(index)
                     }}>
                     <Image source={Icons[index]} style={{
-                      width: 20, height: 20, backgroundColor: '#4b7bab', paddingHorizontal: 5,
+                      width: 30, height: 30, paddingHorizontal: 5,
                       paddingVertical: 5
                     }}/>
-                    <Text>{item}</Text>
+                    <Text style={{fontSize: 12, color: '#FFF', marginLeft: 5}}>{item}</Text>
                   </TouchableOpacity>
                 </View>
               );
@@ -97,14 +116,13 @@ export default class Movie extends PureComponent {
 
 
           <LinearView
-            start={{x:0,y:0}}
-            end={{x:1,y:1}}
-            colors={['#A00','#0A0','#00A']}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 1}}
+            colors={['#A00', '#0A0', '#00A']}
           >
             <Text>你在哪</Text>
             <Text>OK</Text>
           </LinearView>
-
 
 
         </ScrollView>

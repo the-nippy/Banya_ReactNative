@@ -279,7 +279,7 @@ class Top250 extends PureComponent {
 
     return (
       <LinearView
-        colors={['#dfdbab','#FEE','#cce0eb']}
+        colors={['#cce0eb','#FEE','#dfdbab']}
         style={{flex: 1}}>
         <Toolbar title={'Top250'}/>
 
