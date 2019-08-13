@@ -24,6 +24,7 @@ import {Rating, AirbnbRating} from 'react-native-ratings';
 import Toolbar from '../../component/header/Toolbar';
 import ImageButton from '../../component/button/ImageButton';
 import {connect} from 'react-redux';
+import LinearView from '../../component/linear/LinearView';
 
 //数据
 import {getTop250} from '../../utils/request/MovieR';
@@ -60,7 +61,11 @@ class Top250 extends PureComponent {
   }
 
   async componentWillMount(): void {
-    await this.freshData(this.state.start, this.state.end);
+    console.info('this.state.page', this.state.page)
+    const currentPageData = this.props.top250List?.[this.state.page] || [];
+    if (currentPageData.length === 0) {
+      await this.freshData(this.state.start, this.state.end);
+    }
   }
 
   //是追加数据时，拼接到原有数据
@@ -78,7 +83,8 @@ class Top250 extends PureComponent {
     // } catch (e) {
     //   console.warn('top250', e);
     // }
-    await this.props.appendNewTop250Data(this.state.page,this.state.nodeIndex);
+    await this.props.appendNewTop250Data(this.state.page, this.state.nodeIndex);
+    this.setState({isBottomLoadingShow: false})
     this.forceUpdate();
   }
 
@@ -86,7 +92,32 @@ class Top250 extends PureComponent {
     console.log("Rating is: " + rating)
   }
 
+
+  //获取当前电影的Top start
+  getTopIndex = () => {
+    const baseStart = this.state.page * 50 + 1;
+    return baseStart;
+  }
+
+  //点击进入下一页
+  onToNextPagePress = () => {
+    const currentPage = this.state.page;
+    if (currentPage <= 3) {
+      this.setState({page: (currentPage + 1), nodeIndex: 0}, this.freshData)
+    }
+  }
+
   reachListBottom = async () => {
+    const currentPageData = this.props.top250List?.[this.state.page] || [];
+    console.info('To250到底,当前长度', currentPageData.length)
+    if (currentPageData.length === 25) {
+      this.setState({nodeIndex: 1, isBottomLoadingShow: true}, () => {
+        this.freshData()
+      })
+    } else if (currentPageData.length === 50) {
+
+    }
+
     // console.info('到达底部')
     // if (this.state.top250List.length >= 50) {
     //   this.setState({isBottomLoadingShow: false})
@@ -226,7 +257,7 @@ class Top250 extends PureComponent {
           ...StyleSheet.absoluteFill,
           alignItems: 'flex-end',
         }}>
-          <Text style={styles.textNumber}>{'No.' + (index + 1)}</Text>
+          <Text style={styles.textNumber}>{'No.' + (this.getTopIndex() + index)}</Text>
         </View>
 
       </View>
@@ -238,12 +269,18 @@ class Top250 extends PureComponent {
   render() {
 
     //取出当前页的数据
-    const currentPageData = this.props.top250List[this.state.page];
+    const currentPageData = this.props.top250List?.[this.state.page] || [];
 
-    console.info('[render]currentPageData',currentPageData)
+    //是否显示加载下一页的底部框
+    let showBottomToNext = false;
+    if (currentPageData.length === 50) {
+      showBottomToNext = true;
+    }
 
     return (
-      <View style={{flex: 1, backgroundColor: '#eee'}}>
+      <LinearView
+        colors={['#dfdbab','#FEE','#cce0eb']}
+        style={{flex: 1}}>
         <Toolbar title={'Top250'}/>
 
         <View
@@ -251,26 +288,27 @@ class Top250 extends PureComponent {
           <View style={styles.changeImages}>
             <ImageButton
               source={ICON_RIGHT} style={{transform: [{rotate: '180deg'}]}}
-              isShow={false}
+              isShow={this.state.page !== 0}
               onPress={() => {
+                this.setState({page: (this.state.page - 1)},()=>this.forceUpdate())
               }}
             />
             <ImageButton
               source={ICON_RIGHT}
-              onPress={() => {
-              }}
+              isShow={this.state.page !== 4}
+              onPress={this.onToNextPagePress}
             />
           </View>
 
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-            <Text> {'当前显示 Top' + (this.state.start) + '--Top' + this.state.end}</Text>
+            <Text> {'当前显示 Top' + (this.state.page * 50 + 1) + '--Top' + (this.state.page + 1) * 50}</Text>
           </View>
         </View>
 
         <FlatList
           keyExtractor={this._keyExtractor}
           data={currentPageData}
-          extraData={this.props.top250List.slice()}
+          extraData={this.props.top250List}
           renderItem={this.renderTop250Item}
           onEndReachedThreshold={0.3}
           onEndReached={this.reachListBottom}
@@ -282,28 +320,34 @@ class Top250 extends PureComponent {
                 </View>
               );
             } else {
+              if (!showBottomToNext) {
+                return null;
+              }
               return (
-                <View style={{
-                  height: 60,
-                  justifyContent: 'flex-end',
-                  alignItems: 'center',
-                  flexDirection: 'row'
-                }}>
-                  <View style={{flexDirection: 'row', backgroundColor: COLOR.defaultColor, alignItems: 'center'}}>
-                    <Text style={{
-                      paddingHorizontal: 8,
-                      paddingVertical: 4,
-                      color: '#FFF',
-                      fontStyle: 'italic'
-                    }}>{'Top 51-100'}</Text>
-                    <Image source={ICON_RIGHT_ARROW}
-                           style={{backgroundColor: COLOR.defaultColor, height: 16, width: 28}}/>
+                <TouchableOpacity
+                  onPress={this.onToNextPagePress}
+                  style={{
+                    height: 60,
+                    justifyContent: 'flex-end',
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                  }}>
+                  {this.state.page === 4 ? null :
+                    <View style={{flexDirection: 'row', backgroundColor: COLOR.defaultColor, alignItems: 'center'}}>
+                      <Text style={{
+                        paddingHorizontal: 8,
+                        paddingVertical: 4,
+                        color: '#FFF',
+                        fontStyle: 'italic'
+                      }}>{'Top ' + ((this.state.page + 1) * 50 + 1) + '-' + (this.state.page + 2) * 50}</Text>
+                      <Image source={ICON_RIGHT_ARROW}
+                             style={{backgroundColor: COLOR.defaultColor, height: 16, width: 28}}/>
 
-                  </View>
+                    </View>}
                   <View style={{...StyleSheet.absoluteFill, justifyContent: 'center', alignItems: 'center'}}>
                     <Text style={{fontSize: 15}}>到底了</Text>
                   </View>
-                </View>
+                </TouchableOpacity>
               );
             }
           }}
@@ -311,7 +355,7 @@ class Top250 extends PureComponent {
 
         {/*{this.showBottomView()}*/}
 
-      </View>
+      </LinearView>
     );
   }
 }

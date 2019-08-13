@@ -8,7 +8,7 @@ import {getTop250} from "../utils/request/MovieR";
 //每次请求 25 条数据
 const count = 25;
 const INITIAL_STATE = {
-  top250: [[], [], [], [], []]
+  top250: [[], [], [], [], []],
 };
 
 //action type
@@ -32,10 +32,13 @@ export default function (state = INITIAL_STATE, action) {
 
 }
 
-function dealAppendTop250(currentData, action) {
-  const pageData = currentData[action.page];
-  currentData[action.page] = pageData.concat(action.data);
-  return currentData;
+function dealAppendTop250(current250Data = [[], [], [], [], []], action) {
+  const pageData = current250Data[action.page];
+  //只有在已有数据是 0 和 25 条数据的时候才能追加
+  if (pageData.length === 25 || pageData.length === 0) {
+    current250Data[action.page] = pageData.concat(action.data);
+  }
+  return current250Data;
 }
 
 //Top 250 为五个数组，五页。每次请求25条数据

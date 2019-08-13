@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import Toolbar from '../../component/header/Toolbar';
+import LinearView from '../../component/linear/LinearView';
 
 const FUNCTIONS = ['Top250', '正在上映', '即将上映'];
 const ICON_250 = require('../../constant/image/movie/top250.png');
@@ -93,6 +94,17 @@ export default class Movie extends PureComponent {
               );
             })}
           </View>
+
+
+          <LinearView
+            start={{x:0,y:0}}
+            end={{x:1,y:1}}
+            colors={['#A00','#0A0','#00A']}
+          >
+            <Text>你在哪</Text>
+            <Text>OK</Text>
+          </LinearView>
+
 
 
         </ScrollView>
