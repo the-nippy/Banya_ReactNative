@@ -17,6 +17,21 @@ const getTop250 = async (start, count) => {
   })
 }
 
+//新片榜
+const getNewMovies = async (city) => {
+  return new Promise((resolve, reject) => {
+    BaseGetRequest(URLS.MOVIE.New_Movie, {city: city}).then(
+      res => {
+        resolve(res);
+      }, err => {
+        reject(err);
+      }
+    )
+  })
+}
+
 export {
   getTop250,
+  getNewMovies,
+
 }

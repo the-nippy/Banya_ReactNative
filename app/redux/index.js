@@ -9,6 +9,8 @@ import {composeWithDevTools} from 'redux-devtools-extension/developmentOnly';
 import constant from './constant';
 
 import movies from './movies';
+
+import publicData from './public';
 // import config from '../redux/config';
 // import user from '../redux/user';
 // import stores from '../redux/stores'
@@ -23,6 +25,7 @@ import movies from './movies';
 const rootReducer = combineReducers({
   constant,
   movies,
+  publicData,
 });
 
 const persistConfig = {

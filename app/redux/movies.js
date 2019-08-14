@@ -1,7 +1,8 @@
 /**
  created by Lex. 2019/8/12
  **/
-import {getTop250} from "../utils/request/MovieR";
+import {getNewMovies, getTop250} from "../utils/request/MovieR";
+import {BanError} from "../utils/BanError";
 
 //储存电影数据
 
@@ -9,10 +10,15 @@ import {getTop250} from "../utils/request/MovieR";
 const count = 25;
 const INITIAL_STATE = {
   top250: [[], [], [], [], []],
+  newMovies: {isAllowLocation: false, city: '', data: []},
 };
 
 //action type
+
+//追加 top250 数据
 const APPEND_TOP250 = 'APPEND_TOP250';
+//插入 新片榜 数据
+const INSERT_NEW_MOVIES = 'INSERT_NEW_MOVIES';
 
 export default function (state = INITIAL_STATE, action) {
 
@@ -24,14 +30,20 @@ export default function (state = INITIAL_STATE, action) {
         ...state,
         top250: newTop250Data
       };
-    case '':
-      return;
+    case INSERT_NEW_MOVIES:
+      const currentNewMovieData = state.newMovies;
+      const newMoviesData = dealInsertNewMovies(currentNewMovieData, action);
+      return {
+        ...state,
+        newMovies: newMoviesData
+      };
     default:
       return state;
   }
 
 }
 
+//代理处理 Top250 追加数据
 function dealAppendTop250(current250Data = [[], [], [], [], []], action) {
   const pageData = current250Data[action.page];
   //只有在已有数据是 0 和 25 条数据的时候才能追加
@@ -56,6 +68,28 @@ export function appendNewTop250Data(page, nodeIndex) {
       })
     } catch (e) {
       console.warn('[appendNewTop250Data]', e)
+    }
+  }
+}
+
+//代理处理 new_movies 数据
+function dealInsertNewMovies(currentNewMovies, action) {
+  if (currentNewMovies.length) {
+
+  }
+}
+
+export function insertNewMovieData(city) {
+
+  return async function (dispatch) {
+    try {
+      let data = await getNewMovies(city);
+      dispatch({
+        type: INSERT_NEW_MOVIES,
+        data: data,
+      })
+    } catch (e) {
+      throw new BanError(100);
     }
   }
 }

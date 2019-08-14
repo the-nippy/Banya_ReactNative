@@ -18,6 +18,7 @@ import {
 
 import Movie from './movie/Movie';
 import Top250 from './movie/Top250';
+import NewMovie from "./movie/NewMovies";
 
 import Setting from './setting/Setting';
 import History from './history/History';
@@ -44,6 +45,7 @@ const styles = StyleSheet.create({
 const MovieMap = createStackNavigator({
   Movie: Movie,
   Top250: Top250,
+  NewMovie: NewMovie,
 }, {
   initialRouteName: 'Movie',
   headerMode: 'none'
@@ -54,18 +56,18 @@ const MyDrawerNavigator = createDrawerNavigator(
     Movie:
       {
         screen: MovieMap,
+        drawerLockMode: 'unlocked',
+        navigationOptions: ({navigation}) => ({
+          title: '主页',
+          gesturesEnabled: true,
           drawerLockMode: 'unlocked',
-          navigationOptions: ({navigation}) => ({
-            title: '主页',
-            gesturesEnabled: true,
-            drawerLockMode: 'unlocked',
-            drawerIcon: ({tintColor}) => (
-              <Image
-                source={require('../constant/image/circle_check_32px.png')}
-                style={[styles.icon, {tintColor: tintColor}]}
-              />
-            ),
-          })
+          drawerIcon: ({tintColor}) => (
+            <Image
+              source={require('../constant/image/circle_check_32px.png')}
+              style={[styles.icon, {tintColor: tintColor}]}
+            />
+          ),
+        })
       },
     Setting: {
       screen: Setting,

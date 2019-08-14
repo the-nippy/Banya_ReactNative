@@ -14,13 +14,15 @@ import {
 import Toolbar from '../../component/header/Toolbar';
 import LinearView from '../../component/linear/LinearView';
 import {WIDTH} from "../../utils/contants";
+import {getNewMovies} from "../../utils/request/MovieR";
 
-const FUNCTIONS = ['Top250', '正在上映', '即将上映'];
+const FUNCTIONS = ['Top250', '正在上映', '即将上映', '新片榜'];
 const ICON_250 = require('../../constant/image/movie/top250.png');
 const ICON_WILL = require('../../constant/image/movie/will.png');
 const ICON_PLAYING = require('../../constant/image/movie/playing.png');
+const ICON_NEW_MOVIE = require('../../constant/image/movie/new_movie.png');
 const ICON_MENU = require('../../constant/image/movie/menu.png');
-const Icons = [ICON_250, ICON_WILL, ICON_PLAYING];
+const Icons = [ICON_250, ICON_WILL, ICON_PLAYING, ICON_NEW_MOVIE];
 
 
 export default class Movie extends PureComponent {
@@ -34,6 +36,12 @@ export default class Movie extends PureComponent {
     super(props);
   }
 
+  async componentDidMount(): void {
+    let movies = await getNewMovies();
+    console.info('new_movies', movies);
+  }
+
+
   //Top250等function被点击
   onFunctionsPress = (index) => {
     switch (index) {
@@ -43,6 +51,9 @@ export default class Movie extends PureComponent {
       case 1:
         break;
       case 2:
+        break;
+      case 3:
+        this.props.navigation.navigate('NewMovie');
         break;
       default:
         break;
@@ -65,11 +76,6 @@ export default class Movie extends PureComponent {
           ]}
         />
         <ScrollView style={{flex: 1}}>
-          <TouchableOpacity onPress={() => {
-            this.props.navigation.openDrawer()
-          }}>
-            <Text>电影界面</Text>
-          </TouchableOpacity>
 
           <View
             style={{
@@ -80,7 +86,8 @@ export default class Movie extends PureComponent {
               // paddingHorizontal: 15,
               height: 60,
               borderRadius: 8,
-              backgroundColor: '#fff'
+              backgroundColor: '#fff',
+              paddingHorizontal: 6
             }}
             // horizontal={true}
             // showsHorizontalScrollIndicator={false}
@@ -91,15 +98,16 @@ export default class Movie extends PureComponent {
                   key={index}
                   style={{
                     backgroundColor: '#4b7bab',
-                    // width: WIDTH/4,
-                    height: 40,
+                    width: (WIDTH - 48) / 4,
+                    marginHorizontal: 6,
+                    // height: 36,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    borderRadius: 20,
+                    borderRadius: 16,
                     paddingHorizontal: 8,
                   }}>
                   <TouchableOpacity
-                    style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}
+                    style={{justifyContent: 'center', alignItems: 'center'}}
                     onPress={() => {
                       this.onFunctionsPress(index)
                     }}>
