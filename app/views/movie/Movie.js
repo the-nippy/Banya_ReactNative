@@ -8,14 +8,22 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-
+  StyleSheet,
 } from 'react-native';
 
+//组件
 import Toolbar from '../../component/header/Toolbar';
 import LinearView from '../../component/linear/LinearView';
+import Swiper from 'react-native-swiper'
+
+
+//数据
 import {WIDTH} from "../../utils/contants";
 import {getNewMovies} from "../../utils/request/MovieR";
+import MovieItem250 from "../../component/movieItem/MovieItem250";
 
+
+//资源
 const FUNCTIONS = ['Top250', '正在上映', '即将上映', '新片榜'];
 const ICON_250 = require('../../constant/image/movie/top250.png');
 const ICON_WILL = require('../../constant/image/movie/will.png');
@@ -37,8 +45,7 @@ export default class Movie extends PureComponent {
   }
 
   async componentDidMount(): void {
-    let movies = await getNewMovies();
-    console.info('new_movies', movies);
+
   }
 
 
@@ -60,6 +67,12 @@ export default class Movie extends PureComponent {
     }
   }
 
+  renderSwiperItem = () => {
+    return (
+      {/*<MovieItem250/>*/}
+    );
+  }
+
   render() {
     return (
       <View style={{flex: 1, backgroundColor: '#eee'}}>
@@ -77,44 +90,31 @@ export default class Movie extends PureComponent {
         />
         <ScrollView style={{flex: 1}}>
 
+          <Swiper
+            autoplay={true}
+            style={{width: WIDTH, height: 100}}>
+            <View style={{width: WIDTH, height: 100}}>
+              <Text>1</Text>
+            </View>
+            <View style={{width: WIDTH, height: 100}}>
+              <Text>2</Text>
+            </View>
+          </Swiper>
+
           <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-around',
-              // marginHorizontal: 15,
-              // paddingHorizontal: 15,
-              height: 60,
-              borderRadius: 8,
-              backgroundColor: '#fff',
-              paddingHorizontal: 6
-            }}
-            // horizontal={true}
-            // showsHorizontalScrollIndicator={false}
+            style={styles.functionContainer}
           >
             {FUNCTIONS.map((item, index) => {
               return (
                 <View
                   key={index}
-                  style={{
-                    backgroundColor: '#4b7bab',
-                    width: (WIDTH - 48) / 4,
-                    marginHorizontal: 6,
-                    // height: 36,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    borderRadius: 16,
-                    paddingHorizontal: 8,
-                  }}>
+                  style={styles.single_function}>
                   <TouchableOpacity
                     style={{justifyContent: 'center', alignItems: 'center'}}
                     onPress={() => {
                       this.onFunctionsPress(index)
                     }}>
-                    <Image source={Icons[index]} style={{
-                      width: 30, height: 30, paddingHorizontal: 5,
-                      paddingVertical: 5
-                    }}/>
+                    <Image source={Icons[index]} style={styles.function_image}/>
                     <Text style={{fontSize: 12, color: '#FFF', marginLeft: 5}}>{item}</Text>
                   </TouchableOpacity>
                 </View>
@@ -138,3 +138,29 @@ export default class Movie extends PureComponent {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  functionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    height: 60,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    paddingHorizontal: 6
+  },
+  single_function: {
+    backgroundColor: '#4b7bab',
+    width: (WIDTH - 48) / 4,
+    marginHorizontal: 6,
+    // height: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
+    paddingHorizontal: 8,
+  },
+  function_image: {
+    width: 30, height: 30, paddingHorizontal: 5,
+    paddingVertical: 5
+  }
+})

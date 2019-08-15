@@ -30,8 +30,28 @@ const getNewMovies = async (city) => {
   })
 }
 
+//正在上映
+const getInTheaterMovies = () => {
+  return new Promise((resolve, reject) => {
+    // BaseGetRequest(URLS.MOVIE.In_Theater)
+  })
+}
+
+const getComingMovies = (start, count) => {
+  return new Promise((resolve, reject) => {
+    BaseGetRequest(URLS.MOVIE.Coming_Soon, {start, count}).then(
+      res => {
+        resolve(res);
+      }, err => {
+        reject(err);
+      }
+    )
+  })
+}
+
 export {
   getTop250,
   getNewMovies,
-
+  getComingMovies,
+  getInTheaterMovies,
 }
