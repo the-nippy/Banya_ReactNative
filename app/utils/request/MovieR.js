@@ -37,9 +37,10 @@ const getInTheaterMovies = () => {
   })
 }
 
+//即将上映
 const getComingMovies = (start, count) => {
   return new Promise((resolve, reject) => {
-    BaseGetRequest(URLS.MOVIE.Coming_Soon, {start, count}).then(
+    BaseGetRequest(URLS.MOVIE.Coming_Soon).then(
       res => {
         resolve(res);
       }, err => {
@@ -48,6 +49,12 @@ const getComingMovies = (start, count) => {
     )
   })
 }
+
+//口碑榜
+
+
+//北美票房榜
+
 
 export {
   getTop250,

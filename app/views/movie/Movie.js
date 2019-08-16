@@ -14,13 +14,15 @@ import {
 //组件
 import Toolbar from '../../component/header/Toolbar';
 import LinearView from '../../component/linear/LinearView';
-import Swiper from 'react-native-swiper'
-
+import Swiper from 'react-native-swiper';
+import {connect} from 'react-redux';
 
 //数据
-import {WIDTH} from "../../utils/contants";
+import {COLOR, WIDTH} from "../../utils/contants";
 import {getNewMovies} from "../../utils/request/MovieR";
 import MovieItem250 from "../../component/movieItem/MovieItem250";
+import {operateComingMovies} from "../../redux/movies";
+import MovieSimpleItem from "../../component/movieItem/MovieSimpleItem";
 
 
 //资源
@@ -32,8 +34,12 @@ const ICON_NEW_MOVIE = require('../../constant/image/movie/new_movie.png');
 const ICON_MENU = require('../../constant/image/movie/menu.png');
 const Icons = [ICON_250, ICON_WILL, ICON_PLAYING, ICON_NEW_MOVIE];
 
+//资源
+const ITEM_HEIGHT = 166;
+const ITEM_IMAGE_HEIGHT = 150;
+const ITEM_IMAGE_WIDTH = 106;
 
-export default class Movie extends PureComponent {
+class Movie extends PureComponent {
 
   static navigationOptions = {
     drawerLabel: '电影',
@@ -45,7 +51,16 @@ export default class Movie extends PureComponent {
   }
 
   async componentDidMount(): void {
+    await this.freshData();
+  }
 
+  freshData = async () => {
+    try {
+      await this.props.operateComingMovies(0);
+      this.forceUpdate();
+    } catch (e) {
+      console.warn('catch error freshData', e);
+    }
   }
 
 
@@ -58,6 +73,7 @@ export default class Movie extends PureComponent {
       case 1:
         break;
       case 2:
+        this.props.navigation.navigate('ComingMovies');
         break;
       case 3:
         this.props.navigation.navigate('NewMovie');
@@ -68,14 +84,28 @@ export default class Movie extends PureComponent {
   }
 
   renderSwiperItem = () => {
-    return (
-      {/*<MovieItem250/>*/}
-    );
+    //Swiper 不允许空的child
+    //Swiper组件本身需要宽高
+    if (this.props.comingMovies?.length > 0) {
+      let movies = this.props.comingMovies;
+      //让首页只显示六条轮播
+      if (movies.length >= 6) {
+        movies = movies.slice(0, 6)
+      }
+      return movies.map((item, index) => (
+        <MovieSimpleItem key={index} item={item} isShowGrade={false}/>))
+    } else {
+      return (
+        <View style={{width: WIDTH, height: ITEM_HEIGHT}}>
+          <Text>no data</Text>
+        </View>
+      )
+    }
   }
 
   render() {
     return (
-      <View style={{flex: 1, backgroundColor: '#eee'}}>
+      <View style={{flex: 1, backgroundColor: '#ddd'}}>
         <Toolbar
           title={'电影'}
           hideLeftButtons={true}
@@ -92,13 +122,12 @@ export default class Movie extends PureComponent {
 
           <Swiper
             autoplay={true}
-            style={{width: WIDTH, height: 100}}>
-            <View style={{width: WIDTH, height: 100}}>
-              <Text>1</Text>
-            </View>
-            <View style={{width: WIDTH, height: 100}}>
-              <Text>2</Text>
-            </View>
+            autoplayTimeout={5}
+            dotColor={'#eee'}
+            activeDotColor={COLOR.defaultColor}
+            paginationStyle={{justifyContent: 'flex-end', marginBottom: 115, marginRight: 15}}
+            style={{width: WIDTH, height: ITEM_HEIGHT+5}}>
+            {this.renderSwiperItem()}
           </Swiper>
 
           <View
@@ -114,7 +143,10 @@ export default class Movie extends PureComponent {
                     onPress={() => {
                       this.onFunctionsPress(index)
                     }}>
-                    <Image source={Icons[index]} style={styles.function_image}/>
+                    <View
+                      style={{backgroundColor: '#4b7bab', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 7}}>
+                      <Image source={Icons[index]} style={styles.function_image}/>
+                    </View>
                     <Text style={{fontSize: 12, color: '#FFF', marginLeft: 5}}>{item}</Text>
                   </TouchableOpacity>
                 </View>
@@ -122,14 +154,13 @@ export default class Movie extends PureComponent {
             })}
           </View>
 
-
           <LinearView
             start={{x: 0, y: 0}}
             end={{x: 1, y: 1}}
-            colors={['#A00', '#0A0', '#00A']}
+            colors={['#8eaa9d', '#fdfff2', '#f2eec7']}
+            style={{marginTop:10,height:40,flexDirection:'row',alignItems:'center'}}
           >
-            <Text>你在哪</Text>
-            <Text>OK</Text>
+            <Text>口碑榜</Text>
           </LinearView>
 
 
@@ -139,6 +170,12 @@ export default class Movie extends PureComponent {
   }
 }
 
+export default connect((state) => ({
+  comingMovies: state.movies.comingMovies,
+}), {
+  operateComingMovies,
+})(Movie);
+
 const styles = StyleSheet.create({
   functionContainer: {
     flexDirection: 'row',
@@ -146,11 +183,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     height: 60,
     borderRadius: 8,
-    backgroundColor: '#fff',
-    paddingHorizontal: 6
+    backgroundColor: '#eee',
+    paddingHorizontal: 6,
+    paddingVertical:8,
+    marginTop: 10
   },
   single_function: {
-    backgroundColor: '#4b7bab',
+
     width: (WIDTH - 48) / 4,
     marginHorizontal: 6,
     // height: 36,

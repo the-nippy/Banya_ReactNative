@@ -12,7 +12,7 @@ const INITIAL_STATE = {
   top250: [[], [], [], [], []],
   newMovies: {isAllowLocation: false, city: '', data: []},
   //即将上映，每二十条一页，做成请求分页长列表
-  comingMovies: [[]],
+  comingMovies: [],
 
 };
 
@@ -48,7 +48,7 @@ export default function (state = INITIAL_STATE, action) {
       const newComingMovies = dealComingMovies(currentComingMovies, action);
       return {
         ...state,
-        newMovies: newComingMovies
+        comingMovies: newComingMovies
       }
     default:
       return state;
@@ -109,21 +109,30 @@ export function insertNewMovieData(city) {
 }
 
 //代理处理即将上映
-function dealComingMovies(){
-
+function dealComingMovies(currentComingMovies = [], action) {
+  if (currentComingMovies.length === action.start) {
+    return currentComingMovies.concat(action.data);
+  } else if (action.start === 0) {
+    return action.data;
+  } else {
+    return currentComingMovies;
+  }
 }
 
 export function operateComingMovies(startIndex) {
   //每次请求20条
   const count = 20;
-  return async function f(dispatch) {
+  return async function (dispatch) {
     try {
       let comingMovies = await getComingMovies(startIndex, count);
-      dispatch({
-        type: OPERATE_COMING_MOVIES,
-        start: startIndex,
-        data: comingMovies
-      })
+      console.info('comingMovies', comingMovies)
+      if (comingMovies.subjects) {
+        dispatch({
+          type: OPERATE_COMING_MOVIES,
+          start: startIndex,
+          data: comingMovies.subjects
+        })
+      }
     } catch (e) {
       throw new BanError(100)
     }
