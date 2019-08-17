@@ -52,8 +52,30 @@ const getComingMovies = (start, count) => {
 
 //口碑榜
 
+const getWeeklyMovies = () => {
+  return new Promise((resolve, reject) => {
+    BaseGetRequest(URLS.MOVIE.Weekly).then(
+      res => {
+        resolve(res);
+      }, err => {
+        reject(err);
+      }
+    )
+  })
+}
 
 //北美票房榜
+const getUSBoxMovies = () => {
+  return new Promise(((resolve, reject) => {
+    BaseGetRequest(URLS.MOVIE.US_Box).then(
+      res => {
+        resolve(res);
+      }, err => {
+        reject(err);
+      }
+    )
+  }))
+}
 
 
 export {
@@ -61,4 +83,6 @@ export {
   getNewMovies,
   getComingMovies,
   getInTheaterMovies,
+  getWeeklyMovies,
+  getUSBoxMovies,
 }

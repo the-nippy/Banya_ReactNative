@@ -114,14 +114,18 @@ class Top250 extends PureComponent {
 
 
   renderTop250Item = ({item, index}) => {
+    if (item) {
+      return (
+        <MovieItem250
+          isShowNo={true}
+          No={(this.getTopIndex() + index)}
+          item={item}
+        />
+      );
+    } else {
+      return null;
+    }
 
-    return (
-      <MovieItem250
-        isShowNo={true}
-        No={(this.getTopIndex() + index)}
-        item={item}
-      />
-    );
   }
 
   _keyExtractor = (item, index) => index.toString();

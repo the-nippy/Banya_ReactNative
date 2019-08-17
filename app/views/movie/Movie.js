@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  FlatList,
 } from 'react-native';
 
 //组件
@@ -19,8 +20,9 @@ import {connect} from 'react-redux';
 
 //数据
 import {COLOR, WIDTH} from "../../utils/contants";
-import {getNewMovies} from "../../utils/request/MovieR";
+import {getNewMovies, getUSBoxMovies} from "../../utils/request/MovieR";
 import MovieItem250 from "../../component/movieItem/MovieItem250";
+import {getWeeklyMovies} from "../../utils/request/MovieR";
 import {operateComingMovies} from "../../redux/movies";
 import MovieSimpleItem from "../../component/movieItem/MovieSimpleItem";
 
@@ -39,6 +41,8 @@ const ITEM_HEIGHT = 166;
 const ITEM_IMAGE_HEIGHT = 150;
 const ITEM_IMAGE_WIDTH = 106;
 
+const ITEM_WEEK_WIDTH = (WIDTH - 40) / 3;
+
 class Movie extends PureComponent {
 
   static navigationOptions = {
@@ -48,10 +52,15 @@ class Movie extends PureComponent {
 
   constructor(props) {
     super(props);
+    this.state = {
+      weeklyMovies: [],
+      usBoxMovies: [],
+    }
   }
 
   async componentDidMount(): void {
     await this.freshData();
+    await this.RefreshWeeklyMovies();
   }
 
   freshData = async () => {
@@ -61,6 +70,13 @@ class Movie extends PureComponent {
     } catch (e) {
       console.warn('catch error freshData', e);
     }
+  }
+
+  RefreshWeeklyMovies = async () => {
+    let weeklyMovies = await getWeeklyMovies();
+    let usBoxMovies = await getUSBoxMovies();
+    console.info('usBoxMovies', usBoxMovies)
+    this.setState({weeklyMovies: weeklyMovies.subjects, usBoxMovies: usBoxMovies.subjects})
   }
 
 
@@ -103,6 +119,23 @@ class Movie extends PureComponent {
     }
   }
 
+  renderListMovie = ({item, index}) => {
+    let Item = item.subject;
+    return (
+      <View style={{
+        ITEM_WEEK_WIDTH,
+        height: ITEM_WEEK_WIDTH + 60,
+        marginLeft: 10,
+        backgroundColor: '#FFF',
+        justifyContent: 'center',
+        marginTop: 8,
+      }}>
+        <Image source={{uri: Item?.images?.small}} style={{width: ITEM_WEEK_WIDTH, height: ITEM_WEEK_WIDTH + 20}}/>
+        <Text style={{width:ITEM_WEEK_WIDTH}}>{Item.title}</Text>
+      </View>
+    );
+  }
+
   render() {
     return (
       <View style={{flex: 1, backgroundColor: '#ddd'}}>
@@ -126,7 +159,7 @@ class Movie extends PureComponent {
             dotColor={'#eee'}
             activeDotColor={COLOR.defaultColor}
             paginationStyle={{justifyContent: 'flex-end', marginBottom: 115, marginRight: 15}}
-            style={{width: WIDTH, height: ITEM_HEIGHT+5}}>
+            style={{width: WIDTH, height: ITEM_HEIGHT + 5}}>
             {this.renderSwiperItem()}
           </Swiper>
 
@@ -158,10 +191,36 @@ class Movie extends PureComponent {
             start={{x: 0, y: 0}}
             end={{x: 1, y: 1}}
             colors={['#8eaa9d', '#fdfff2', '#f2eec7']}
-            style={{marginTop:10,height:40,flexDirection:'row',alignItems:'center'}}
+            style={{marginTop: 10, height: 40, flexDirection: 'row', alignItems: 'center'}}
           >
             <Text>口碑榜</Text>
           </LinearView>
+
+          <FlatList
+            extraData={this.state}
+            renderItem={this.renderListMovie}
+            data={this.state.weeklyMovies}
+            numColumns={3}
+            keyExtractor={(item, index) => index.toString()}
+          />
+
+
+          <LinearView
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 1}}
+            colors={['#8eaa9d', '#fdfff2', '#f2eec7']}
+            style={{marginTop: 10, height: 40, flexDirection: 'row', alignItems: 'center'}}
+          >
+            <Text>豆瓣电影北美票房榜</Text>
+          </LinearView>
+
+          <FlatList
+            extraData={this.state}
+            renderItem={this.renderListMovie}
+            data={this.state.usBoxMovies}
+            numColumns={3}
+            keyExtractor={(item, index) => index.toString()}
+          />
 
 
         </ScrollView>
@@ -185,7 +244,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: '#eee',
     paddingHorizontal: 6,
-    paddingVertical:8,
+    paddingVertical: 8,
     marginTop: 10
   },
   single_function: {

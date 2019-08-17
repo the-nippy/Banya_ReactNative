@@ -95,7 +95,7 @@ export default class MovieItem250 extends PureComponent {
             ...StyleSheet.absoluteFill,
             alignItems: 'flex-end',
           }}>
-            <Text style={styles.textNumber}>{'No.' + No ? No : ''}</Text>
+            <Text style={styles.textNumber}>{'No.' + (No ? No : '')}</Text>
           </View> : null
         }
 
