@@ -1,30 +1,42 @@
 /**
  created by Lex. 2019/8/12
  **/
-import {getComingMovies, getNewMovies, getTop250} from "../utils/request/MovieR";
+import {getComingMovies, getInTheaterMovies, getNewMovies, getTop250} from "../utils/request/MovieR";
 import {BanError} from "../utils/BanError";
 
 //储存电影数据
 
 //每次请求 25 条数据
 const count = 25;
+
+//标志位置未获取状态
+const NOT_ALLOW_LOCATION = 'NOT_ALLOW_LOCATION';
+
 const INITIAL_STATE = {
   top250: [[], [], [], [], []],
   newMovies: {isAllowLocation: false, city: '', data: []},
   //即将上映，每二十条一页，做成请求分页长列表
   comingMovies: [],
-
+  inTheaterMovies: {
+    //city没有被授权则为字符串 NOT_ALLOW_LOCATION,请求时默认北京
+    city: NOT_ALLOW_LOCATION,
+    movies: [],
+  }
 };
 
 //action type
 
 //追加 top250 数据
 const APPEND_TOP250 = 'APPEND_TOP250';
+
 //插入 新片榜 数据
 const INSERT_NEW_MOVIES = 'INSERT_NEW_MOVIES';
 
 //操作即将上映数据   state没有数据时初始化，state有数据返回新数据时替换或追加，startIndex判断
 const OPERATE_COMING_MOVIES = 'OPERATE_COMING_MOVIES';
+
+//正在上映数据，
+const CHANGE_IN_THEATER = 'CHANGE_IN_THEATER';
 
 export default function (state = INITIAL_STATE, action) {
 
@@ -49,6 +61,13 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         comingMovies: newComingMovies
+      }
+    case CHANGE_IN_THEATER:
+      //不同城市数据不同，覆盖式
+      let newInTheaterMovies = action.inTheaterMovies;
+      return {
+        ...state,
+        inTheaterMovies: newInTheaterMovies
       }
     default:
       return state;
@@ -138,3 +157,29 @@ export function operateComingMovies(startIndex) {
     }
   }
 }
+
+
+export function ReFreshInTheaterMovies(location_city) {
+  return async function (dispatch) {
+    let reqCity, city = location_city;
+    if (location_city === NOT_ALLOW_LOCATION) {
+      city = NOT_ALLOW_LOCATION;
+      reqCity = '北京';
+    }
+    try {
+      let inTheaterMovies = await getInTheaterMovies(reqCity);
+      dispatch({
+        type: CHANGE_IN_THEATER,
+        inTheaterMovies: {
+          city: city,
+          movies: inTheaterMovies.subjects
+        }
+      })
+    } catch (e) {
+      throw new BanError(100)
+    }
+  }
+}
+
+
+export {NOT_ALLOW_LOCATION};

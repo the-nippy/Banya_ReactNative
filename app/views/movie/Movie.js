@@ -87,6 +87,7 @@ class Movie extends PureComponent {
         this.props.navigation.navigate('Top250')
         break;
       case 1:
+        this.props.navigation.navigate('InTheater');
         break;
       case 2:
         this.props.navigation.navigate('ComingMovies');
@@ -122,18 +123,23 @@ class Movie extends PureComponent {
   renderListMovie = ({item, index}) => {
     let Item = item.subject;
     return (
-      <View style={{
-        ITEM_WEEK_WIDTH,
-        height: ITEM_WEEK_WIDTH + 60,
-        marginLeft: 10,
-        backgroundColor: '#FFF',
-        justifyContent: 'center',
-        marginTop: 8,
-      }}>
-        <Image source={{uri: Item?.images?.small}} style={{width: ITEM_WEEK_WIDTH, height: ITEM_WEEK_WIDTH + 20}}/>
-        <Text style={{width:ITEM_WEEK_WIDTH}}>{Item.title}</Text>
+      <View style={styles.listItemContainer}>
+        <Image source={{uri: Item?.images?.small}} style={styles.listItemImage}/>
+        <View
+          style={{width: ITEM_WEEK_WIDTH - 6, justifyContent: 'center', alignItems: 'center', marginHorizontal: 3,}}>
+          <Text numberOfLines={1} style={{fontSize: 15, color: '#1b181d'}}>{Item.title}</Text>
+        </View>
+        <View
+          // numberOfLines={1}
+          style={styles.listItemBottomTexts}>
+          <Text>{Item.genres.slice(0, 2).map((item, index) => (
+            <Text key={index} style={{fontSize: 13}}>{(index > 0 ? '-' : '') + item}</Text>))}
+          </Text>
+          <Text style={{marginLeft: 10, color: '#2c2c2c', fontSize: 13}}>{Item.rating?.average + '分'}</Text>
+        </View>
       </View>
-    );
+    )
+      ;
   }
 
   render() {
@@ -158,7 +164,7 @@ class Movie extends PureComponent {
             autoplayTimeout={5}
             dotColor={'#eee'}
             activeDotColor={COLOR.defaultColor}
-            paginationStyle={{justifyContent: 'flex-end', marginBottom: 115, marginRight: 15}}
+            paginationStyle={{justifyContent: 'flex-end', marginBottom: 120, marginRight: 15}}
             style={{width: WIDTH, height: ITEM_HEIGHT + 5}}>
             {this.renderSwiperItem()}
           </Swiper>
@@ -168,21 +174,21 @@ class Movie extends PureComponent {
           >
             {FUNCTIONS.map((item, index) => {
               return (
-                <View
+                <TouchableOpacity
                   key={index}
-                  style={styles.single_function}>
-                  <TouchableOpacity
-                    style={{justifyContent: 'center', alignItems: 'center'}}
-                    onPress={() => {
-                      this.onFunctionsPress(index)
-                    }}>
-                    <View
-                      style={{backgroundColor: '#4b7bab', paddingHorizontal: 5, paddingVertical: 5, borderRadius: 7}}>
-                      <Image source={Icons[index]} style={styles.function_image}/>
-                    </View>
-                    <Text style={{fontSize: 12, color: '#FFF', marginLeft: 5}}>{item}</Text>
-                  </TouchableOpacity>
-                </View>
+                  style={styles.single_function}
+                  onPress={() => {
+                    this.onFunctionsPress(index)
+                  }}>
+                  <LinearView
+                    start={{x: 0, y: 0}}
+                    end={{x: 1, y: 1}}
+                    colors={['#4b7bab', '#263656', '#4b7bab']}
+                    style={{paddingHorizontal: 5, paddingVertical: 5, borderRadius: 7}}>
+                    <Image source={Icons[index]} style={styles.function_image}/>
+                  </LinearView>
+                  <Text style={{fontSize: 12, color: '#FFF', marginTop:5}}>{item}</Text>
+                </TouchableOpacity>
               );
             })}
           </View>
@@ -240,25 +246,48 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-around',
-    height: 60,
+    // height: 60,
     borderRadius: 8,
-    backgroundColor: '#eee',
+    backgroundColor: '#ded',
     paddingHorizontal: 6,
     paddingVertical: 8,
     marginTop: 10
   },
   single_function: {
 
-    width: (WIDTH - 48) / 4,
-    marginHorizontal: 6,
+    // width: (WIDTH - 48) / 4,
+    // marginHorizontal: 6,
+    // marginVertical:10,
     // height: 36,
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 16,
-    paddingHorizontal: 8,
+    // borderRadius: 16,
+    // paddingHorizontal: 8,
   },
   function_image: {
     width: 30, height: 30, paddingHorizontal: 5,
     paddingVertical: 5
-  }
+  },
+  listItemContainer: {
+    width: ITEM_WEEK_WIDTH,
+    height: ITEM_WEEK_WIDTH + 70,
+    marginLeft: 10,
+    backgroundColor: '#FFF',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+    borderRadius: 5
+  },
+  listItemImage: {
+    width: ITEM_WEEK_WIDTH,
+    height: ITEM_WEEK_WIDTH + 30,
+    borderTopLeftRadius: 5,
+    borderTopRightRadius: 5
+  },
+  listItemBottomTexts: {
+    width: ITEM_WEEK_WIDTH - 6,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 })

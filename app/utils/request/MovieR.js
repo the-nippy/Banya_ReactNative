@@ -18,22 +18,26 @@ const getTop250 = async (start, count) => {
 }
 
 //新片榜
-const getNewMovies = async (city) => {
+const getNewMovies = async () => {
   return new Promise((resolve, reject) => {
-    BaseGetRequest(URLS.MOVIE.New_Movie, {city: city}).then(
+    BaseGetRequest(URLS.MOVIE.New_Movie,).then(
       res => {
         resolve(res);
       }, err => {
         reject(err);
-      }
-    )
+      })
   })
 }
 
 //正在上映
-const getInTheaterMovies = () => {
+const getInTheaterMovies = async (city) => {
   return new Promise((resolve, reject) => {
-    // BaseGetRequest(URLS.MOVIE.In_Theater)
+    BaseGetRequest(URLS.MOVIE.In_Theater, {city: city}).then(
+      res => {
+        resolve(res);
+      }, err => {
+        reject(err);
+      })
   })
 }
 
