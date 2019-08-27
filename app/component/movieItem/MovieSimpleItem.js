@@ -6,7 +6,8 @@ import React, {PureComponent} from 'react';
 import {
   View,
   Text,
-  Image, StyleSheet
+  Image, StyleSheet,
+  TouchableOpacity
 } from 'react-native';
 import PropTypes from "prop-types";
 
@@ -26,6 +27,7 @@ export default class MovieSimpleItem extends PureComponent {
     item: PropTypes.object.isRequired,
     isShowGrade: PropTypes.bool.isRequired,
     // Grade: PropTypes.number,
+    navigation:PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -40,7 +42,9 @@ export default class MovieSimpleItem extends PureComponent {
     const peoples = item.directors?.concat(item?.casts);
 
     return (
-      <View style={styles.movie_item}>
+      <TouchableOpacity
+        onPress={()=>{this.props.navigation.navigate('MovieDetail')}}
+        style={styles.movie_item}>
         <Image source={{uri: item.images?.small}} style={{width: ITEM_IMAGE_WIDTH, height: ITEM_IMAGE_HEIGHT}}
                resizeMode='contain'/>
 
@@ -101,7 +105,7 @@ export default class MovieSimpleItem extends PureComponent {
           </Text>
         </View>
 
-      </View>
+      </TouchableOpacity>
     );
   }
 

@@ -110,7 +110,12 @@ class Movie extends PureComponent {
         movies = movies.slice(0, 6)
       }
       return movies.map((item, index) => (
-        <MovieSimpleItem key={index} item={item} isShowGrade={false}/>))
+        <MovieSimpleItem
+          key={index}
+          item={item}
+          isShowGrade={false}
+          navigation={this.props.navigation}
+        />))
     } else {
       return (
         <View style={{width: WIDTH, height: ITEM_HEIGHT}}>
@@ -123,7 +128,11 @@ class Movie extends PureComponent {
   renderListMovie = ({item, index}) => {
     let Item = item.subject;
     return (
-      <View style={styles.listItemContainer}>
+      <TouchableOpacity
+        onPress={() => {
+          this.props.navigation.navigate('MovieDetail')
+        }}
+        style={styles.listItemContainer}>
         <Image source={{uri: Item?.images?.small}} style={styles.listItemImage}/>
         <View
           style={{width: ITEM_WEEK_WIDTH - 6, justifyContent: 'center', alignItems: 'center', marginHorizontal: 3,}}>
@@ -137,7 +146,7 @@ class Movie extends PureComponent {
           </Text>
           <Text style={{marginLeft: 10, color: '#2c2c2c', fontSize: 13}}>{Item.rating?.average + '分'}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
     )
       ;
   }
@@ -187,7 +196,7 @@ class Movie extends PureComponent {
                     style={{paddingHorizontal: 5, paddingVertical: 5, borderRadius: 7}}>
                     <Image source={Icons[index]} style={styles.function_image}/>
                   </LinearView>
-                  <Text style={{fontSize: 12, color: '#FFF', marginTop:5}}>{item}</Text>
+                  <Text style={{fontSize: 12, color: '#FFF', marginTop: 5}}>{item}</Text>
                 </TouchableOpacity>
               );
             })}
