@@ -81,6 +81,29 @@ const getUSBoxMovies = () => {
   }))
 }
 
+//
+const getMovieDetailData = (movie_id) => {
+  if (!movie_id) {
+    console.warn('Movie_id为空')
+    return;
+  }
+  return new Promise((resolve, reject) => {
+    fetch(URLS.MOVIE.Detail + movie_id).then(
+      res => {
+        res.json().then(
+          result => {
+            resolve(result);
+          }, err => {
+            reject(err);
+          }
+        )
+      }, err => {
+        reject(err);
+      }
+    )
+  })
+}
+
 
 export {
   getTop250,
@@ -89,4 +112,5 @@ export {
   getInTheaterMovies,
   getWeeklyMovies,
   getUSBoxMovies,
+  getMovieDetailData,
 }

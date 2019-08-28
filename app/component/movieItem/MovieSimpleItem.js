@@ -27,7 +27,7 @@ export default class MovieSimpleItem extends PureComponent {
     item: PropTypes.object.isRequired,
     isShowGrade: PropTypes.bool.isRequired,
     // Grade: PropTypes.number,
-    navigation:PropTypes.object.isRequired,
+    navigation: PropTypes.object.isRequired,
   }
 
   constructor(props) {
@@ -38,12 +38,18 @@ export default class MovieSimpleItem extends PureComponent {
 
     const {item} = this.props;
 
+    if (item === {} || item === undefined) {
+      return null;
+    }
+
     const showOrgTitle = item.title == item.original_title;
     const peoples = item.directors?.concat(item?.casts);
 
     return (
       <TouchableOpacity
-        onPress={()=>{this.props.navigation.navigate('MovieDetail')}}
+        onPress={() => {
+          this.props.navigation.navigate('MovieDetail',{item:item})
+        }}
         style={styles.movie_item}>
         <Image source={{uri: item.images?.small}} style={{width: ITEM_IMAGE_WIDTH, height: ITEM_IMAGE_HEIGHT}}
                resizeMode='contain'/>
