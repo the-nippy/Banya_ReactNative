@@ -12,6 +12,7 @@ import {
   Image,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import Toolbar from "../../component/header/Toolbar";
 import {COLOR} from "../../utils/contants";
@@ -20,10 +21,13 @@ import {COLOR} from "../../utils/contants";
 // import {} from 'react-'
 import MovieSimpleItem from "../../component/movieItem/MovieSimpleItem";
 import {Rating} from "react-native-ratings";
+import StarRating from "../../component/starRating/StarRating";
 
 //数据
 import {TOOLBAR_HEIGHT} from "../../component/header/Toolbar.style";
 import {getMovieDetailData} from "../../utils/request/MovieR";
+import {transformRateToValue} from "./util";
+import SimpleProgress from "../../component/progress/SimpleProgress";
 
 
 //资源
@@ -44,24 +48,30 @@ export default class MovieDetail extends PureComponent {
 
   render() {
     const {item} = this.props.navigation.state.params;
+
+    //提取StarRating和Progress组合的组件
+    let StarRatingAndProgress = function (props) {
+      const {numberOfAllStars, progressPercent} = props;
+      return (
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <StarRating starImageSize={10} numberOfAllStars={numberOfAllStars} containerStyle={styles.star_progress}
+                      useGreyStar={true}/>
+          <SimpleProgress progressPercent={progressPercent} containerStyle={{marginLeft: 5}}/>
+        </View>
+      );
+    }
+
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1, backgroundColor: '#eef'}}>
         <View
           // alpha={0.5}
-          style={{
-            ...StyleSheet.absoluteFill,
-            // opacity:0.3,
-            zIndex: 100,
-            // alpha: 0.8,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingHorizontal: 15,
-            height: TOOLBAR_HEIGHT,
-            backgroundColor: '#4b7bab66'
-          }}>
+          style={styles.head_container}>
 
-          <Image source={ICON_BACK} style={{width: 18, height: 18}} resizeMode='contain'/>
+          <TouchableOpacity onPress={() => {
+            this.props.navigation.goBack();
+          }}>
+            <Image source={ICON_BACK} style={{width: 18, height: 18}} resizeMode='contain'/>
+          </TouchableOpacity>
           <Text>
             速度与激情
           </Text>
@@ -79,21 +89,43 @@ export default class MovieDetail extends PureComponent {
             isShowGrade={false}
           />
 
-          <View style={{paddingHorizontal: 15, backgroundColor: '#4657aa'}}>
+          <View style={{
+            paddingHorizontal: 15,
+            marginHorizontal: 10,
+            backgroundColor: '#4f71cd',
+            paddingTop: 5,
+            borderRadius: 8
+          }}>
             <View>
-              <Text>豆瓣评分</Text>
+              <Text style={{fontSize: 14, color: '#FFF'}}>豆瓣评分</Text>
               <Image/>
             </View>
-            <View>
+
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 5}}>
               <View>
-                <Text>6.4</Text>
-                <Rating></Rating>
+                <Text style={{
+                  fontSize: 22,
+                  color: '#FFF',
+                  fontWeight: 'bold'
+                  // color: '#ffd34b'
+                }}>6.4</Text>
+                <StarRating
+                  numberOfAllStars={5}
+                  numberOfFill={2.5}
+                  starImageSize={16}
+                  containerStyle={{width: 80, marginTop: 5}}
+                />
               </View>
               <View>
-
+                <StarRatingAndProgress numberOfAllStars={5} progressPercent={'20%'}/>
+                <StarRatingAndProgress numberOfAllStars={4} progressPercent={'20%'}/>
+                <StarRatingAndProgress numberOfAllStars={3} progressPercent={'20%'}/>
+                <StarRatingAndProgress numberOfAllStars={2} progressPercent={'20%'}/>
+                <StarRatingAndProgress numberOfAllStars={1} progressPercent={'20%'}/>
               </View>
             </View>
-            <View>
+
+            <View style={{marginVertical: 10}}>
               <Text>8.2万人看过，3.7万人想看</Text>
             </View>
           </View>
@@ -112,7 +144,8 @@ export default class MovieDetail extends PureComponent {
               <Text>演职员</Text>
               <Text>全部</Text>
             </View>
-            {[].map()}
+            {[].map(() => {
+            })}
           </View>
 
           <View>
@@ -121,10 +154,11 @@ export default class MovieDetail extends PureComponent {
               <Text>全部</Text>
             </View>
 
-            {[].map}
+            {[].map(() => {
+            })}
           </View>
 
-          
+
           {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
               <View key={index} style={{height: 90, backgroundColor: '#ccd', marginTop: 30}}>
                 <Text>{item}</Text>
@@ -137,3 +171,22 @@ export default class MovieDetail extends PureComponent {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  star_progress: {
+    width: 40,
+    justifyContent: 'flex-end'
+  },
+  head_container: {
+    ...StyleSheet.absoluteFill,
+    // opacity:0.3,
+    zIndex: 100,
+    // alpha: 0.8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 15,
+    height: TOOLBAR_HEIGHT,
+    backgroundColor: '#4b7bab66'
+  }
+})
