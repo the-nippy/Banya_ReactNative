@@ -81,7 +81,7 @@ const getUSBoxMovies = () => {
   }))
 }
 
-//
+//获取指定id电影详情
 const getMovieDetailData = (movie_id) => {
   if (!movie_id) {
     console.warn('Movie_id为空')

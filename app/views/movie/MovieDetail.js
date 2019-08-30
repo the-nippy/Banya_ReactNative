@@ -38,12 +38,22 @@ export default class MovieDetail extends PureComponent {
 
   constructor(props) {
     super(props);
+    this.state = {
+      detail: {},
+    }
   }
 
   async componentWillMount() {
     const {item} = this.props.navigation.state.params;
-    let movieDetailData = await getMovieDetailData(item.id);
-    console.info('详情页数据', movieDetailData);
+    try {
+      let movieDetailData = await getMovieDetailData(item.id);
+      console.info('详情页数据', movieDetailData);
+      this.setState({detail: movieDetailData})
+    } catch (e) {
+      this.setState({loading: true})
+      console.warn('Detail error');
+    }
+
   }
 
   render() {
@@ -60,6 +70,8 @@ export default class MovieDetail extends PureComponent {
         </View>
       );
     }
+
+    const {detail} = this.state;
 
     return (
       <View style={{flex: 1, backgroundColor: '#eef'}}>
@@ -92,7 +104,7 @@ export default class MovieDetail extends PureComponent {
           <View style={{
             paddingHorizontal: 15,
             marginHorizontal: 10,
-            backgroundColor: '#4f71cd',
+            backgroundColor: '#5893cd',
             paddingTop: 5,
             borderRadius: 8
           }}>
@@ -125,18 +137,40 @@ export default class MovieDetail extends PureComponent {
               </View>
             </View>
 
-            <View style={{marginVertical: 10}}>
-              <Text>8.2万人看过，3.7万人想看</Text>
+            <View style={{height: StyleSheet.hairlineWidth, backgroundColor: '#aaa', marginTop: 10}}/>
+
+            <View style={{marginVertical: 5, alignItems: 'flex-end'}}>
+              <Text style={{fontSize: 12, color: '#FFF'}}>8.2万人看过，3.7万人想看</Text>
             </View>
           </View>
 
-          <View>
-            <Text>所属频道</Text>
+          <View style={{marginHorizontal: 10, marginTop: 10}}>
+            <ScrollView
+              contentContainerStyle={{flexDirection: 'row', alignItems: 'center',}}
+              showsHorizontalScrollIndicator={false}
+              horizontal={true}
+            >
+              <Text>所属频道</Text>
+              {
+                detail.tags?.length > 0 ? detail.tags?.map((item, index) => (
+                  <View
+                    key={index}
+                    style={styles.channel_tag}><Text style={styles.channel_tag_text}>{item}</Text></View>
+                )) : item.genres?.map((item, index) => (
+                  <View key={index} style={styles.channel_tag}>
+                    <Text style={styles.channel_tag_text}>{item}</Text>
+                  </View>
+                ))
+              }
+            </ScrollView>
           </View>
 
-          <View>
-            <Text>简介</Text>
-            <Text></Text>
+          <View style={{marginHorizontal: 10, marginTop: 10}}>
+            <Text style={{fontSize: 19, color: '#FFF', fontWeight: 'bold'}}>简介</Text>
+            <Text style={{color: '#FFF', paddingVertical: 2, lineHeight: 18}}
+                  numberOfLines={5}
+                  ellipsizeMode={'tail'}
+            >{(detail.summary ? detail.summary : '暂无简介内容') + '\n\n'}</Text>
           </View>
 
           <View>
@@ -188,5 +222,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     height: TOOLBAR_HEIGHT,
     backgroundColor: '#4b7bab66'
-  }
+  },
+  channel_tag: {
+    paddingHorizontal: 6,
+    paddingVertical: 3,
+    marginHorizontal: 3,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#777777'
+  },
+  channel_tag_text: {color: '#FFF', fontSize: 13},
 })
