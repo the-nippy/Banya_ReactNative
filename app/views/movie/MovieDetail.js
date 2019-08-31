@@ -33,6 +33,7 @@ import SimpleProgress from "../../component/progress/SimpleProgress";
 //资源
 const ICON_BACK = require('../../constant/image/back.png');
 const ICON_MENU = require('../../constant/image/menu_point.png');
+const ICON_NO_IMAGE = require('../../constant/image/noPng.png');
 
 export default class MovieDetail extends PureComponent {
 
@@ -72,6 +73,9 @@ export default class MovieDetail extends PureComponent {
     }
 
     const {detail} = this.state;
+
+    let directorsAndCasts = detail?.directors || [];
+    directorsAndCasts = directorsAndCasts.concat(detail?.casts || []);
 
     return (
       <View style={{flex: 1, backgroundColor: '#eef'}}>
@@ -166,25 +170,35 @@ export default class MovieDetail extends PureComponent {
           </View>
 
           <View style={{marginHorizontal: 10, marginTop: 10}}>
-            <Text style={{fontSize: 19, color: '#FFF', fontWeight: 'bold'}}>简介</Text>
+            <Text style={styles.bold_text}>简介</Text>
             <Text style={{color: '#FFF', paddingVertical: 2, lineHeight: 18}}
                   numberOfLines={5}
                   ellipsizeMode={'tail'}
             >{(detail.summary ? detail.summary : '暂无简介内容') + '\n\n'}</Text>
           </View>
 
-          <View>
-            <View>
-              <Text>演职员</Text>
-              <Text>全部</Text>
-            </View>
-            {[].map(() => {
-            })}
+          <View style={{marginHorizontal: 10, marginTop: 10}}>
+            <Text style={styles.bold_text}>演职员</Text>
+            <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+              {directorsAndCasts.map((item, index) => {
+                const directorAndCastImage = item.avatars?.small ? {uri: item.avatars?.small} : ICON_NO_IMAGE;
+                return (
+                  <View key={index}>
+                    <Image source={directorAndCastImage} resizeMode={'contain'}
+                           style={{width: 90, height: 140, marginRight: 6, borderRadius: 5}}/>
+                    <Text>{item.name}</Text>
+                  </View>
+                )
+              })}
+            </ScrollView>
           </View>
 
-          <View>
+          <View style={{marginHorizontal: 10, marginTop: 10}}>
             <View>
-              <Text>剧照/短评</Text>
+              <Text style={styles.bold_text}>剧照</Text>
               <Text>全部</Text>
             </View>
 
@@ -233,4 +247,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#777777'
   },
   channel_tag_text: {color: '#FFF', fontSize: 13},
+  bold_text: {fontSize: 19, color: '#FFF', fontWeight: 'bold', marginBottom: 10},
 })
