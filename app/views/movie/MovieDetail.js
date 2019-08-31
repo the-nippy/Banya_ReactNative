@@ -186,22 +186,18 @@ export default class MovieDetail extends PureComponent {
               {directorsAndCasts.map((item, index) => {
                 const directorAndCastImage = item.avatars?.small ? {uri: item.avatars?.small} : ICON_NO_IMAGE;
                 return (
-                  <View key={index}>
+                  <View key={index} style={{width: 90, height: 180, marginRight: 6, justifyContent: 'flex-start'}}>
                     <Image source={directorAndCastImage} resizeMode={'contain'}
-                           style={{width: 90, height: 140, marginRight: 6, borderRadius: 5}}/>
-                    <Text>{item.name}</Text>
+                           style={{width: 90, height: 140, borderRadius: 5}}/>
+                    <Text style={{fontSize: 13,color:'#FFF'}}>{item.name}</Text>
                   </View>
                 )
               })}
             </ScrollView>
           </View>
 
-          <View style={{marginHorizontal: 10, marginTop: 10}}>
-            <View>
-              <Text style={styles.bold_text}>剧照</Text>
-              <Text>全部</Text>
-            </View>
-
+          <View style={{marginHorizontal: 10}}>
+            <Text style={styles.bold_text}>剧照</Text>
             {[].map(() => {
             })}
           </View>
