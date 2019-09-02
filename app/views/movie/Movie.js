@@ -130,7 +130,7 @@ class Movie extends PureComponent {
     return (
       <TouchableOpacity
         onPress={() => {
-          this.props.navigation.navigate('MovieDetail')
+          this.props.navigation.navigate('MovieDetail', {item: Item});
         }}
         style={styles.listItemContainer}>
         <Image source={{uri: Item?.images?.small}} style={styles.listItemImage}/>

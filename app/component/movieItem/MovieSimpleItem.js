@@ -10,6 +10,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 import PropTypes from "prop-types";
+import {withNavigation} from 'react-navigation';
 
 //组件
 
@@ -21,13 +22,14 @@ const ITEM_IMAGE_HEIGHT = 150;
 const ITEM_IMAGE_WIDTH = 106;
 
 
-export default class MovieSimpleItem extends PureComponent {
+class MovieSimpleItem extends PureComponent {
 
   static propTypes = {
     item: PropTypes.object.isRequired,
     isShowGrade: PropTypes.bool.isRequired,
     // Grade: PropTypes.number,
-    navigation: PropTypes.object.isRequired,
+    // navigation: PropTypes.object.isRequired,
+    disabled: PropTypes.bool,
   }
 
   constructor(props) {
@@ -47,8 +49,9 @@ export default class MovieSimpleItem extends PureComponent {
 
     return (
       <TouchableOpacity
+        disabled={this.props.disabled || false}
         onPress={() => {
-          this.props.navigation.navigate('MovieDetail',{item:item})
+          this.props.navigation.navigate('MovieDetail', {item: item})
         }}
         style={styles.movie_item}>
         <Image source={{uri: item.images?.small}} style={{width: ITEM_IMAGE_WIDTH, height: ITEM_IMAGE_HEIGHT}}
@@ -117,6 +120,7 @@ export default class MovieSimpleItem extends PureComponent {
 
 }
 
+export default withNavigation(MovieSimpleItem);
 
 const styles = StyleSheet.create({
 

@@ -6,10 +6,11 @@ import {
   View,
   Text,
   Image, StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
 import {Rating} from "react-native-ratings";
 import {transformRateToValue} from "../../views/movie/util";
-
+import {withNavigation} from 'react-navigation';
 
 //组件
 
@@ -21,7 +22,7 @@ const ITEM_HEIGHT = 150;
 const ITEM_WIDTH = 106;
 
 
-export default class MovieItem250 extends PureComponent {
+class MovieItem250 extends PureComponent {
 
   static propTypes = {
     item: PropTypes.object.isRequired,
@@ -43,7 +44,12 @@ export default class MovieItem250 extends PureComponent {
     const peoples = item.directors?.concat(item?.casts);
 
     return (
-      <View style={styles.movie_item}>
+      <TouchableOpacity
+        style={styles.movie_item}
+        onPress={() => {
+          this.props.navigation.navigate('MovieDetail', {item: item})
+        }}
+      >
         <Image source={{uri: item.images?.small}} style={{width: ITEM_WIDTH, height: ITEM_HEIGHT}}
                resizeMode='contain'/>
         <View style={styles.movie_item_right}>
@@ -100,11 +106,13 @@ export default class MovieItem250 extends PureComponent {
         }
 
 
-      </View>
+      </TouchableOpacity>
     );
   }
 
 }
+
+export default withNavigation(MovieItem250);
 
 const styles = StyleSheet.create({
 

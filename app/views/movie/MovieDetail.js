@@ -108,8 +108,8 @@ export default class MovieDetail extends PureComponent {
           <View style={{height: TOOLBAR_HEIGHT, backgroundColor: '#4b7bab66'}}/>
 
           <MovieSimpleItem
+            disabled={true}
             item={item}
-            navigation={this.props.navigation}
             isShowGrade={false}
           />
 
@@ -212,11 +212,13 @@ export default class MovieDetail extends PureComponent {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}
             >
-              <Image source={{uri: trailerObject?.medium}}
-                     style={[styles.big_photo, {
-                       borderTopLeftRadius: BORDER_PHOTO,
-                       borderBottomLeftRadius: BORDER_PHOTO
-                     }]}/>
+              {trailerObject?.medium ?
+                <Image source={{uri: trailerObject?.medium}}
+                       style={[styles.big_photo, {
+                         borderTopLeftRadius: BORDER_PHOTO,
+                         borderBottomLeftRadius: BORDER_PHOTO
+                       }]}/>
+                : null}
               {bigPhotos?.map((item, index) => (
                 <Image
                   key={index}
@@ -242,14 +244,8 @@ export default class MovieDetail extends PureComponent {
           </View>
 
           <View
-            style={{
-              marginHorizontal: 10,
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginTop: 10
-            }}>
-            <Text style={styles.bold_text}>热门短评</Text>
+            style={styles.title_comment}>
+            <Text style={styles.bold_text}>短评</Text>
             <Text>全部</Text>
           </View>
           <View style={{marginHorizontal: 10, backgroundColor: '#84432d', marginTop: 10, borderRadius: 10}}>
@@ -271,7 +267,7 @@ export default class MovieDetail extends PureComponent {
                                     containerStyle={{width: 60, marginTop: 4}}/>
                       </View>
                     </View>
-                    <Text style={{color:'#9e9e9e'}}>{item.created_at?.split(' ')?.[0]}</Text>
+                    <Text style={{color: '#9e9e9e'}}>{item.created_at?.split(' ')?.[0]}</Text>
                   </View>
                   <Text style={styles.comment_text}
                         numberOfLines={4}>{item.content}</Text>
@@ -280,6 +276,8 @@ export default class MovieDetail extends PureComponent {
               ))}
             </View>
           </View>
+
+
         </ScrollView>
 
       </View>
@@ -319,4 +317,11 @@ const styles = StyleSheet.create({
     width: 200, height: 150, marginRight: 2,
   },
   comment_text: {fontSize: 15, lineHeight: 17, color: '#FFF'},
+  title_comment: {
+    marginHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 10
+  },
 })
