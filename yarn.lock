@@ -3561,6 +3561,11 @@ jsprim@^1.2.2:
     json-schema "0.2.3"
     verror "1.10.0"
 
+keymirror@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.npm.taobao.org/keymirror/download/keymirror-0.1.1.tgz#918889ea13f8d0a42e7c557250eee713adc95c35"
+  integrity sha1-kYiJ6hP40KQufFVyUO7nE63JXDU=
+
 kind-of@^1.1.0:
   version "1.1.0"
   resolved "http://registry.npm.taobao.org/kind-of/download/kind-of-1.1.0.tgz#140a3d2d41a36d2efcfa9377b62c24f8495a5c44"
@@ -5076,6 +5081,15 @@ react-native-tab-view@^1.0.0, react-native-tab-view@^1.2.0:
   dependencies:
     prop-types "^15.6.1"
 
+react-native-video@4.4.4:
+  version "4.4.4"
+  resolved "https://registry.npm.taobao.org/react-native-video/download/react-native-video-4.4.4.tgz#e33da29990556a9b2d575d6b2e88190fc04d9b50"
+  integrity sha1-4z2imZBVapstV11rLogZD8BNm1A=
+  dependencies:
+    keymirror "^0.1.1"
+    prop-types "^15.5.10"
+    shaka-player "^2.4.4"
+
 react-native@0.59.4:
   version "0.59.4"
   resolved "http://registry.npm.taobao.org/react-native/download/react-native-0.59.4.tgz#c0725e2e8efdea135533794ce95fea2289fe619a"
@@ -5648,6 +5662,11 @@ setprototypeof@1.1.0:
   version "1.1.0"
   resolved "http://registry.npm.taobao.org/setprototypeof/download/setprototypeof-1.1.0.tgz#d0bd85536887b6fe7c0d818cb962d9d91c54e656"
   integrity sha1-0L2FU2iHtv58DYGMuWLZ2RxU5lY=
+
+shaka-player@^2.4.4:
+  version "2.5.5"
+  resolved "https://registry.npm.taobao.org/shaka-player/download/shaka-player-2.5.5.tgz#81e7265f28f631afd3837c06ec6637824bda71e4"
+  integrity sha1-gecmXyj2Ma/Tg3wG7GY3gkvaceQ=
 
 shebang-command@^1.2.0:
   version "1.2.0"

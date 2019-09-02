@@ -213,11 +213,15 @@ export default class MovieDetail extends PureComponent {
               contentContainerStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}
             >
               {trailerObject?.medium ?
-                <Image source={{uri: trailerObject?.medium}}
-                       style={[styles.big_photo, {
-                         borderTopLeftRadius: BORDER_PHOTO,
-                         borderBottomLeftRadius: BORDER_PHOTO
-                       }]}/>
+                <TouchableOpacity onPress={() => {
+                  this.props.navigation.navigate('MovieVideo', {videoUri: trailerObject.resource_url});
+                }}>
+                  <Image source={{uri: trailerObject?.medium}}
+                         style={[styles.big_photo, {
+                           borderTopLeftRadius: BORDER_PHOTO,
+                           borderBottomLeftRadius: BORDER_PHOTO
+                         }]}/>
+                </TouchableOpacity>
                 : null}
               {bigPhotos?.map((item, index) => (
                 <Image

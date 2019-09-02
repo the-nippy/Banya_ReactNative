@@ -22,6 +22,7 @@ import NewMovie from "./movie/NewMovies";
 import ComingMovies from './movie/Coming';
 import InTheater from "./movie/InTheater";
 import MovieDetail from './movie/MovieDetail';
+import MovieVideo from './movie/MovieVideo';
 
 import Setting from './setting/Setting';
 import History from './history/History';
@@ -52,6 +53,7 @@ const MovieMap = createStackNavigator({
   ComingMovies: ComingMovies,
   InTheater: InTheater,
   MovieDetail: MovieDetail,
+  MovieVideo: MovieVideo,
 }, {
   initialRouteName: 'Movie',
   headerMode: 'none'
