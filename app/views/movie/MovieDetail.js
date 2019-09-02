@@ -74,11 +74,19 @@ export default class MovieDetail extends PureComponent {
 
     const {detail} = this.state;
 
+    //演职员
     let directorsAndCasts = detail?.directors || [];
     directorsAndCasts = directorsAndCasts.concat(detail?.casts || []);
 
+    //预告片  剧照
+    const trailerObject = detail.trailers?.[0] || [];
+
+    const bigPhotos = detail.photos?.slice(0, 2) || [];
+
+    const smallPhotos = detail.photos?.slice(2, 10) || [];
+
     return (
-      <View style={{flex: 1, backgroundColor: '#eef'}}>
+      <View style={{flex: 1, backgroundColor: '#95543e'}}>
         <View
           // alpha={0.5}
           style={styles.head_container}>
@@ -154,7 +162,7 @@ export default class MovieDetail extends PureComponent {
               showsHorizontalScrollIndicator={false}
               horizontal={true}
             >
-              <Text>所属频道</Text>
+              <Text style={styles.channel_tag_text}>所属频道</Text>
               {
                 detail.tags?.length > 0 ? detail.tags?.map((item, index) => (
                   <View
@@ -171,7 +179,7 @@ export default class MovieDetail extends PureComponent {
 
           <View style={{marginHorizontal: 10, marginTop: 10}}>
             <Text style={styles.bold_text}>简介</Text>
-            <Text style={{color: '#FFF', paddingVertical: 2, lineHeight: 18}}
+            <Text style={{color: '#FFF', paddingVertical: 2, fontSize: 16, lineHeight: 19}}
                   numberOfLines={5}
                   ellipsizeMode={'tail'}
             >{(detail.summary ? detail.summary : '暂无简介内容') + '\n\n'}</Text>
@@ -189,7 +197,7 @@ export default class MovieDetail extends PureComponent {
                   <View key={index} style={{width: 90, height: 180, marginRight: 6, justifyContent: 'flex-start'}}>
                     <Image source={directorAndCastImage} resizeMode={'contain'}
                            style={{width: 90, height: 140, borderRadius: 5}}/>
-                    <Text style={{fontSize: 13,color:'#FFF'}}>{item.name}</Text>
+                    <Text style={{fontSize: 13, color: '#FFF'}}>{item.name}</Text>
                   </View>
                 )
               })}
@@ -198,24 +206,87 @@ export default class MovieDetail extends PureComponent {
 
           <View style={{marginHorizontal: 10}}>
             <Text style={styles.bold_text}>剧照</Text>
-            {[].map(() => {
-            })}
+            <ScrollView
+              style={{marginTop: 10}}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}
+            >
+              <Image source={{uri: trailerObject?.medium}}
+                     style={[styles.big_photo, {
+                       borderTopLeftRadius: BORDER_PHOTO,
+                       borderBottomLeftRadius: BORDER_PHOTO
+                     }]}/>
+              {bigPhotos?.map((item, index) => (
+                <Image
+                  key={index}
+                  source={{uri: item.image}}
+                  style={styles.big_photo}/>
+              ))}
+              <View style={{flexWrap: 'wrap', height: 150}}>
+                {smallPhotos.map((item, index, array) => (
+                  <Image
+                    key={index}
+                    source={{uri: item.image}}
+                    style={{
+                      width: 100,
+                      height: 74,
+                      marginLeft: 2,
+                      marginTop: index % 2 === 0 ? 0 : 2,
+                      borderTopRightRadius: index === (array.length - 2) ? BORDER_PHOTO : 0,
+                      borderBottomRightRadius: index === (array.length - 1) ? BORDER_PHOTO : 0
+                    }}/>
+                ))}
+              </View>
+            </ScrollView>
           </View>
 
-
-          {[1, 2, 3, 4, 5, 6, 7].map((item, index) => (
-              <View key={index} style={{height: 90, backgroundColor: '#ccd', marginTop: 30}}>
-                <Text>{item}</Text>
-              </View>
-            )
-          )}
+          <View
+            style={{
+              marginHorizontal: 10,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginTop: 10
+            }}>
+            <Text style={styles.bold_text}>热门短评</Text>
+            <Text>全部</Text>
+          </View>
+          <View style={{marginHorizontal: 10, backgroundColor: '#84432d', marginTop: 10, borderRadius: 10}}>
+            <View style={{marginHorizontal: 5}}>
+              {detail.popular_comments?.map((item, index) => (
+                <View key={index} style={{paddingHorizontal: 10}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginVertical: 10,
+                    }}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Image source={{uri: item.author?.avatar}} style={{width: 36, height: 36, borderRadius: 18}}/>
+                      <View style={{marginLeft: 10}}>
+                        <Text style={[styles.comment_text, {fontWeight: 'bold'}]}>{item.author?.name}</Text>
+                        <StarRating numberOfAllStars={5} starImageSize={12} numberOfFill={item.rating.value}
+                                    containerStyle={{width: 60, marginTop: 4}}/>
+                      </View>
+                    </View>
+                    <Text style={{color:'#9e9e9e'}}>{item.created_at?.split(' ')?.[0]}</Text>
+                  </View>
+                  <Text style={styles.comment_text}
+                        numberOfLines={4}>{item.content}</Text>
+                  <View style={{height: 1, backgroundColor: '#919191', marginTop: 15}}/>
+                </View>
+              ))}
+            </View>
+          </View>
         </ScrollView>
 
       </View>
     );
   }
 }
-
+const BORDER_PHOTO = 10;
 const styles = StyleSheet.create({
   star_progress: {
     width: 40,
@@ -242,6 +313,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#777777'
   },
-  channel_tag_text: {color: '#FFF', fontSize: 13},
-  bold_text: {fontSize: 19, color: '#FFF', fontWeight: 'bold', marginBottom: 10},
+  channel_tag_text: {color: '#FFF', fontSize: 14},
+  bold_text: {fontSize: 19, color: '#FFF', fontWeight: 'bold', marginVertical: 10},
+  big_photo: {
+    width: 200, height: 150, marginRight: 2,
+  },
+  comment_text: {fontSize: 15, lineHeight: 17, color: '#FFF'},
 })
