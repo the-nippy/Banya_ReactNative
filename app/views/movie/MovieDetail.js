@@ -13,6 +13,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  ImageBackground,
 } from 'react-native';
 import Toolbar from "../../component/header/Toolbar";
 import {COLOR} from "../../utils/contants";
@@ -34,6 +35,7 @@ import SimpleProgress from "../../component/progress/SimpleProgress";
 const ICON_BACK = require('../../constant/image/back.png');
 const ICON_MENU = require('../../constant/image/menu_point.png');
 const ICON_NO_IMAGE = require('../../constant/image/noPng.png');
+const ICON_PLAY = require('../../constant/image/movie/play.png');
 
 export default class MovieDetail extends PureComponent {
 
@@ -213,14 +215,49 @@ export default class MovieDetail extends PureComponent {
               contentContainerStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}
             >
               {trailerObject?.medium ?
-                <TouchableOpacity onPress={() => {
-                  this.props.navigation.navigate('MovieVideo', {videoUri: trailerObject.resource_url});
-                }}>
-                  <Image source={{uri: trailerObject?.medium}}
-                         style={[styles.big_photo, {
-                           borderTopLeftRadius: BORDER_PHOTO,
-                           borderBottomLeftRadius: BORDER_PHOTO
-                         }]}/>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('MovieVideo', {videoUri: trailerObject.resource_url});
+                  }}>
+                  <ImageBackground
+                    source={{uri: trailerObject?.medium}}
+                    style={[styles.big_photo, {
+                      borderTopLeftRadius: BORDER_PHOTO,
+                      borderBottomLeftRadius: BORDER_PHOTO,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }]}>
+                    <View
+                      style={{
+                        paddingHorizontal: 8,
+                        paddingVertical: 8,
+                        borderRadius: 16,
+                        backgroundColor: '#72727255'
+                      }}>
+                      <Image source={ICON_PLAY} style={{width: 30, height: 30}}/>
+                    </View>
+                  </ImageBackground>
+                  <View style={{
+                    ...StyleSheet.absoluteFill,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start'
+                  }}>
+                    <View style={{borderBottomRightRadius: 6}}>
+                      <Text style={{
+                        color: '#FFF', backgroundColor: '#c46941', paddingHorizontal: 4,
+                        paddingVertical: 3,
+                      }}>预告片</Text>
+                    </View>
+                  </View>
+                  <View style={{
+                    ...StyleSheet.absoluteFill,
+                    justifyContent: 'flex-end',
+                    alignItems: 'flex-end',
+                  }}>
+                    <Text style={{
+                      color: '#FFF', marginRight: 5, marginBottom: 5
+                    }}>5:00</Text>
+                  </View>
                 </TouchableOpacity>
                 : null}
               {bigPhotos?.map((item, index) => (
