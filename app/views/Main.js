@@ -34,7 +34,7 @@ import Modal from 'react-native-modal';
 import Swiper from 'react-native-swiper';
 
 import {
-  createDrawerNavigator, createAppContainer, createStackNavigator, DrawerItems
+  createDrawerNavigator, createAppContainer, createStackNavigator, DrawerItems, SafeAreaView,
 }
   from 'react-navigation';
 
@@ -64,11 +64,9 @@ const MyDrawerNavigator = createDrawerNavigator(
     Movie:
       {
         screen: MovieMap,
-        drawerLockMode: 'unlocked',
         navigationOptions: ({navigation}) => ({
-          title: '主页',
+          drawerLabel: '主页',
           gesturesEnabled: true,
-          drawerLockMode: 'unlocked',
           drawerIcon: ({tintColor}) => (
             <Image
               source={require('../constant/image/circle_check_32px.png')}
@@ -80,8 +78,7 @@ const MyDrawerNavigator = createDrawerNavigator(
     Setting: {
       screen: Setting,
       navigationOptions: ({navigation}) => ({
-        title: '主页',
-        gesturesEnabled: true,
+        drawerLabel: '主页',
         drawerLockMode: 'unlocked',
         drawerIcon: ({tintColor}) => (
           <Image
@@ -94,9 +91,7 @@ const MyDrawerNavigator = createDrawerNavigator(
     History: {
       screen: History,
       navigationOptions: ({navigation}) => ({
-        title: '主页',
-        gesturesEnabled: true,
-        drawerLockMode: 'unlocked',
+        drawerLabel: '主页',
         drawerIcon: ({tintColor}) => (
           <Image
             source={require('../constant/image/circle_check_32px.png')}
@@ -110,33 +105,40 @@ const MyDrawerNavigator = createDrawerNavigator(
 
   {
     initialRouteName: 'Movie',
-    swipeEnabled: true,
+    // swipeEnabled: true,
     animationEnabled: true,
-    lazy: false,
+    // lazy: false,
     drawerLockMode: 'unlocked',//设置是否响应手势
-    tabBarPosition: 'bottom',
-    drawerWidth: 200, //抽屉的宽度或返回的功能。
+    // tabBarPosition: 'bottom',
+    drawerWidth: 280, //抽屉的宽度或返回的功能。
     drawerPosition: 'left', //选项是left或right。默认是left位置。
     useNativeAnimations: false, //启用原生动画。默认是true。
     drawerBackgroundColor: '#FFF', //使用抽屉背景获取某种颜色。默认是white。
+    contentOptions: {
+      //未选中的侧边item背景色
+      // inactiveBackgroundColor:'#eee',
+      // activeBackgroundColor: '#efefef',
+      activeTintColor: '#FFF',
+    },
     contentComponent: props => {
       return (
         <ScrollView>
-          <View>
-            <View style={{
-              height: 100,
-              backgroundColor: '#4c70ca',
-              alignItems: 'flex-start',
-              justifyContent: 'center'
-            }}>
-              <Text style={{marginLeft: 20, fontSize: 21}}>全部活动类型</Text>
+          <SafeAreaView>
+            <View>
+              <View style={{
+                height: 100,
+                backgroundColor: '#4c70ca',
+                alignItems: 'flex-start',
+                justifyContent: 'center'
+              }}>
+                <Text style={{marginLeft: 20, fontSize: 21}}>全部活动类型</Text>
+              </View>
+
+              <View style={{width: 200, height: 30, backgroundColor: '#ffffff'}}></View>
+
+              <DrawerItems {...props} />
             </View>
-
-            <View style={{width: 200, height: 30, backgroundColor: '#ffffff'}}></View>
-
-            <DrawerItems {...props} />
-
-          </View>
+          </SafeAreaView>
         </ScrollView>
       )
     }

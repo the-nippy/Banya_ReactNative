@@ -45,10 +45,13 @@ const ITEM_WEEK_WIDTH = (WIDTH - 40) / 3;
 
 class Movie extends PureComponent {
 
-  static navigationOptions = {
-    drawerLabel: '电影',
-    drawerLockMode: 'unlocked'
-  }
+  // static navigationOptions = {
+  //   drawerLabel: '电影',
+  //   drawerLockMode: 'unlocked'
+  // // }
+  // static navigationOptions: {   //这步配置建议在Chat组件里使用static navigationOptions配置
+  //   drawerLockMode: 'unlocked',  //here
+  // }
 
   constructor(props) {
     super(props);

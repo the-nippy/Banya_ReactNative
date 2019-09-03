@@ -224,6 +224,7 @@ export default class MovieDetail extends PureComponent {
                     style={[styles.big_photo, {
                       borderTopLeftRadius: BORDER_PHOTO,
                       borderBottomLeftRadius: BORDER_PHOTO,
+                      // borderRadius: BORDER_PHOTO,
                       justifyContent: 'center',
                       alignItems: 'center',
                     }]}>
