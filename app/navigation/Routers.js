@@ -16,16 +16,16 @@ import {
   Image,
 } from 'react-native';
 
-import Movie from './movie/Movie';
-import Top250 from './movie/Top250';
-import NewMovie from "./movie/NewMovies";
-import ComingMovies from './movie/Coming';
-import InTheater from "./movie/InTheater";
-import MovieDetail from './movie/MovieDetail';
-import MovieVideo from './movie/MovieVideo';
+import Movie from '../views/movie/Movie';
+import Top250 from '../views/movie/Top250';
+import NewMovie from "../views/movie/NewMovies";
+import ComingMovies from '../views/movie/Coming';
+import InTheater from "../views/movie/InTheater";
+import MovieDetail from '../views/movie/MovieDetail';
+import MovieVideo from '../views/movie/MovieVideo';
 
-import Setting from './setting/Setting';
-import History from './history/History';
+import Setting from '../views/setting/Setting';
+import History from '../views/history/History';
 
 // import HomePage from './home/HomePage';
 // import Weather from './weather/Weather';
@@ -37,6 +37,7 @@ import {
   createDrawerNavigator, createAppContainer, createStackNavigator, DrawerItems, SafeAreaView,
 }
   from 'react-navigation';
+import {WIDTH} from "../utils/contants";
 
 
 const styles = StyleSheet.create({
@@ -65,7 +66,7 @@ const MyDrawerNavigator = createDrawerNavigator(
       {
         screen: MovieMap,
         navigationOptions: ({navigation}) => ({
-          drawerLabel: '主页',
+          drawerLabel: '电影',
           gesturesEnabled: true,
           drawerIcon: ({tintColor}) => (
             <Image
@@ -78,7 +79,7 @@ const MyDrawerNavigator = createDrawerNavigator(
     Setting: {
       screen: Setting,
       navigationOptions: ({navigation}) => ({
-        drawerLabel: '主页',
+        drawerLabel: '设定',
         drawerLockMode: 'unlocked',
         drawerIcon: ({tintColor}) => (
           <Image
@@ -91,7 +92,7 @@ const MyDrawerNavigator = createDrawerNavigator(
     History: {
       screen: History,
       navigationOptions: ({navigation}) => ({
-        drawerLabel: '主页',
+        drawerLabel: '图书',
         drawerIcon: ({tintColor}) => (
           <Image
             source={require('../constant/image/circle_check_32px.png')}
@@ -110,7 +111,7 @@ const MyDrawerNavigator = createDrawerNavigator(
     // lazy: false,
     drawerLockMode: 'unlocked',//设置是否响应手势
     // tabBarPosition: 'bottom',
-    drawerWidth: 280, //抽屉的宽度或返回的功能。
+    drawerWidth: WIDTH * 2 / 3, //抽屉的宽度或返回的功能。
     drawerPosition: 'left', //选项是left或right。默认是left位置。
     useNativeAnimations: false, //启用原生动画。默认是true。
     drawerBackgroundColor: '#FFF', //使用抽屉背景获取某种颜色。默认是white。
@@ -145,5 +146,4 @@ const MyDrawerNavigator = createDrawerNavigator(
   });
 
 // const MyApp = createAppContainer(MyDrawerNavigator);
-const MyApp = MyDrawerNavigator;
-export default MyApp;
+export default MyDrawerNavigator;

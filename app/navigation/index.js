@@ -1,7 +1,7 @@
 import {createSwitchNavigator, createAppContainer} from 'react-navigation';
 // import AppStackNavigator from './AppStackNavigator';
 
-import AppDrawerNavigator from '../views/Main';
+import AppDrawerNavigator from './Routers';
 // import SplashScreen from '../views/SplashScreen';
 // import Login from '../views/login/Login';
 
@@ -20,4 +20,4 @@ const switchConfig = {
 const AppNavigator = createSwitchNavigator(routeConfigMap, switchConfig);
 
 // export default createAppContainer(AppNavigator);
-export default createAppContainer(AppDrawerNavigator);
+export default createAppContainer(AppNavigator);

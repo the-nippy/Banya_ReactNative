@@ -5032,6 +5032,11 @@ react-native-ratings@^6.3.1:
     lodash "^4.17.4"
     prop-types "^15.5.10"
 
+react-native-reanimated@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npm.taobao.org/react-native-reanimated/download/react-native-reanimated-1.2.0.tgz?cache=0&sync_timestamp=1565766081147&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Freact-native-reanimated%2Fdownload%2Freact-native-reanimated-1.2.0.tgz#9219227a52a5dfa4d34c324596d6726ccd874293"
+  integrity sha1-khkielKl36TTTDJFltZybM2HQpM=
+
 react-native-root-siblings@^3.0.0:
   version "3.2.1"
   resolved "https://registry.npm.taobao.org/react-native-root-siblings/download/react-native-root-siblings-3.2.1.tgz#06bd8722babe8a30e914b73eae4beffa3218ec57"
