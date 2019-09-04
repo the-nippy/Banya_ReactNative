@@ -92,7 +92,7 @@ const MyDrawerNavigator = createDrawerNavigator(
     History: {
       screen: History,
       navigationOptions: ({navigation}) => ({
-        drawerLabel: '图书',
+        drawerLabel: '历史',
         drawerIcon: ({tintColor}) => (
           <Image
             source={require('../constant/image/circle_check_32px.png')}
@@ -106,6 +106,7 @@ const MyDrawerNavigator = createDrawerNavigator(
 
   {
     initialRouteName: 'Movie',
+    order:['Movie','History','Setting'],
     // swipeEnabled: true,
     animationEnabled: true,
     // lazy: false,

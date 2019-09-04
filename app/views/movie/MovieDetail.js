@@ -59,6 +59,35 @@ export default class MovieDetail extends PureComponent {
 
   }
 
+  getGradeRatioArray = () => {
+    const {detail} = this.state;
+    //评分
+    let RatingDetail = detail?.rating?.details;
+    //各个评分的百分比数组
+    let percentArray = new Array();
+    if (RatingDetail) {
+      let keys = Object.keys(RatingDetail);
+      let allCount = 0;
+      for (let i = 0; i < keys.length; i++) {
+        allCount = allCount + RatingDetail[keys[i]];
+      }
+      console.info('allCount', allCount);
+      if (allCount === 0) {
+        percentArray = ['0%', '0%', '0%', '0%', '0%'];
+      } else {
+        for (let i = 0; i < keys.length; i++) {
+          //小数转百分数，百分数留两位小数
+          const value = Math.round((RatingDetail[keys[i]] / allCount) * 10000) / 100;
+          percentArray[keys.length - i] = value + '%';
+        }
+      }
+    } else {
+      percentArray = ['0%', '0%', '0%', '0%', '0%'];
+    }
+    console.info('percentArray', percentArray)
+    return percentArray;
+  }
+
   render() {
     const {item} = this.props.navigation.state.params;
 
@@ -75,6 +104,9 @@ export default class MovieDetail extends PureComponent {
     }
 
     const {detail} = this.state;
+
+    //平均分
+    let grade = detail?.rating?.average || 0;
 
     //演职员
     let directorsAndCasts = detail?.directors || [];
@@ -107,7 +139,7 @@ export default class MovieDetail extends PureComponent {
 
         <ScrollView style={{flex: 1}}>
 
-          <View style={{height: TOOLBAR_HEIGHT, backgroundColor: '#4b7bab66'}}/>
+          <View style={{height: TOOLBAR_HEIGHT, backgroundColor: '#4b7bab66', marginBottom: 5}}/>
 
           <MovieSimpleItem
             disabled={true}
@@ -115,39 +147,35 @@ export default class MovieDetail extends PureComponent {
             isShowGrade={false}
           />
 
-          <View style={{
-            paddingHorizontal: 15,
-            marginHorizontal: 10,
-            backgroundColor: '#5893cd',
-            paddingTop: 5,
-            borderRadius: 8
-          }}>
+          <View style={styles.rating_container}>
             <View>
               <Text style={{fontSize: 14, color: '#FFF'}}>豆瓣评分</Text>
               <Image/>
             </View>
 
-            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 5}}>
-              <View>
-                <Text style={{
-                  fontSize: 22,
-                  color: '#FFF',
-                  fontWeight: 'bold'
-                  // color: '#ffd34b'
-                }}>6.4</Text>
+            <View style={styles.rating_middle}>
+              {grade === 0 ? <View>
+                <Text style={[styles.grade_text, {fontSize: 13}]}>{'未上线电影\n暂无评分'}</Text>
                 <StarRating
                   numberOfAllStars={5}
-                  numberOfFill={2.5}
-                  starImageSize={16}
-                  containerStyle={{width: 80, marginTop: 5}}
+                  numberOfFill={0}
+                  starImageSize={14}
+                  containerStyle={styles.grade_rating}
                 />
-              </View>
+              </View> : <View>
+                <Text style={styles.grade_text}>{grade % 1 === 0 ? grade + '.0' : grade}</Text>
+                <StarRating
+                  numberOfAllStars={5}
+                  numberOfFill={transformRateToValue(detail?.rating?.average)}
+                  starImageSize={16}
+                  containerStyle={styles.grade_rating}
+                />
+              </View>}
+
               <View>
-                <StarRatingAndProgress numberOfAllStars={5} progressPercent={'20%'}/>
-                <StarRatingAndProgress numberOfAllStars={4} progressPercent={'20%'}/>
-                <StarRatingAndProgress numberOfAllStars={3} progressPercent={'20%'}/>
-                <StarRatingAndProgress numberOfAllStars={2} progressPercent={'20%'}/>
-                <StarRatingAndProgress numberOfAllStars={1} progressPercent={'20%'}/>
+                {this.getGradeRatioArray().map((item, index) => (
+                  <StarRatingAndProgress key={index} numberOfAllStars={5 - index + 1} progressPercent={item}/>
+                ))}
               </View>
             </View>
 
@@ -366,4 +394,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 10
   },
+  grade_text: {
+    fontSize: 22,
+    color: '#FFF',
+    fontWeight: 'bold'
+    // color: '#ffd34b'
+  },
+  grade_rating: {
+    width: 80, marginTop: 5
+  },
+  rating_container: {
+    paddingHorizontal: 15,
+    marginHorizontal: 10,
+    backgroundColor: '#6a300c',
+    marginTop: 5,
+    paddingTop: 5,
+    borderRadius: 8
+  },
+  rating_middle: {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 5},
 })

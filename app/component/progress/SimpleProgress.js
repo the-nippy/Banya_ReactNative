@@ -41,7 +41,7 @@ export default class SimpleProgress extends PureComponent {
         backgroundColor: '#d0c8bc'
       }, containerStyle]}>
         <View
-          style={[{width: progressPercent, height: '100%', backgroundColor: '#edae64', borderRadius: 2}, barStyle]}/>
+          style={[{width: progressPercent, height: '100%', backgroundColor: '#ff9062', borderRadius: 2}, barStyle]}/>
       </View>
     );
   }
