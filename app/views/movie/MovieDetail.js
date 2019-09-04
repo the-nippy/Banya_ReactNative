@@ -27,9 +27,9 @@ import StarRating from "../../component/starRating/StarRating";
 //数据
 import {TOOLBAR_HEIGHT} from "../../component/header/Toolbar.style";
 import {getMovieDetailData} from "../../utils/request/MovieR";
-import {transformRateToValue} from "./util";
+import {getDeeperColor, transformRateToValue} from "./util";
 import SimpleProgress from "../../component/progress/SimpleProgress";
-
+import {connect} from 'react-redux';
 
 //资源
 const ICON_BACK = require('../../constant/image/back.png');
@@ -37,7 +37,7 @@ const ICON_MENU = require('../../constant/image/menu_point.png');
 const ICON_NO_IMAGE = require('../../constant/image/noPng.png');
 const ICON_PLAY = require('../../constant/image/movie/play.png');
 
-export default class MovieDetail extends PureComponent {
+class MovieDetail extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -84,12 +84,16 @@ export default class MovieDetail extends PureComponent {
     } else {
       percentArray = ['0%', '0%', '0%', '0%', '0%'];
     }
-    console.info('percentArray', percentArray)
+    // console.info('percentArray', percentArray)
     return percentArray;
   }
 
   render() {
     const {item} = this.props.navigation.state.params;
+
+    const themeColor = this.props.themeColor;
+    const deepThemeColor = getDeeperColor(themeColor);
+    // console.info('deepThemeColor', deepThemeColor);
 
     //提取StarRating和Progress组合的组件
     let StarRatingAndProgress = function (props) {
@@ -120,10 +124,10 @@ export default class MovieDetail extends PureComponent {
     const smallPhotos = detail.photos?.slice(2, 10) || [];
 
     return (
-      <View style={{flex: 1, backgroundColor: '#95543e'}}>
+      <View style={{flex: 1, backgroundColor: themeColor}}>
         <View
           // alpha={0.5}
-          style={styles.head_container}>
+          style={[styles.head_container, {backgroundColor: themeColor + '66'}]}>
 
           <TouchableOpacity onPress={() => {
             this.props.navigation.goBack();
@@ -139,7 +143,7 @@ export default class MovieDetail extends PureComponent {
 
         <ScrollView style={{flex: 1}}>
 
-          <View style={{height: TOOLBAR_HEIGHT, backgroundColor: '#4b7bab66', marginBottom: 5}}/>
+          <View style={{height: TOOLBAR_HEIGHT, backgroundColor: themeColor, marginBottom: 5}}/>
 
           <MovieSimpleItem
             disabled={true}
@@ -147,7 +151,7 @@ export default class MovieDetail extends PureComponent {
             isShowGrade={false}
           />
 
-          <View style={styles.rating_container}>
+          <View style={[styles.rating_container, {backgroundColor: deepThemeColor}]}>
             <View>
               <Text style={{fontSize: 14, color: '#FFF'}}>豆瓣评分</Text>
               <Image/>
@@ -257,12 +261,7 @@ export default class MovieDetail extends PureComponent {
                       alignItems: 'center',
                     }]}>
                     <View
-                      style={{
-                        paddingHorizontal: 8,
-                        paddingVertical: 8,
-                        borderRadius: 16,
-                        backgroundColor: '#72727255'
-                      }}>
+                      style={styles.trailer_play}>
                       <Image source={ICON_PLAY} style={{width: 30, height: 30}}/>
                     </View>
                   </ImageBackground>
@@ -318,17 +317,12 @@ export default class MovieDetail extends PureComponent {
             <Text style={styles.bold_text}>短评</Text>
             <Text>全部</Text>
           </View>
-          <View style={{marginHorizontal: 10, backgroundColor: '#84432d', marginTop: 10, borderRadius: 10}}>
+          <View style={[styles.comment_container, {backgroundColor: deepThemeColor}]}>
             <View style={{marginHorizontal: 5}}>
               {detail.popular_comments?.map((item, index) => (
                 <View key={index} style={{paddingHorizontal: 10}}>
                   <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      marginVertical: 10,
-                    }}>
+                    style={styles.comment_author}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                       <Image source={{uri: item.author?.avatar}} style={{width: 36, height: 36, borderRadius: 18}}/>
                       <View style={{marginLeft: 10}}>
@@ -354,6 +348,11 @@ export default class MovieDetail extends PureComponent {
     );
   }
 }
+
+export default connect((state) => ({
+  themeColor: state.publicInfo.themeColor,
+}))(MovieDetail);
+
 const BORDER_PHOTO = 10;
 const styles = StyleSheet.create({
   star_progress: {
@@ -370,7 +369,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 15,
     height: TOOLBAR_HEIGHT,
-    backgroundColor: '#4b7bab66'
+    // backgroundColor: '#4b7bab66'
   },
   channel_tag: {
     paddingHorizontal: 6,
@@ -381,12 +380,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#777777'
   },
-  channel_tag_text: {color: '#FFF', fontSize: 14},
-  bold_text: {fontSize: 19, color: '#FFF', fontWeight: 'bold', marginVertical: 10},
-  big_photo: {
-    width: 200, height: 150, marginRight: 2,
+  channel_tag_text: {
+    color: '#FFF',
+    fontSize: 14
   },
-  comment_text: {fontSize: 15, lineHeight: 17, color: '#FFF'},
+  bold_text: {
+    fontSize: 19,
+    color: '#FFF',
+    fontWeight: 'bold',
+    marginVertical: 10
+  },
+  big_photo: {
+    width: 200,
+    height: 150,
+    marginRight: 2,
+  },
+  comment_text: {
+    fontSize: 15,
+    lineHeight: 17,
+    color: '#FFF'
+  },
   title_comment: {
     marginHorizontal: 10,
     flexDirection: 'row',
@@ -411,5 +424,27 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     borderRadius: 8
   },
-  rating_middle: {flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 5},
+  rating_middle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 5
+  },
+  trailer_play: {
+    paddingHorizontal: 8,
+    paddingVertical: 8,
+    borderRadius: 16,
+    backgroundColor: '#72727255'
+  },
+  comment_container: {
+    marginHorizontal: 10,
+    marginTop: 10,
+    borderRadius: 10
+  },
+  comment_author: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+  },
 })

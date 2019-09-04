@@ -1,9 +1,17 @@
 import React, {PureComponent} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, Platform, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {withNavigation} from 'react-navigation';
 import PropTypes from 'prop-types';
-import styles from './Toolbar.style';
+import styles, {TOOLBAR_HEIGHT} from './Toolbar.style';
 import TextButton from '../button/TextButton';
+
+import {connect} from 'react-redux';
+
+export const STATUS_BAR_HEIGHT_IOS = 30;
+const PADDING_TOP = Platform.select({
+  ios: STATUS_BAR_HEIGHT_IOS,
+  android: 0,
+});
 
 const ICON_BACK = require('../../constant/image/back.png');
 const fallbackView = <View/>;
@@ -98,7 +106,14 @@ class Toolbar extends PureComponent {
       );
     }
 
-    const containerStyle = StyleSheet.compose(styles.container, style);
+    const containerStyle = StyleSheet.compose(
+      // styles.container,
+      {
+        height: TOOLBAR_HEIGHT,
+        paddingTop: PADDING_TOP,
+        backgroundColor: this.props.themeColor,
+      },
+      style);
     const finalContainerStyle = backgroundColor ? [containerStyle, {backgroundColor}] : containerStyle;
     return (
       <View style={finalContainerStyle}>
@@ -122,5 +137,7 @@ class Toolbar extends PureComponent {
   };
 }
 
-export default withNavigation(Toolbar);
+export default connect((state) => ({
+  themeColor: state.publicInfo.themeColor
+}), {})(withNavigation(Toolbar));
 // export default Toolbar;

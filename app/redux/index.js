@@ -10,7 +10,7 @@ import constant from './constant';
 
 import movies from './movies';
 
-import publicData from './public';
+import publicInfo from './public';
 // import config from '../redux/config';
 // import user from '../redux/user';
 // import stores from '../redux/stores'
@@ -25,7 +25,7 @@ import publicData from './public';
 const rootReducer = combineReducers({
   constant,
   movies,
-  publicData,
+  publicInfo,
 });
 
 const persistConfig = {

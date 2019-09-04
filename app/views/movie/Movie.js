@@ -1,7 +1,7 @@
 /**
  created by Lex. 2019/7/29
  **/
-import React, {PureComponent} from 'react';
+import React, {PureComponent,Component} from 'react';
 import {
   View,
   Text,
@@ -43,15 +43,7 @@ const ITEM_IMAGE_WIDTH = 106;
 
 const ITEM_WEEK_WIDTH = (WIDTH - 40) / 3;
 
-class Movie extends PureComponent {
-
-  // static navigationOptions = {
-  //   drawerLabel: '电影',
-  //   drawerLockMode: 'unlocked'
-  // // }
-  // static navigationOptions: {   //这步配置建议在Chat组件里使用static navigationOptions配置
-  //   drawerLockMode: 'unlocked',  //here
-  // }
+class Movie extends Component {
 
   constructor(props) {
     super(props);
@@ -65,6 +57,16 @@ class Movie extends PureComponent {
     await this.freshData();
     await this.RefreshWeeklyMovies();
   }
+
+  shouldComponentUpdate(nextProps: Readonly<P>, nextState: Readonly<S>, nextContext: any): boolean {
+    console.info('this.props.themeColor', this.props.themeColor)
+    console.info('nextProps', nextProps)
+    if (this.props.themeColor === nextProps.themeColor) {
+      return false;
+    }
+    return true;
+  }
+
 
   freshData = async () => {
     try {
@@ -135,11 +137,11 @@ class Movie extends PureComponent {
         onPress={() => {
           this.props.navigation.navigate('MovieDetail', {item: Item});
         }}
-        style={styles.listItemContainer}>
+        style={[styles.listItemContainer, {backgroundColor: this.props.themeColor}]}>
         <Image source={{uri: Item?.images?.small}} style={styles.listItemImage}/>
         <View
           style={{width: ITEM_WEEK_WIDTH - 6, justifyContent: 'center', alignItems: 'center', marginHorizontal: 3,}}>
-          <Text numberOfLines={1} style={{fontSize: 15, color: '#1b181d'}}>{Item.title}</Text>
+          <Text numberOfLines={1} style={{fontSize: 15, color: '#fcfffa'}}>{Item.title}</Text>
         </View>
         <View
           // numberOfLines={1}
@@ -249,6 +251,7 @@ class Movie extends PureComponent {
 
 export default connect((state) => ({
   comingMovies: state.movies.comingMovies,
+  themeColor: state.publicInfo.themeColor,
 }), {
   operateComingMovies,
 })(Movie);
