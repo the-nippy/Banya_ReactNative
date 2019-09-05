@@ -245,14 +245,14 @@ class Movie extends PureComponent {
             <Text>豆瓣电影北美票房榜</Text>
           </LinearView>
 
-          {/*<FlatList*/}
-          {/*  extraData={[this.state, this.props.themeColor]}*/}
-          {/*  renderItem={this.renderListMovie}*/}
-          {/*  data={this.state.usBoxMovies}*/}
-          {/*  numColumns={3}*/}
-          {/*  keyExtractor={(item, index) => index.toString()}*/}
-          {/*  getItemLayout={this.layoutItem}*/}
-          {/*/>*/}
+          <FlatList
+            extraData={[this.state, this.props.themeColor]}
+            renderItem={this.renderListMovie}
+            data={this.state.usBoxMovies}
+            numColumns={3}
+            keyExtractor={(item, index) => index.toString()}
+            getItemLayout={this.layoutItem}
+          />
 
 
         </ScrollView>
