@@ -25,15 +25,13 @@ import Toolbar from '../../component/header/Toolbar';
 import ImageButton from '../../component/button/ImageButton';
 import {connect} from 'react-redux';
 import LinearView from '../../component/linear/LinearView';
-import MovieItem250 from '../../component/movieItem/MovieItem250';
+import MovieItem250, {ITEM_250_HEIGHT} from '../../component/movieItem/MovieItem250';
 
 //数据
-import {getTop250} from '../../utils/request/MovieR';
 import {appendNewTop250Data} from '../../redux/movies';
 
 //资源
 import {COLOR, WIDTH} from "../../utils/contants";
-import {transformRateToValue} from "./util";
 
 const ICON_LEFT = require('../../constant/image/movie/left.png');
 const ICON_RIGHT = require('../../constant/image/movie/right.png');
@@ -130,6 +128,15 @@ class Top250 extends PureComponent {
 
   _keyExtractor = (item, index) => index.toString();
 
+  layoutItem = (data, index) => {
+    // console.info('[layoutItem]index', index)
+    return {
+      length: ITEM_250_HEIGHT + 8,
+      offset: (ITEM_250_HEIGHT) * index,
+      index,
+    }
+  }
+
   render() {
 
     //取出当前页的数据
@@ -176,6 +183,7 @@ class Top250 extends PureComponent {
           renderItem={this.renderTop250Item}
           onEndReachedThreshold={0.3}
           onEndReached={this.reachListBottom}
+          getItemLayout={this.layoutItem}
           ListFooterComponent={() => {
             if (this.state.isBottomLoadingShow) {
               return (

@@ -24,7 +24,7 @@ const colors =
     '#7654b4', '#b87aa2', '#f17073',
     '#3c83b7', '#9e8ad1', '#78b682',
     '#c0cb63', '#b1388a', '#b36c22',
-    '#6a300c', '#84432d'
+    // '#6a300c', '#84432d'
   ]
 
 //横行显示个数
@@ -68,6 +68,7 @@ class Setting extends PureComponent {
         <Animatable.View animation={'bounceIn'} style={{flex: 1}}>
 
           <FlatList
+            style={{marginBottom: 20}}
             keyExtractor={(item, index) => index.toString()}
             data={colors}
             // horizontal={true}

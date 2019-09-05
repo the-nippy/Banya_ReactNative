@@ -14,6 +14,24 @@ import {PersistGate} from 'redux-persist/es/integration/react'
 
 
 export default class App extends Component {
+
+  componentDidMount(): void {
+    if (!__DEV__) {
+      global.console = {
+        info: () => {
+        },
+        log: () => {
+        },
+        warn: () => {
+        },
+        debug: () => {
+        },
+        error: () => {
+        }
+      };
+    }
+  }
+
   render() {
 
     // return (

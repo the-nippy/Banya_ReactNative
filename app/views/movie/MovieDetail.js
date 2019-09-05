@@ -178,6 +178,7 @@ class MovieDetail extends PureComponent {
 
               <View>
                 {this.getGradeRatioArray().map((item, index) => (
+                  //索引index不从0开始？
                   <StarRatingAndProgress key={index} numberOfAllStars={5 - index + 1} progressPercent={item}/>
                 ))}
               </View>

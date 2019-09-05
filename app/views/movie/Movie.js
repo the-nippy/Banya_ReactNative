@@ -1,7 +1,7 @@
 /**
  created by Lex. 2019/7/29
  **/
-import React, {PureComponent,Component} from 'react';
+import React, {PureComponent, Component} from 'react';
 import {
   View,
   Text,
@@ -42,8 +42,9 @@ const ITEM_IMAGE_HEIGHT = 150;
 const ITEM_IMAGE_WIDTH = 106;
 
 const ITEM_WEEK_WIDTH = (WIDTH - 40) / 3;
+const ITEM_WEEK_HEIGHT = ITEM_WEEK_WIDTH + 70;
 
-class Movie extends Component {
+class Movie extends PureComponent {
 
   constructor(props) {
     super(props);
@@ -58,14 +59,14 @@ class Movie extends Component {
     await this.RefreshWeeklyMovies();
   }
 
-  shouldComponentUpdate(nextProps: Readonly<P>, nextState: Readonly<S>, nextContext: any): boolean {
-    console.info('this.props.themeColor', this.props.themeColor)
-    console.info('nextProps', nextProps)
-    if (this.props.themeColor === nextProps.themeColor) {
-      return false;
-    }
-    return true;
-  }
+  // shouldComponentUpdate(nextProps: Readonly<P>, nextState: Readonly<S>, nextContext: any): boolean {
+  //   // console.info('this.props.themeColor', this.props.themeColor)
+  //   // console.info('nextProps', nextProps)
+  //   // if (this.props.themeColor === nextProps.themeColor) {
+  //   //   return false;
+  //   // }
+  //   return true;
+  // }
 
 
   freshData = async () => {
@@ -102,6 +103,15 @@ class Movie extends Component {
         break;
       default:
         break;
+    }
+  }
+
+  layoutItem = (data, index) => {
+    console.info('[layoutItem]index', index)
+    return {
+      length: ITEM_WEEK_HEIGHT + 8,
+      offset: (ITEM_WEEK_HEIGHT + 8) * Math.ceil(((index + 1) / 3)),
+      index,
     }
   }
 
@@ -217,11 +227,12 @@ class Movie extends Component {
           </LinearView>
 
           <FlatList
-            extraData={this.state}
+            extraData={[this.state, this.props.themeColor]}
             renderItem={this.renderListMovie}
             data={this.state.weeklyMovies}
             numColumns={3}
             keyExtractor={(item, index) => index.toString()}
+            getItemLayout={this.layoutItem}
           />
 
 
@@ -234,13 +245,14 @@ class Movie extends Component {
             <Text>豆瓣电影北美票房榜</Text>
           </LinearView>
 
-          <FlatList
-            extraData={this.state}
-            renderItem={this.renderListMovie}
-            data={this.state.usBoxMovies}
-            numColumns={3}
-            keyExtractor={(item, index) => index.toString()}
-          />
+          {/*<FlatList*/}
+          {/*  extraData={[this.state, this.props.themeColor]}*/}
+          {/*  renderItem={this.renderListMovie}*/}
+          {/*  data={this.state.usBoxMovies}*/}
+          {/*  numColumns={3}*/}
+          {/*  keyExtractor={(item, index) => index.toString()}*/}
+          {/*  getItemLayout={this.layoutItem}*/}
+          {/*/>*/}
 
 
         </ScrollView>
@@ -285,7 +297,7 @@ const styles = StyleSheet.create({
   },
   listItemContainer: {
     width: ITEM_WEEK_WIDTH,
-    height: ITEM_WEEK_WIDTH + 70,
+    height: ITEM_WEEK_HEIGHT,
     marginLeft: 10,
     backgroundColor: '#FFF',
     justifyContent: 'space-between',

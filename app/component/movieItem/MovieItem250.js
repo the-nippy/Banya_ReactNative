@@ -18,9 +18,13 @@ import {withNavigation} from 'react-navigation';
 import PropTypes from 'prop-types';
 
 //资源
-const ITEM_HEIGHT = 150;
-const ITEM_WIDTH = 106;
+const ITEM_IMAGE_HEIGHT = 150;
+const ITEM_IMAGE_WIDTH = 106;
 
+const ITEM_MARGIN_VERTICAL = 5;
+const ITEM_PADDING_VERTICAL = 8;
+const ITEM_250_HEIGHT = ITEM_IMAGE_HEIGHT + 2 * (ITEM_MARGIN_VERTICAL + ITEM_PADDING_VERTICAL);
+export {ITEM_250_HEIGHT};
 
 class MovieItem250 extends PureComponent {
 
@@ -50,7 +54,7 @@ class MovieItem250 extends PureComponent {
           this.props.navigation.navigate('MovieDetail', {item: item})
         }}
       >
-        <Image source={{uri: item.images?.small}} style={{width: ITEM_WIDTH, height: ITEM_HEIGHT}}
+        <Image source={{uri: item.images?.small}} style={{width: ITEM_IMAGE_WIDTH, height: ITEM_IMAGE_HEIGHT}}
                resizeMode='contain'/>
         <View style={styles.movie_item_right}>
 
@@ -146,16 +150,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 10,
-    marginVertical: 5,
+    marginVertical: ITEM_MARGIN_VERTICAL,
     backgroundColor: '#FFF',
     borderRadius: 8,
-    paddingVertical: 8,
+    paddingVertical: ITEM_PADDING_VERTICAL,
     paddingHorizontal: 8
   },
 
   movie_item_right: {
     flex: 1,
-    height: ITEM_HEIGHT,
+    height: ITEM_IMAGE_HEIGHT,
     justifyContent: 'space-between',
     paddingTop: 15,
     paddingHorizontal: 10
