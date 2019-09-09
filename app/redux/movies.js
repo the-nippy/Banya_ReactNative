@@ -143,6 +143,7 @@ export function operateComingMovies(startIndex) {
   const count = 20;
   return async function (dispatch) {
     try {
+      // console.info('[operateComingMovies]')
       let comingMovies = await getComingMovies(startIndex, count);
       console.info('comingMovies', comingMovies)
       if (comingMovies.subjects) {

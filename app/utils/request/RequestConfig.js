@@ -2,7 +2,7 @@
  created by Lex. 2019/7/29
  **/
 
-const BASE = 'https://douban.uieee.com/v2';
+const BASE = 'https://douban-api.uieee.com/v2';
 // const BASE = 'https://douban-api.now.sh/v2';
 
 export const URLS = {

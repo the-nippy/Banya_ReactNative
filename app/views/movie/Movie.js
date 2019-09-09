@@ -71,6 +71,8 @@ class Movie extends PureComponent {
 
   freshData = async () => {
     try {
+      //
+      // console.info('[ freshData]')
       await this.props.operateComingMovies(0);
       this.forceUpdate();
     } catch (e) {

@@ -81,7 +81,7 @@ class NewMovie extends PureComponent {
 
 
 export default connect(state => ({
-  isAllowLocation: state.public.isAllowLocation
+  isAllowLocation: state.publicInfo.isAllowLocation
 }), {
   changeLocationState,
 })(NewMovie);

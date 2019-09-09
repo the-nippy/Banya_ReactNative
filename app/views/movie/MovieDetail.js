@@ -14,12 +14,16 @@ import {
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
+  // Modal,
 } from 'react-native';
+
 import Toolbar from "../../component/header/Toolbar";
-import {COLOR} from "../../utils/contants";
+import {COLOR, WIDTH} from "../../utils/contants";
 
 //组件
 // import {} from 'react-'
+import Video from 'react-native-video';
+import Modal from 'react-native-modal';
 import MovieSimpleItem from "../../component/movieItem/MovieSimpleItem";
 import {Rating} from "react-native-ratings";
 import StarRating from "../../component/starRating/StarRating";
@@ -43,6 +47,8 @@ class MovieDetail extends PureComponent {
     super(props);
     this.state = {
       detail: {},
+      modalVisible: false,
+      currentVideoUrl: '',
     }
   }
 
@@ -86,6 +92,25 @@ class MovieDetail extends PureComponent {
     }
     // console.info('percentArray', percentArray)
     return percentArray;
+  }
+
+
+  renderModal = () => {
+    return (
+      <View style={styles.modal_content}>
+
+        <Video
+          source={{uri: this.state.currentVideoUrl}}   // Can be a URL or a local file.
+          ref={(ref) => {
+            this.player = ref
+          }}                                      // Store reference
+          // onBuffer={this.onBuffer}                // Callback when remote video is buffering
+          // onError={this.videoError}               // Callback when video cannot be loaded
+          style={styles.backgroundVideo}
+        />
+
+      </View>
+    )
   }
 
   render() {
@@ -250,7 +275,8 @@ class MovieDetail extends PureComponent {
               {trailerObject?.medium ?
                 <TouchableOpacity
                   onPress={() => {
-                    this.props.navigation.navigate('MovieVideo', {videoUri: trailerObject.resource_url});
+                    this.setState({modalVisible: true, currentVideoUrl: trailerObject.resource_url})
+                    // this.props.navigation.navigate('MovieVideo', {videoUri: trailerObject.resource_url});
                   }}>
                   <ImageBackground
                     source={{uri: trailerObject?.medium}}
@@ -344,6 +370,21 @@ class MovieDetail extends PureComponent {
 
 
         </ScrollView>
+
+        <Modal
+          isVisible={this.state.modalVisible}
+          onBackdropPress={() => this.setState({modalVisible: false})}
+          // backdropColor={"#B4B3DB"}
+          backdropOpacity={0.6}
+          animationIn="zoomInDown"
+          animationOut="zoomOutUp"
+          animationInTiming={800}
+          animationOutTiming={800}
+          backdropTransitionInTiming={800}
+          backdropTransitionOutTiming={800}
+        >
+          {this.renderModal()}
+        </Modal>
 
       </View>
     );
@@ -447,5 +488,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginVertical: 10,
+  },
+  modal_content: {
+    width: WIDTH - 30,
+    height: 3 * (WIDTH - 30) / 4,
+    backgroundColor: 'white',
+    padding: 15,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 4,
+    borderColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  backgroundVideo: {
+    // flex:1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
   },
 })
