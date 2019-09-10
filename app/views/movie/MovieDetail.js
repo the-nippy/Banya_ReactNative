@@ -40,6 +40,7 @@ const ICON_BACK = require('../../constant/image/back.png');
 const ICON_MENU = require('../../constant/image/menu_point.png');
 const ICON_NO_IMAGE = require('../../constant/image/noPng.png');
 const ICON_PLAY = require('../../constant/image/movie/play.png');
+const ICON_CANCEL = require('../../constant/image/cancel.png');
 
 class MovieDetail extends PureComponent {
 
@@ -95,11 +96,24 @@ class MovieDetail extends PureComponent {
   }
 
 
-  renderModal = () => {
+  renderModal = (movieTitle) => {
     return (
       <View style={styles.modal_content}>
 
+        <View style={styles.modal_head}>
+          <Text style={{fontSize: 16, color: this.props.themeColor}}>{`《${movieTitle}》预告片：`}</Text>
+          <TouchableOpacity
+            style={[styles.modal_cancel_button, {backgroundColor: this.props.themeColor,}]}
+            onPress={() => {
+              this.setState({modalVisible: false})
+            }}>
+            <Image source={ICON_CANCEL} style={{width: 12, height: 12}} resizeMode={'contain'}/>
+          </TouchableOpacity>
+        </View>
+
+
         <Video
+          controls={true}
           source={{uri: this.state.currentVideoUrl}}   // Can be a URL or a local file.
           ref={(ref) => {
             this.player = ref
@@ -383,7 +397,7 @@ class MovieDetail extends PureComponent {
           backdropTransitionInTiming={800}
           backdropTransitionOutTiming={800}
         >
-          {this.renderModal()}
+          {this.renderModal(detail.title)}
         </Modal>
 
       </View>
@@ -490,21 +504,43 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   modal_content: {
-    width: WIDTH - 30,
-    height: 3 * (WIDTH - 30) / 4,
+    // width: WIDTH - 30,
+    height: 3 * (WIDTH) / 4,
     backgroundColor: 'white',
-    padding: 15,
-    justifyContent: 'center',
+    // margin: 15,
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    justifyContent: 'space-between',
     alignItems: 'center',
     borderRadius: 4,
     borderColor: 'rgba(0, 0, 0, 0.1)',
   },
   backgroundVideo: {
-    // flex:1,
+    flex: 1,
     position: 'absolute',
     top: 0,
     left: 0,
     bottom: 0,
     right: 0,
+    zIndex: 1,
+  },
+  modal_cancel_button: {
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  modal_head: {
+    position: 'absolute',
+    top: 8,
+    left: 0,
+    bottom: 0,
+    right: 0,
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingHorizontal: 5,
+    zIndex: 100,
+    height: 24
   },
 })
