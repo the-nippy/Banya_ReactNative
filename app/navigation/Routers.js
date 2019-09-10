@@ -23,6 +23,9 @@ import ComingMovies from '../views/movie/Coming';
 import InTheater from "../views/movie/InTheater";
 import MovieDetail from '../views/movie/MovieDetail';
 import MovieVideo from '../views/movie/MovieVideo';
+import PhotoList from '../views/movie/PhotoList';
+import Celebrity from "../views/movie/Celebrity";
+
 
 import Setting from '../views/setting/Setting';
 import History from '../views/history/History';
@@ -55,6 +58,8 @@ const MovieMap = createStackNavigator({
   InTheater: InTheater,
   MovieDetail: MovieDetail,
   MovieVideo: MovieVideo,
+  Celebrity: Celebrity,
+  PhotoList: PhotoList,
 }, {
   initialRouteName: 'Movie',
   headerMode: 'none'
@@ -106,7 +111,7 @@ const MyDrawerNavigator = createDrawerNavigator(
 
   {
     initialRouteName: 'Movie',
-    order:['Movie','History','Setting'],
+    order: ['Movie', 'History', 'Setting'],
     // swipeEnabled: true,
     animationEnabled: true,
     // lazy: false,

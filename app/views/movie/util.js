@@ -41,6 +41,7 @@ const getDeeperColor = (colorOfRgb) => {
     if (i === 0) {
       continue;
     }
+    //按照十六进制解析，返回十进制数
     let originalValue = parseInt(colorOfRgb[i], 16);
     originalValue -= 2;
     if (originalValue < 0) {

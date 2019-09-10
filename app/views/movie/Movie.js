@@ -109,7 +109,7 @@ class Movie extends PureComponent {
   }
 
   layoutItem = (data, index) => {
-    console.info('[layoutItem]index', index)
+    // console.info('[layoutItem]index', index)
     return {
       length: ITEM_WEEK_HEIGHT + 8,
       offset: (ITEM_WEEK_HEIGHT + 8) * Math.ceil(((index + 1) / 3)),

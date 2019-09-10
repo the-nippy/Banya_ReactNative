@@ -20,6 +20,7 @@ import {
 import Toolbar from "../../component/header/Toolbar";
 import {COLOR, WIDTH} from "../../utils/contants";
 
+
 //组件
 // import {} from 'react-'
 import Video from 'react-native-video';
@@ -27,6 +28,8 @@ import Modal from 'react-native-modal';
 import MovieSimpleItem from "../../component/movieItem/MovieSimpleItem";
 import {Rating} from "react-native-ratings";
 import StarRating from "../../component/starRating/StarRating";
+
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 //数据
 import {TOOLBAR_HEIGHT} from "../../component/header/Toolbar.style";
@@ -42,14 +45,22 @@ const ICON_NO_IMAGE = require('../../constant/image/noPng.png');
 const ICON_PLAY = require('../../constant/image/movie/play.png');
 const ICON_CANCEL = require('../../constant/image/cancel.png');
 
+
+const alphaValues = ['FF', '99'];
+
 class MovieDetail extends PureComponent {
 
   constructor(props) {
     super(props);
     this.state = {
       detail: {},
-      modalVisible: false,
+      videoModalVisible: false,
       currentVideoUrl: '',
+      imageModalVisible: false,
+      imageModalUrl: '',
+      //
+      titleAlpha: alphaValues[0],
+
     }
   }
 
@@ -66,6 +77,7 @@ class MovieDetail extends PureComponent {
 
   }
 
+  //计算评分占比  返回百分数数组
   getGradeRatioArray = () => {
     const {detail} = this.state;
     //评分
@@ -95,6 +107,24 @@ class MovieDetail extends PureComponent {
     return percentArray;
   }
 
+  //处理ScrollView滚动，设置标题透明度
+  dealViewScroll = ({nativeEvent}) => {
+    console.info('nativeEvent', nativeEvent);
+    const contentOffset = nativeEvent.contentOffset;
+    if (contentOffset.y > 80) {
+      this.checkAlpha(0)
+    } else {
+      this.checkAlpha(1);
+    }
+  }
+  checkAlpha = (index) => {
+    if (this.state.titleAlpha === alphaValues[index]) {
+      return;
+    } else {
+      this.setState({titleAlpha: alphaValues[index]})
+    }
+  }
+
 
   renderModal = (movieTitle) => {
     return (
@@ -105,7 +135,7 @@ class MovieDetail extends PureComponent {
           <TouchableOpacity
             style={[styles.modal_cancel_button, {backgroundColor: this.props.themeColor,}]}
             onPress={() => {
-              this.setState({modalVisible: false})
+              this.setState({videoModalVisible: false})
             }}>
             <Image source={ICON_CANCEL} style={{width: 12, height: 12}} resizeMode={'contain'}/>
           </TouchableOpacity>
@@ -166,21 +196,24 @@ class MovieDetail extends PureComponent {
       <View style={{flex: 1, backgroundColor: themeColor}}>
         <View
           // alpha={0.5}
-          style={[styles.head_container, {backgroundColor: themeColor + '66'}]}>
+          style={[styles.head_container, {backgroundColor: themeColor + this.state.titleAlpha}]}>
 
           <TouchableOpacity onPress={() => {
             this.props.navigation.goBack();
           }}>
             <Image source={ICON_BACK} style={{width: 18, height: 18}} resizeMode='contain'/>
           </TouchableOpacity>
-          <Text>
-            速度与激情
+          <Text style={{color: '#dddddd', fontSize: 18}}>
+            {item.title}
           </Text>
           <Image source={ICON_MENU} style={{width: 18, height: 18}}/>
 
         </View>
 
-        <ScrollView style={{flex: 1}}>
+        <ScrollView
+          style={{flex: 1}}
+          onScroll={this.dealViewScroll}
+        >
 
           <View style={{height: TOOLBAR_HEIGHT, backgroundColor: themeColor, marginBottom: 5}}/>
 
@@ -268,18 +301,30 @@ class MovieDetail extends PureComponent {
               {directorsAndCasts.map((item, index) => {
                 const directorAndCastImage = item.avatars?.small ? {uri: item.avatars?.small} : ICON_NO_IMAGE;
                 return (
-                  <View key={index} style={{width: 90, height: 180, marginRight: 6, justifyContent: 'flex-start'}}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.props.navigation.navigate('Celebrity', {item: item})
+                    }}
+                    key={index} style={{width: 90, height: 180, marginRight: 6, justifyContent: 'flex-start'}}>
                     <Image source={directorAndCastImage} resizeMode={'contain'}
                            style={{width: 90, height: 140, borderRadius: 5}}/>
                     <Text style={{fontSize: 13, color: '#FFF'}}>{item.name}</Text>
-                  </View>
+                  </TouchableOpacity>
                 )
               })}
             </ScrollView>
           </View>
 
-          <View style={{marginHorizontal: 10}}>
+          <View
+            style={[styles.title_comment, {marginTop: 0}]}>
             <Text style={styles.bold_text}>剧照</Text>
+            <Text onPress={() => {
+              this.props.navigation.navigate('PhotoList')
+            }} style={{color: '#FFF', fontSize: 16}}>全部</Text>
+          </View>
+
+          <View style={{marginHorizontal: 10}}>
+            {/*<Text style={styles.bold_text}>剧照</Text>*/}
             <ScrollView
               style={{marginTop: 10}}
               horizontal={true}
@@ -289,40 +334,23 @@ class MovieDetail extends PureComponent {
               {trailerObject?.medium ?
                 <TouchableOpacity
                   onPress={() => {
-                    this.setState({modalVisible: true, currentVideoUrl: trailerObject.resource_url})
+                    this.setState({videoModalVisible: true, currentVideoUrl: trailerObject.resource_url})
                     // this.props.navigation.navigate('MovieVideo', {videoUri: trailerObject.resource_url});
                   }}>
                   <ImageBackground
                     source={{uri: trailerObject?.medium}}
-                    style={[styles.big_photo, {
-                      borderTopLeftRadius: BORDER_PHOTO,
-                      borderBottomLeftRadius: BORDER_PHOTO,
-                      // borderRadius: BORDER_PHOTO,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }]}>
+                    style={[styles.big_photo, styles.trailer_image]}>
                     <View
                       style={styles.trailer_play}>
                       <Image source={ICON_PLAY} style={{width: 30, height: 30}}/>
                     </View>
                   </ImageBackground>
-                  <View style={{
-                    ...StyleSheet.absoluteFill,
-                    justifyContent: 'flex-start',
-                    alignItems: 'flex-start'
-                  }}>
+                  <View style={styles.trailer_textContainer}>
                     <View style={{borderBottomRightRadius: 6}}>
-                      <Text style={{
-                        color: '#FFF', backgroundColor: '#c46941', paddingHorizontal: 4,
-                        paddingVertical: 3,
-                      }}>预告片</Text>
+                      <Text style={styles.trailer_text}>预告片</Text>
                     </View>
                   </View>
-                  <View style={{
-                    ...StyleSheet.absoluteFill,
-                    justifyContent: 'flex-end',
-                    alignItems: 'flex-end',
-                  }}>
+                  <View style={styles.trailer_timeContainer}>
                     <Text style={{
                       color: '#FFF', marginRight: 5, marginBottom: 5
                     }}>5:00</Text>
@@ -330,24 +358,34 @@ class MovieDetail extends PureComponent {
                 </TouchableOpacity>
                 : null}
               {bigPhotos?.map((item, index) => (
-                <Image
-                  key={index}
-                  source={{uri: item.image}}
-                  style={styles.big_photo}/>
+                <TouchableOpacity
+                  key={index} onPress={() => {
+                  this.setState({imageModalVisible: true, imageModalUrl: item.image})
+                }}>
+                  <Image
+                    source={{uri: item.image}}
+                    style={styles.big_photo}/>
+                </TouchableOpacity>
               ))}
               <View style={{flexWrap: 'wrap', height: 150}}>
                 {smallPhotos.map((item, index, array) => (
-                  <Image
+                  <TouchableOpacity
                     key={index}
-                    source={{uri: item.image}}
-                    style={{
-                      width: 100,
-                      height: 74,
-                      marginLeft: 2,
-                      marginTop: index % 2 === 0 ? 0 : 2,
-                      borderTopRightRadius: index === (array.length - 2) ? BORDER_PHOTO : 0,
-                      borderBottomRightRadius: index === (array.length - 1) ? BORDER_PHOTO : 0
-                    }}/>
+                    onPress={() => {
+                      this.setState({imageModalVisible: true, imageModalUrl: item.image})
+                    }}
+                  >
+                    <Image
+                      source={{uri: item.image}}
+                      style={{
+                        width: 100,
+                        height: 74,
+                        marginLeft: 2,
+                        marginTop: index % 2 === 0 ? 0 : 2,
+                        borderTopRightRadius: index === (array.length - 2) ? BORDER_PHOTO : 0,
+                        borderBottomRightRadius: index === (array.length - 1) ? BORDER_PHOTO : 0
+                      }}/>
+                  </TouchableOpacity>
                 ))}
               </View>
             </ScrollView>
@@ -386,8 +424,8 @@ class MovieDetail extends PureComponent {
         </ScrollView>
 
         <Modal
-          isVisible={this.state.modalVisible}
-          onBackdropPress={() => this.setState({modalVisible: false})}
+          isVisible={this.state.videoModalVisible}
+          onBackdropPress={() => this.setState({videoModalVisible: false})}
           // backdropColor={"#B4B3DB"}
           backdropOpacity={0.6}
           animationIn="zoomInDown"
@@ -398,6 +436,14 @@ class MovieDetail extends PureComponent {
           backdropTransitionOutTiming={800}
         >
           {this.renderModal(detail.title)}
+        </Modal>
+
+        <Modal
+          isVisible={this.state.imageModalVisible}
+          enableSwipeDown={true}
+          onBackdropPress={() => this.setState({imageModalVisible: false})}
+        >
+          <ImageViewer imageUrls={[{url: this.state.imageModalUrl}]}/>
         </Modal>
 
       </View>
@@ -542,5 +588,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     zIndex: 100,
     height: 24
+  },
+  trailer_image: {
+    borderTopLeftRadius: BORDER_PHOTO,
+    borderBottomLeftRadius: BORDER_PHOTO,
+    // borderRadius: BORDER_PHOTO,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  trailer_textContainer: {
+    ...StyleSheet.absoluteFill,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start'
+  },
+  trailer_text: {
+    color: '#FFF', backgroundColor: '#c46941', paddingHorizontal: 4,
+    paddingVertical: 3,
+  },
+  trailer_timeContainer: {
+    ...StyleSheet.absoluteFill,
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
   },
 })
