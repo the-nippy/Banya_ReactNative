@@ -1,6 +1,7 @@
 /**
  created by Lex. 2019/7/29
  **/
+import {BanError} from "../BanError";
 
 const BaseGetRequest = (url, params, needHeader) => {
 
@@ -33,7 +34,8 @@ const BaseGetRequest = (url, params, needHeader) => {
       })
     }, err => {
       console.info('[BaseRequest]url', url);
-      reject(err);
+      //网络连接
+      reject(new BanError(100));
     })
   })
 }

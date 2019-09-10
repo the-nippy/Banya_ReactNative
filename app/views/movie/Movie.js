@@ -25,6 +25,8 @@ import MovieItem250 from "../../component/movieItem/MovieItem250";
 import {getWeeklyMovies} from "../../utils/request/MovieR";
 import {operateComingMovies} from "../../redux/movies";
 import MovieSimpleItem from "../../component/movieItem/MovieSimpleItem";
+import {LoadingView, STATES} from "../loading/LoadingView";
+import {DealError} from "../../utils/BanError";
 
 
 //资源
@@ -36,7 +38,7 @@ const ICON_NEW_MOVIE = require('../../constant/image/movie/new_movie.png');
 const ICON_MENU = require('../../constant/image/movie/menu.png');
 const Icons = [ICON_250, ICON_WILL, ICON_PLAYING, ICON_NEW_MOVIE];
 
-//资源
+//静态数据
 const ITEM_HEIGHT = 166;
 const ITEM_IMAGE_HEIGHT = 150;
 const ITEM_IMAGE_WIDTH = 106;
@@ -51,12 +53,13 @@ class Movie extends PureComponent {
     this.state = {
       weeklyMovies: [],
       usBoxMovies: [],
+      loadState: STATES.LOADING,
     }
   }
 
   async componentDidMount(): void {
     await this.freshData();
-    await this.RefreshWeeklyMovies();
+    // await this.RefreshWeeklyMovies();
   }
 
   // shouldComponentUpdate(nextProps: Readonly<P>, nextState: Readonly<S>, nextContext: any): boolean {
@@ -70,22 +73,27 @@ class Movie extends PureComponent {
 
 
   freshData = async () => {
+    this.setState({loadState: STATES.LOADING});
     try {
-      //
-      // console.info('[ freshData]')
       await this.props.operateComingMovies(0);
+      let weeklyMovies = await getWeeklyMovies();
+      let usBoxMovies = await getUSBoxMovies();
+      this.setState({weeklyMovies: weeklyMovies.subjects, usBoxMovies: usBoxMovies.subjects,loadState:''})
+      // this.setState({loadState: ''})
       this.forceUpdate();
     } catch (e) {
-      console.warn('catch error freshData', e);
+      // console.warn('catch error freshData', e);
+      DealError(e);
+      this.setState({loadState: STATES.FAIL})
     }
   }
 
-  RefreshWeeklyMovies = async () => {
-    let weeklyMovies = await getWeeklyMovies();
-    let usBoxMovies = await getUSBoxMovies();
-    console.info('usBoxMovies', usBoxMovies)
-    this.setState({weeklyMovies: weeklyMovies.subjects, usBoxMovies: usBoxMovies.subjects})
-  }
+  // RefreshWeeklyMovies = async () => {
+  //   let weeklyMovies = await getWeeklyMovies();
+  //   let usBoxMovies = await getUSBoxMovies();
+  //   console.info('usBoxMovies', usBoxMovies)
+  //   this.setState({weeklyMovies: weeklyMovies.subjects, usBoxMovies: usBoxMovies.subjects})
+  // }
 
 
   //Top250等function被点击
@@ -168,7 +176,90 @@ class Movie extends PureComponent {
       ;
   }
 
+  renderMainView = () => {
+    if (this.state.loadState === STATES.LOADING || this.state.loadState === STATES.FAIL) {
+      return (<LoadingView loadingState={this.state.loadState} reloadData={this.freshData}/>)
+    }
+    return (
+      <ScrollView style={{flex: 1}}>
+
+        <Swiper
+          autoplay={true}
+          autoplayTimeout={5}
+          dotColor={'#eee'}
+          activeDotColor={COLOR.defaultColor}
+          paginationStyle={{justifyContent: 'flex-end', marginBottom: 120, marginRight: 15}}
+          style={{width: WIDTH, height: ITEM_HEIGHT + 5}}>
+          {this.renderSwiperItem()}
+        </Swiper>
+
+        <View
+          style={styles.functionContainer}
+        >
+          {FUNCTIONS.map((item, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                style={styles.single_function}
+                onPress={() => {
+                  this.onFunctionsPress(index)
+                }}>
+                <LinearView
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 1}}
+                  colors={['#4b7bab', '#263656', '#4b7bab']}
+                  style={{paddingHorizontal: 5, paddingVertical: 5, borderRadius: 7}}>
+                  <Image source={Icons[index]} style={styles.function_image}/>
+                </LinearView>
+                <Text style={{fontSize: 12, color: '#FFF', marginTop: 5}}>{item}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        <LinearView
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}
+          colors={['#8eaa9d', '#fdfff2', '#f2eec7']}
+          style={{marginTop: 10, height: 40, flexDirection: 'row', alignItems: 'center'}}
+        >
+          <Text>口碑榜</Text>
+        </LinearView>
+
+        <FlatList
+          extraData={[this.state, this.props.themeColor]}
+          renderItem={this.renderListMovie}
+          data={this.state.weeklyMovies}
+          numColumns={3}
+          keyExtractor={(item, index) => index.toString()}
+          getItemLayout={this.layoutItem}
+        />
+
+
+        <LinearView
+          start={{x: 0, y: 0}}
+          end={{x: 1, y: 1}}
+          colors={['#8eaa9d', '#fdfff2', '#f2eec7']}
+          style={{marginTop: 10, height: 40, flexDirection: 'row', alignItems: 'center'}}
+        >
+          <Text>豆瓣电影北美票房榜</Text>
+        </LinearView>
+
+        <FlatList
+          extraData={[this.state, this.props.themeColor]}
+          renderItem={this.renderListMovie}
+          data={this.state.usBoxMovies}
+          numColumns={3}
+          keyExtractor={(item, index) => index.toString()}
+          getItemLayout={this.layoutItem}
+        />
+
+      </ScrollView>
+    );
+  }
+
   render() {
+
     return (
       <View style={{flex: 1, backgroundColor: '#ddd'}}>
         <Toolbar
@@ -183,81 +274,7 @@ class Movie extends PureComponent {
             }
           ]}
         />
-        <ScrollView style={{flex: 1}}>
-
-          <Swiper
-            autoplay={true}
-            autoplayTimeout={5}
-            dotColor={'#eee'}
-            activeDotColor={COLOR.defaultColor}
-            paginationStyle={{justifyContent: 'flex-end', marginBottom: 120, marginRight: 15}}
-            style={{width: WIDTH, height: ITEM_HEIGHT + 5}}>
-            {this.renderSwiperItem()}
-          </Swiper>
-
-          <View
-            style={styles.functionContainer}
-          >
-            {FUNCTIONS.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.single_function}
-                  onPress={() => {
-                    this.onFunctionsPress(index)
-                  }}>
-                  <LinearView
-                    start={{x: 0, y: 0}}
-                    end={{x: 1, y: 1}}
-                    colors={['#4b7bab', '#263656', '#4b7bab']}
-                    style={{paddingHorizontal: 5, paddingVertical: 5, borderRadius: 7}}>
-                    <Image source={Icons[index]} style={styles.function_image}/>
-                  </LinearView>
-                  <Text style={{fontSize: 12, color: '#FFF', marginTop: 5}}>{item}</Text>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-
-          <LinearView
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 1}}
-            colors={['#8eaa9d', '#fdfff2', '#f2eec7']}
-            style={{marginTop: 10, height: 40, flexDirection: 'row', alignItems: 'center'}}
-          >
-            <Text>口碑榜</Text>
-          </LinearView>
-
-          <FlatList
-            extraData={[this.state, this.props.themeColor]}
-            renderItem={this.renderListMovie}
-            data={this.state.weeklyMovies}
-            numColumns={3}
-            keyExtractor={(item, index) => index.toString()}
-            getItemLayout={this.layoutItem}
-          />
-
-
-          <LinearView
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 1}}
-            colors={['#8eaa9d', '#fdfff2', '#f2eec7']}
-            style={{marginTop: 10, height: 40, flexDirection: 'row', alignItems: 'center'}}
-          >
-            <Text>豆瓣电影北美票房榜</Text>
-          </LinearView>
-
-          <FlatList
-            extraData={[this.state, this.props.themeColor]}
-            renderItem={this.renderListMovie}
-            data={this.state.usBoxMovies}
-            numColumns={3}
-            keyExtractor={(item, index) => index.toString()}
-            getItemLayout={this.layoutItem}
-          />
-
-
-        </ScrollView>
+        {this.renderMainView()}
       </View>
     );
   }

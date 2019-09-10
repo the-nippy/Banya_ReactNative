@@ -4,6 +4,7 @@
 
 import {BasePostRequest, BaseGetRequest} from './baseRequest';
 import {URLS} from './RequestConfig';
+import {BanError} from "../BanError";
 
 //获取Top250的数据
 const getTop250 = async (start, count) => {
@@ -98,7 +99,7 @@ const getMovieDetailData = (movie_id) => {
           }
         )
       }, err => {
-        reject(err);
+        reject(new BanError(100));
       }
     )
   })

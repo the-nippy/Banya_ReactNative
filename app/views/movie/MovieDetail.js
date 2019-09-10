@@ -37,6 +37,8 @@ import {getMovieDetailData} from "../../utils/request/MovieR";
 import {getDeeperColor, transformRateToValue} from "./util";
 import SimpleProgress from "../../component/progress/SimpleProgress";
 import {connect} from 'react-redux';
+import {LoadingView, STATES} from "../loading/LoadingView";
+import {DealError} from "../../utils/BanError";
 
 //资源
 const ICON_BACK = require('../../constant/image/back.png');
@@ -53,28 +55,37 @@ class MovieDetail extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      //详情数据
       detail: {},
+      //加载状态
+      loadState: STATES.LOADING,
+
       videoModalVisible: false,
       currentVideoUrl: '',
       imageModalVisible: false,
       imageModalUrl: '',
-      //
+      //头部透明度
       titleAlpha: alphaValues[0],
 
     }
   }
 
   async componentWillMount() {
+    await this.freshData();
+  }
+
+  freshData = async () => {
+    this.setState({loadState: STATES.LOADING})
     const {item} = this.props.navigation.state.params;
     try {
       let movieDetailData = await getMovieDetailData(item.id);
       console.info('详情页数据', movieDetailData);
-      this.setState({detail: movieDetailData})
+      this.setState({detail: movieDetailData, loadState: ''})
     } catch (e) {
-      this.setState({loading: true})
-      console.warn('Detail error');
+      DealError(e);
+      this.setState({loadState: STATES.FAIL})
+      // console.warn('Detail error',e);
     }
-
   }
 
   //计算评分占比  返回百分数数组
@@ -157,6 +168,10 @@ class MovieDetail extends PureComponent {
     )
   }
 
+  renderLoadView = () => {
+    return (<LoadingView loadingState={this.state.loadState} reloadData={this.freshData}/>);
+  }
+
   render() {
     const {item} = this.props.navigation.state.params;
 
@@ -210,218 +225,222 @@ class MovieDetail extends PureComponent {
 
         </View>
 
-        <ScrollView
-          style={{flex: 1}}
-          onScroll={this.dealViewScroll}
-        >
+        {(this.state.loadState === STATES.LOADING || this.state.loadState === STATES.FAIL)
+          ?
+          this.renderLoadView()
+          :
+          <ScrollView
+            style={{flex: 1}}
+            onScroll={this.dealViewScroll}
+          >
 
-          <View style={{height: TOOLBAR_HEIGHT, backgroundColor: themeColor, marginBottom: 5}}/>
+            <View style={{height: TOOLBAR_HEIGHT, backgroundColor: themeColor, marginBottom: 5}}/>
 
-          <MovieSimpleItem
-            disabled={true}
-            item={item}
-            isShowGrade={false}
-          />
+            <MovieSimpleItem
+              disabled={true}
+              item={item}
+              isShowGrade={false}
+            />
 
-          <View style={[styles.rating_container, {backgroundColor: deepThemeColor}]}>
-            <View>
-              <Text style={{fontSize: 14, color: '#FFF'}}>豆瓣评分</Text>
-              <Image/>
-            </View>
-
-            <View style={styles.rating_middle}>
-              {grade === 0 ? <View>
-                <Text style={[styles.grade_text, {fontSize: 13}]}>{'未上线电影\n暂无评分'}</Text>
-                <StarRating
-                  numberOfAllStars={5}
-                  numberOfFill={0}
-                  starImageSize={14}
-                  containerStyle={styles.grade_rating}
-                />
-              </View> : <View>
-                <Text style={styles.grade_text}>{grade % 1 === 0 ? grade + '.0' : grade}</Text>
-                <StarRating
-                  numberOfAllStars={5}
-                  numberOfFill={transformRateToValue(detail?.rating?.average)}
-                  starImageSize={16}
-                  containerStyle={styles.grade_rating}
-                />
-              </View>}
-
+            <View style={[styles.rating_container, {backgroundColor: deepThemeColor}]}>
               <View>
-                {this.getGradeRatioArray().map((item, index) => (
-                  //索引index不从0开始？
-                  <StarRatingAndProgress key={index} numberOfAllStars={5 - index + 1} progressPercent={item}/>
-                ))}
+                <Text style={{fontSize: 14, color: '#FFF'}}>豆瓣评分</Text>
+                <Image/>
+              </View>
+
+              <View style={styles.rating_middle}>
+                {grade === 0 ? <View>
+                  <Text style={[styles.grade_text, {fontSize: 13}]}>{'未上线电影\n暂无评分'}</Text>
+                  <StarRating
+                    numberOfAllStars={5}
+                    numberOfFill={0}
+                    starImageSize={14}
+                    containerStyle={styles.grade_rating}
+                  />
+                </View> : <View>
+                  <Text style={styles.grade_text}>{grade % 1 === 0 ? grade + '.0' : grade}</Text>
+                  <StarRating
+                    numberOfAllStars={5}
+                    numberOfFill={transformRateToValue(detail?.rating?.average)}
+                    starImageSize={16}
+                    containerStyle={styles.grade_rating}
+                  />
+                </View>}
+
+                <View>
+                  {this.getGradeRatioArray().map((item, index) => (
+                    //索引index不从0开始？
+                    <StarRatingAndProgress key={index} numberOfAllStars={5 - index + 1} progressPercent={item}/>
+                  ))}
+                </View>
+              </View>
+
+              <View style={{height: StyleSheet.hairlineWidth, backgroundColor: '#aaa', marginTop: 10}}/>
+
+              <View style={{marginVertical: 5, alignItems: 'flex-end'}}>
+                <Text style={{fontSize: 12, color: '#FFF'}}>8.2万人看过，3.7万人想看</Text>
               </View>
             </View>
 
-            <View style={{height: StyleSheet.hairlineWidth, backgroundColor: '#aaa', marginTop: 10}}/>
-
-            <View style={{marginVertical: 5, alignItems: 'flex-end'}}>
-              <Text style={{fontSize: 12, color: '#FFF'}}>8.2万人看过，3.7万人想看</Text>
-            </View>
-          </View>
-
-          <View style={{marginHorizontal: 10, marginTop: 10}}>
-            <ScrollView
-              contentContainerStyle={{flexDirection: 'row', alignItems: 'center',}}
-              showsHorizontalScrollIndicator={false}
-              horizontal={true}
-            >
-              <Text style={styles.channel_tag_text}>所属频道</Text>
-              {
-                detail.tags?.length > 0 ? detail.tags?.map((item, index) => (
-                  <View
-                    key={index}
-                    style={styles.channel_tag}><Text style={styles.channel_tag_text}>{item}</Text></View>
-                )) : item.genres?.map((item, index) => (
-                  <View key={index} style={styles.channel_tag}>
-                    <Text style={styles.channel_tag_text}>{item}</Text>
-                  </View>
-                ))
-              }
-            </ScrollView>
-          </View>
-
-          <View style={{marginHorizontal: 10, marginTop: 10}}>
-            <Text style={styles.bold_text}>简介</Text>
-            <Text style={{color: '#FFF', paddingVertical: 2, fontSize: 16, lineHeight: 19}}
-                  numberOfLines={5}
-                  ellipsizeMode={'tail'}
-            >{(detail.summary ? detail.summary : '暂无简介内容') + '\n\n'}</Text>
-          </View>
-
-          <View style={{marginHorizontal: 10, marginTop: 10}}>
-            <Text style={styles.bold_text}>演职员</Text>
-            <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-              {directorsAndCasts.map((item, index) => {
-                const directorAndCastImage = item.avatars?.small ? {uri: item.avatars?.small} : ICON_NO_IMAGE;
-                return (
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.props.navigation.navigate('Celebrity', {item: item})
-                    }}
-                    key={index} style={{width: 90, height: 180, marginRight: 6, justifyContent: 'flex-start'}}>
-                    <Image source={directorAndCastImage} resizeMode={'contain'}
-                           style={{width: 90, height: 140, borderRadius: 5}}/>
-                    <Text style={{fontSize: 13, color: '#FFF'}}>{item.name}</Text>
-                  </TouchableOpacity>
-                )
-              })}
-            </ScrollView>
-          </View>
-
-          <View
-            style={[styles.title_comment, {marginTop: 0}]}>
-            <Text style={styles.bold_text}>剧照</Text>
-            <Text onPress={() => {
-              this.props.navigation.navigate('PhotoList')
-            }} style={{color: '#FFF', fontSize: 16}}>全部</Text>
-          </View>
-
-          <View style={{marginHorizontal: 10}}>
-            {/*<Text style={styles.bold_text}>剧照</Text>*/}
-            <ScrollView
-              style={{marginTop: 10}}
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}
-            >
-              {trailerObject?.medium ?
-                <TouchableOpacity
-                  onPress={() => {
-                    this.setState({videoModalVisible: true, currentVideoUrl: trailerObject.resource_url})
-                    // this.props.navigation.navigate('MovieVideo', {videoUri: trailerObject.resource_url});
-                  }}>
-                  <ImageBackground
-                    source={{uri: trailerObject?.medium}}
-                    style={[styles.big_photo, styles.trailer_image]}>
+            <View style={{marginHorizontal: 10, marginTop: 10}}>
+              <ScrollView
+                contentContainerStyle={{flexDirection: 'row', alignItems: 'center',}}
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
+              >
+                <Text style={styles.channel_tag_text}>所属频道</Text>
+                {
+                  detail.tags?.length > 0 ? detail.tags?.map((item, index) => (
                     <View
-                      style={styles.trailer_play}>
-                      <Image source={ICON_PLAY} style={{width: 30, height: 30}}/>
+                      key={index}
+                      style={styles.channel_tag}><Text style={styles.channel_tag_text}>{item}</Text></View>
+                  )) : item.genres?.map((item, index) => (
+                    <View key={index} style={styles.channel_tag}>
+                      <Text style={styles.channel_tag_text}>{item}</Text>
                     </View>
-                  </ImageBackground>
-                  <View style={styles.trailer_textContainer}>
-                    <View style={{borderBottomRightRadius: 6}}>
-                      <Text style={styles.trailer_text}>预告片</Text>
-                    </View>
-                  </View>
-                  <View style={styles.trailer_timeContainer}>
-                    <Text style={{
-                      color: '#FFF', marginRight: 5, marginBottom: 5
-                    }}>5:00</Text>
-                  </View>
-                </TouchableOpacity>
-                : null}
-              {bigPhotos?.map((item, index) => (
-                <TouchableOpacity
-                  key={index} onPress={() => {
-                  this.setState({imageModalVisible: true, imageModalUrl: item.image})
-                }}>
-                  <Image
-                    source={{uri: item.image}}
-                    style={styles.big_photo}/>
-                </TouchableOpacity>
-              ))}
-              <View style={{flexWrap: 'wrap', height: 150}}>
-                {smallPhotos.map((item, index, array) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => {
-                      this.setState({imageModalVisible: true, imageModalUrl: item.image})
-                    }}
-                  >
-                    <Image
-                      source={{uri: item.image}}
-                      style={{
-                        width: 100,
-                        height: 74,
-                        marginLeft: 2,
-                        marginTop: index % 2 === 0 ? 0 : 2,
-                        borderTopRightRadius: index === (array.length - 2) ? BORDER_PHOTO : 0,
-                        borderBottomRightRadius: index === (array.length - 1) ? BORDER_PHOTO : 0
-                      }}/>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </ScrollView>
-          </View>
+                  ))
+                }
+              </ScrollView>
+            </View>
 
-          <View
-            style={styles.title_comment}>
-            <Text style={styles.bold_text}>短评</Text>
-            <Text>全部</Text>
-          </View>
-          <View style={[styles.comment_container, {backgroundColor: deepThemeColor}]}>
-            <View style={{marginHorizontal: 5}}>
-              {detail.popular_comments?.map((item, index) => (
-                <View key={index} style={{paddingHorizontal: 10}}>
-                  <View
-                    style={styles.comment_author}>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                      <Image source={{uri: item.author?.avatar}} style={{width: 36, height: 36, borderRadius: 18}}/>
-                      <View style={{marginLeft: 10}}>
-                        <Text style={[styles.comment_text, {fontWeight: 'bold'}]}>{item.author?.name}</Text>
-                        <StarRating numberOfAllStars={5} starImageSize={12} numberOfFill={item.rating.value}
-                                    containerStyle={{width: 60, marginTop: 4}}/>
+            <View style={{marginHorizontal: 10, marginTop: 10}}>
+              <Text style={styles.bold_text}>简介</Text>
+              <Text style={{color: '#FFF', paddingVertical: 2, fontSize: 16, lineHeight: 19}}
+                    numberOfLines={5}
+                    ellipsizeMode={'tail'}
+              >{(detail.summary ? detail.summary : '暂无简介内容') + '\n\n'}</Text>
+            </View>
+
+            <View style={{marginHorizontal: 10, marginTop: 10}}>
+              <Text style={styles.bold_text}>演职员</Text>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                {directorsAndCasts.map((item, index) => {
+                  const directorAndCastImage = item.avatars?.small ? {uri: item.avatars?.small} : ICON_NO_IMAGE;
+                  return (
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.props.navigation.navigate('Celebrity', {item: item})
+                      }}
+                      key={index} style={{width: 90, height: 180, marginRight: 6, justifyContent: 'flex-start'}}>
+                      <Image source={directorAndCastImage} resizeMode={'contain'}
+                             style={{width: 90, height: 140, borderRadius: 5}}/>
+                      <Text style={{fontSize: 13, color: '#FFF'}}>{item.name}</Text>
+                    </TouchableOpacity>
+                  )
+                })}
+              </ScrollView>
+            </View>
+
+            <View
+              style={[styles.title_comment, {marginTop: 0}]}>
+              <Text style={styles.bold_text}>剧照</Text>
+              <Text onPress={() => {
+                this.props.navigation.navigate('PhotoList')
+              }} style={{color: '#FFF', fontSize: 16}}>全部</Text>
+            </View>
+
+            <View style={{marginHorizontal: 10}}>
+              {/*<Text style={styles.bold_text}>剧照</Text>*/}
+              <ScrollView
+                style={{marginTop: 10}}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}
+              >
+                {trailerObject?.medium ?
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({videoModalVisible: true, currentVideoUrl: trailerObject.resource_url})
+                      // this.props.navigation.navigate('MovieVideo', {videoUri: trailerObject.resource_url});
+                    }}>
+                    <ImageBackground
+                      source={{uri: trailerObject?.medium}}
+                      style={[styles.big_photo, styles.trailer_image]}>
+                      <View
+                        style={styles.trailer_play}>
+                        <Image source={ICON_PLAY} style={{width: 30, height: 30}}/>
+                      </View>
+                    </ImageBackground>
+                    <View style={styles.trailer_textContainer}>
+                      <View style={{borderBottomRightRadius: 6}}>
+                        <Text style={styles.trailer_text}>预告片</Text>
                       </View>
                     </View>
-                    <Text style={{color: '#9e9e9e'}}>{item.created_at?.split(' ')?.[0]}</Text>
-                  </View>
-                  <Text style={styles.comment_text}
-                        numberOfLines={4}>{item.content}</Text>
-                  <View style={{height: 1, backgroundColor: '#919191', marginTop: 15}}/>
+                    <View style={styles.trailer_timeContainer}>
+                      <Text style={{
+                        color: '#FFF', marginRight: 5, marginBottom: 5
+                      }}>5:00</Text>
+                    </View>
+                  </TouchableOpacity>
+                  : null}
+                {bigPhotos?.map((item, index) => (
+                  <TouchableOpacity
+                    key={index} onPress={() => {
+                    this.setState({imageModalVisible: true, imageModalUrl: item.image})
+                  }}>
+                    <Image
+                      source={{uri: item.image}}
+                      style={styles.big_photo}/>
+                  </TouchableOpacity>
+                ))}
+                <View style={{flexWrap: 'wrap', height: 150}}>
+                  {smallPhotos.map((item, index, array) => (
+                    <TouchableOpacity
+                      key={index}
+                      onPress={() => {
+                        this.setState({imageModalVisible: true, imageModalUrl: item.image})
+                      }}
+                    >
+                      <Image
+                        source={{uri: item.image}}
+                        style={{
+                          width: 100,
+                          height: 74,
+                          marginLeft: 2,
+                          marginTop: index % 2 === 0 ? 0 : 2,
+                          borderTopRightRadius: index === (array.length - 2) ? BORDER_PHOTO : 0,
+                          borderBottomRightRadius: index === (array.length - 1) ? BORDER_PHOTO : 0
+                        }}/>
+                    </TouchableOpacity>
+                  ))}
                 </View>
-              ))}
+              </ScrollView>
             </View>
-          </View>
 
+            <View
+              style={styles.title_comment}>
+              <Text style={styles.bold_text}>短评</Text>
+              <Text>全部</Text>
+            </View>
+            <View style={[styles.comment_container, {backgroundColor: deepThemeColor}]}>
+              <View style={{marginHorizontal: 5}}>
+                {detail.popular_comments?.map((item, index) => (
+                  <View key={index} style={{paddingHorizontal: 10}}>
+                    <View
+                      style={styles.comment_author}>
+                      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Image source={{uri: item.author?.avatar}} style={{width: 36, height: 36, borderRadius: 18}}/>
+                        <View style={{marginLeft: 10}}>
+                          <Text style={[styles.comment_text, {fontWeight: 'bold'}]}>{item.author?.name}</Text>
+                          <StarRating numberOfAllStars={5} starImageSize={12} numberOfFill={item.rating.value}
+                                      containerStyle={{width: 60, marginTop: 4}}/>
+                        </View>
+                      </View>
+                      <Text style={{color: '#9e9e9e'}}>{item.created_at?.split(' ')?.[0]}</Text>
+                    </View>
+                    <Text style={styles.comment_text}
+                          numberOfLines={4}>{item.content}</Text>
+                    <View style={{height: 1, backgroundColor: '#919191', marginTop: 15}}/>
+                  </View>
+                ))}
+              </View>
+            </View>
 
-        </ScrollView>
+          </ScrollView>
+        }
 
         <Modal
           isVisible={this.state.videoModalVisible}

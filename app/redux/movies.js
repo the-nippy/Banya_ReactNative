@@ -154,7 +154,7 @@ export function operateComingMovies(startIndex) {
         })
       }
     } catch (e) {
-      throw new BanError(100)
+      throw e
     }
   }
 }
