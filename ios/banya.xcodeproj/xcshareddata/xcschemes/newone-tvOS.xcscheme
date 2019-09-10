@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-               BuildableName = "newone-tvOS.app"
-               BlueprintName = "newone-tvOS"
-               ReferencedContainer = "container:newone.xcodeproj">
+               BuildableName = "banya-tvOS.app"
+               BlueprintName = "banya-tvOS"
+               ReferencedContainer = "container:banya.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "newone-tvOSTests.xctest"
-               BlueprintName = "newone-tvOSTests"
-               ReferencedContainer = "container:newone.xcodeproj">
+               BuildableName = "banya-tvOSTests.xctest"
+               BlueprintName = "banya-tvOSTests"
+               ReferencedContainer = "container:banya.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -61,9 +61,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "2D02E48F1E0B4A5D006451C7"
-               BuildableName = "newone-tvOSTests.xctest"
-               BlueprintName = "newone-tvOSTests"
-               ReferencedContainer = "container:newone.xcodeproj">
+               BuildableName = "banya-tvOSTests.xctest"
+               BlueprintName = "banya-tvOSTests"
+               ReferencedContainer = "container:banya.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -71,9 +71,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "newone-tvOS.app"
-            BlueprintName = "newone-tvOS"
-            ReferencedContainer = "container:newone.xcodeproj">
+            BuildableName = "banya-tvOS.app"
+            BlueprintName = "banya-tvOS"
+            ReferencedContainer = "container:banya.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -94,9 +94,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "newone-tvOS.app"
-            BlueprintName = "newone-tvOS"
-            ReferencedContainer = "container:newone.xcodeproj">
+            BuildableName = "banya-tvOS.app"
+            BlueprintName = "banya-tvOS"
+            ReferencedContainer = "container:banya.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -113,9 +113,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "2D02E47A1E0B4A5D006451C7"
-            BuildableName = "newone-tvOS.app"
-            BlueprintName = "newone-tvOS"
-            ReferencedContainer = "container:newone.xcodeproj">
+            BuildableName = "banya-tvOS.app"
+            BlueprintName = "banya-tvOS"
+            ReferencedContainer = "container:banya.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
