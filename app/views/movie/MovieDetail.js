@@ -75,26 +75,6 @@ class MovieDetail extends PureComponent {
     await this.freshData();
   }
 
-  componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
-  }
-
-  handleBackPress = () => {
-
-    console.info('this.state.imageModalVisible',this.state.imageModalVisible)
-    console.info('this.state.videoModalVisible',this.state.videoModalVisible)
-    // this.goBack(); // works best when the goBack is async
-    if (this.state.imageModalVisible || this.state.videoModalVisible) {
-      this.modalDisable();
-      console.warn('change State')
-      return true;
-    }
-    return false;
-  }
-
-  modalDisable = async () => {
-    this.setState({imageModalVisible: false, videoModalVisible: false})
-  }
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
@@ -473,6 +453,7 @@ class MovieDetail extends PureComponent {
         <Modal
           isVisible={this.state.videoModalVisible}
           onBackdropPress={() => this.setState({videoModalVisible: false})}
+          onBackButtonPress={() => this.setState({videoModalVisible: false})}
           // backdropColor={"#B4B3DB"}
           backdropOpacity={0.6}
           animationIn="zoomInDown"
@@ -487,6 +468,7 @@ class MovieDetail extends PureComponent {
 
         <Modal
           isVisible={this.state.imageModalVisible}
+          onBackButtonPress={() => this.setState({imageModalVisible: false})}
           enableSwipeDown={true}
           onBackdropPress={() => this.setState({imageModalVisible: false})}
         >
