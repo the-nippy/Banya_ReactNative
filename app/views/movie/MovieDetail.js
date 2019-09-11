@@ -32,7 +32,7 @@ import StarRating from "../../component/starRating/StarRating";
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 //数据
-import {TOOLBAR_HEIGHT} from "../../component/header/Toolbar.style";
+import {PADDING_TOP, TOOLBAR_HEIGHT} from "../../component/header/Toolbar.style";
 import {getMovieDetailData} from "../../utils/request/MovieR";
 import {getDeeperColor, transformRateToValue} from "./util";
 import SimpleProgress from "../../component/progress/SimpleProgress";
@@ -212,16 +212,17 @@ class MovieDetail extends PureComponent {
         <View
           // alpha={0.5}
           style={[styles.head_container, {backgroundColor: themeColor + this.state.titleAlpha}]}>
-
-          <TouchableOpacity onPress={() => {
-            this.props.navigation.goBack();
-          }}>
-            <Image source={ICON_BACK} style={{width: 18, height: 18}} resizeMode='contain'/>
-          </TouchableOpacity>
-          <Text style={{color: '#dddddd', fontSize: 18}}>
-            {item.title}
-          </Text>
-          <Image source={ICON_MENU} style={{width: 18, height: 18}}/>
+          <View style={styles.head_viewer}>
+            <TouchableOpacity onPress={() => {
+              this.props.navigation.goBack();
+            }}>
+              <Image source={ICON_BACK} style={{width: 18, height: 18}} resizeMode='contain'/>
+            </TouchableOpacity>
+            <Text style={{color: '#dddddd', fontSize: 18}}>
+              {item.title}
+            </Text>
+            <Image source={ICON_MENU} style={{width: 18, height: 18}}/>
+          </View>
 
         </View>
 
@@ -484,13 +485,9 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
     // opacity:0.3,
     zIndex: 100,
-    // alpha: 0.8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     paddingHorizontal: 15,
-    height: TOOLBAR_HEIGHT,
-    // backgroundColor: '#4b7bab66'
+    height: TOOLBAR_HEIGHT
   },
   channel_tag: {
     paddingHorizontal: 6,
@@ -544,6 +541,14 @@ const styles = StyleSheet.create({
     marginTop: 5,
     paddingTop: 5,
     borderRadius: 8
+  },
+  head_viewer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    // zIndex: 100,
+    justifyContent: 'space-between',
+    height: TOOLBAR_HEIGHT,
+    paddingTop: PADDING_TOP
   },
   rating_middle: {
     flexDirection: 'row',

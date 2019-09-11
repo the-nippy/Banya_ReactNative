@@ -7,7 +7,7 @@ export const TOOLBAR_HEIGHT = Platform.select({
   ios: 44 + STATUS_BAR_HEIGHT_IOS,
   android: 44,
 });
-const PADDING_TOP = Platform.select({
+export const PADDING_TOP = Platform.select({
   ios: STATUS_BAR_HEIGHT_IOS,
   android: 0,
 });
