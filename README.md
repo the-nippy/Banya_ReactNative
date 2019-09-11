@@ -20,8 +20,8 @@
  - redux-persist　数据持久化
  - prop-types　类型检查
 
-
-###主要第三方库：
+ 
+### 主要第三方库：
 
  - react-native-swiper　轮播组件
  - react-native-modal　弹出框组件

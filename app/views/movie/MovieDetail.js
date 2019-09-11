@@ -15,6 +15,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   // Modal,
+  BackHandler,
 } from 'react-native';
 
 import Toolbar from "../../component/header/Toolbar";
@@ -74,6 +75,32 @@ class MovieDetail extends PureComponent {
     await this.freshData();
   }
 
+  componentDidMount() {
+    BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+  }
+
+  handleBackPress = () => {
+
+    console.info('this.state.imageModalVisible',this.state.imageModalVisible)
+    console.info('this.state.videoModalVisible',this.state.videoModalVisible)
+    // this.goBack(); // works best when the goBack is async
+    if (this.state.imageModalVisible || this.state.videoModalVisible) {
+      this.modalDisable();
+      console.warn('change State')
+      return true;
+    }
+    return false;
+  }
+
+  modalDisable = async () => {
+    this.setState({imageModalVisible: false, videoModalVisible: false})
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    // this.backHandler.remove();
+  }
+
   freshData = async () => {
     this.setState({loadState: STATES.LOADING})
     const {item} = this.props.navigation.state.params;
@@ -120,7 +147,7 @@ class MovieDetail extends PureComponent {
 
   //处理ScrollView滚动，设置标题透明度
   dealViewScroll = ({nativeEvent}) => {
-    console.info('nativeEvent', nativeEvent);
+    // console.info('nativeEvent', nativeEvent);
     const contentOffset = nativeEvent.contentOffset;
     if (contentOffset.y > 80) {
       this.checkAlpha(0)
