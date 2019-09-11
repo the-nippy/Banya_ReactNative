@@ -29,6 +29,7 @@ export function DealError(error) {
     case 2:
       break;
     default:
+      ShowToast('Error' + e.toString());
       break;
 
   }

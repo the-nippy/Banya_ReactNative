@@ -20,7 +20,8 @@ import {changeLocationState} from "../../redux/public";
 import {getNewMovies} from "../../utils/request/MovieR";
 
 import LinearView from "../../component/linear/LinearView";
-import MovieSimpleItem from "../../component/movieItem/MovieSimpleItem";
+import MovieSimpleItem, {ITEM_SIMPLE_HEIGHT} from "../../component/movieItem/MovieSimpleItem";
+import {ITEM_250_HEIGHT} from "../../component/movieItem/MovieItem250";
 
 
 class NewMovie extends PureComponent {
@@ -38,13 +39,6 @@ class NewMovie extends PureComponent {
     console.info('new_movies', movies);
     this.setState({newMoviesList: movies.subjects})
 
-    //新片榜不需要定位
-    // try {
-    //   let location = await getCityFromLocation();
-    //   console.info('location', location)
-    // } catch (e) {
-    //   console.warn('e!!', e)
-    // }
   }
 
 
@@ -55,6 +49,15 @@ class NewMovie extends PureComponent {
         isShowGrade={true}
       />
     );
+  }
+
+  layoutItem = (data, index) => {
+    // console.info('[layoutItem]index', index)
+    return {
+      length: ITEM_SIMPLE_HEIGHT,
+      offset: (ITEM_SIMPLE_HEIGHT) * index,
+      index,
+    }
   }
 
   _keyExtractor = (item, index) => index.toString();
@@ -72,6 +75,7 @@ class NewMovie extends PureComponent {
           data={this.state.newMoviesList}
           extraData={this.state}
           renderItem={this.renderTop250Item}
+          getItemLayout={this.layoutItem}
         />
 
       </LinearView>
@@ -83,6 +87,6 @@ class NewMovie extends PureComponent {
 export default connect(state => ({
   isAllowLocation: state.publicInfo.isAllowLocation
 }), {
-  changeLocationState,
+  // changeLocationState,
 })(NewMovie);
 

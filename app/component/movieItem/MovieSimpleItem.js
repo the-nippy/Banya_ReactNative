@@ -21,6 +21,10 @@ const ITEM_HEIGHT = 166;
 const ITEM_IMAGE_HEIGHT = 150;
 const ITEM_IMAGE_WIDTH = 106;
 
+const MARGIN_VERTICAL = 5;
+const PADDING_VERTICAL = 8;
+const ITEM_SIMPLE_HEIGHT = ITEM_IMAGE_HEIGHT + 2 * (MARGIN_VERTICAL + PADDING_VERTICAL);
+export {ITEM_SIMPLE_HEIGHT};
 
 class MovieSimpleItem extends PureComponent {
 
@@ -146,9 +150,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 10,
-    marginVertical: 5,
+    marginVertical: MARGIN_VERTICAL,
     backgroundColor: '#FFF',
-    borderRadius: 8,
+    borderRadius: PADDING_VERTICAL,
     paddingVertical: 8,
     paddingHorizontal: 8
   },

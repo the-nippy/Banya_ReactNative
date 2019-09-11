@@ -32,6 +32,8 @@ import {appendNewTop250Data} from '../../redux/movies';
 
 //资源
 import {COLOR, WIDTH} from "../../utils/contants";
+import {LoadingView, STATES} from "../loading/LoadingView";
+import {DealError} from "../../utils/BanError";
 
 const ICON_LEFT = require('../../constant/image/movie/left.png');
 const ICON_RIGHT = require('../../constant/image/movie/right.png');
@@ -55,6 +57,8 @@ class Top250 extends PureComponent {
       // start: this.page,
       top250List: [],
       isBottomLoadingShow: false,
+
+      loadState: STATES.LOADING,
     }
   }
 
@@ -62,21 +66,26 @@ class Top250 extends PureComponent {
     console.info('this.state.page', this.state.page)
     const currentPageData = this.props.top250List?.[this.state.page] || [];
     if (currentPageData.length === 0) {
-      await this.freshData(this.state.start, this.state.end);
+      await this.freshData();
+    } else {
+      this.setState({loadState: ''})
     }
   }
 
   //是追加数据时，拼接到原有数据
-  freshData = async (start, end) => {
-
+  freshData = async () => {
     //Todo  设置loading和处理error
     try {
       await this.props.appendNewTop250Data(this.state.page, this.state.nodeIndex);
+      this.setState({loadState: '', isBottomLoadingShow: false})
+      console.info('top250 over')
     } catch (e) {
       console.warn('freshData', e)
+      DealError(e);
+      this.setState({loadState: STATES.FAIL, isBottomLoadingShow: false});
     }
-    this.setState({isBottomLoadingShow: false})
-    this.forceUpdate();
+    // this.setState({isBottomLoadingShow: false})
+    // this.forceUpdate();
   }
 
   ratingCompleted(rating) {
@@ -94,7 +103,7 @@ class Top250 extends PureComponent {
   onToNextPagePress = () => {
     const currentPage = this.state.page;
     if (currentPage <= 3) {
-      this.setState({page: (currentPage + 1), nodeIndex: 0}, this.freshData)
+      this.setState({page: (currentPage + 1), nodeIndex: 0, loadState: STATES.LOADING}, this.freshData)
     }
   }
 
@@ -102,9 +111,7 @@ class Top250 extends PureComponent {
     const currentPageData = this.props.top250List?.[this.state.page] || [];
     console.info('To250到底,当前长度', currentPageData.length)
     if (currentPageData.length === 25) {
-      this.setState({nodeIndex: 1, isBottomLoadingShow: true}, () => {
-        this.freshData()
-      })
+      this.setState({nodeIndex: 1, isBottomLoadingShow: true}, this.freshData)
     } else if (currentPageData.length === 50) {
 
     }
@@ -131,7 +138,7 @@ class Top250 extends PureComponent {
   layoutItem = (data, index) => {
     // console.info('[layoutItem]index', index)
     return {
-      length: ITEM_250_HEIGHT + 8,
+      length: ITEM_250_HEIGHT,
       offset: (ITEM_250_HEIGHT) * index,
       index,
     }
@@ -176,54 +183,56 @@ class Top250 extends PureComponent {
           </View>
         </View>
 
-        <FlatList
-          keyExtractor={this._keyExtractor}
-          data={currentPageData}
-          extraData={this.props.top250List}
-          renderItem={this.renderTop250Item}
-          onEndReachedThreshold={0.3}
-          onEndReached={this.reachListBottom}
-          getItemLayout={this.layoutItem}
-          ListFooterComponent={() => {
-            if (this.state.isBottomLoadingShow) {
-              return (
-                <View style={{height: 60, justifyContent: 'center', alignItems: 'center'}}>
-                  <ActivityIndicator size={'large'}/>
-                </View>
-              );
-            } else {
-              if (!showBottomToNext) {
-                return null;
-              }
-              return (
-                <TouchableOpacity
-                  onPress={this.onToNextPagePress}
-                  style={{
-                    height: 60,
-                    justifyContent: 'flex-end',
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                  }}>
-                  {this.state.page === 4 ? null :
-                    <View style={{flexDirection: 'row', backgroundColor: COLOR.defaultColor, alignItems: 'center'}}>
-                      <Text style={{
-                        paddingHorizontal: 8,
-                        paddingVertical: 4,
-                        color: '#FFF',
-                        fontStyle: 'italic'
-                      }}>{'Top ' + ((this.state.page + 1) * 50 + 1) + '-' + (this.state.page + 2) * 50}</Text>
-                      <Image source={ICON_RIGHT_ARROW}
-                             style={{backgroundColor: COLOR.defaultColor, height: 16, width: 28}}/>
-
-                    </View>}
-                  <View style={{...StyleSheet.absoluteFill, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text style={{fontSize: 15}}>到底了</Text>
+        {(this.state.loadState === STATES.LOADING || this.state.loadState === STATES.FAIL)
+          ? <LoadingView loadingState={this.state.loadState} reloadData={this.freshData}/>
+          : <FlatList
+            keyExtractor={this._keyExtractor}
+            data={currentPageData}
+            extraData={this.props.top250List}
+            renderItem={this.renderTop250Item}
+            onEndReachedThreshold={0.3}
+            onEndReached={this.reachListBottom}
+            getItemLayout={this.layoutItem}
+            ListFooterComponent={() => {
+              if (this.state.isBottomLoadingShow) {
+                return (
+                  <View style={{height: 60, justifyContent: 'center', alignItems: 'center'}}>
+                    <ActivityIndicator size={'large'}/>
                   </View>
-                </TouchableOpacity>
-              );
-            }
-          }}
-        />
+                );
+              } else {
+                if (!showBottomToNext) {
+                  return null;
+                }
+                return (
+                  <TouchableOpacity
+                    onPress={this.onToNextPagePress}
+                    style={{
+                      height: 60,
+                      justifyContent: 'flex-end',
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                    }}>
+                    {this.state.page === 4 ? null :
+                      <View style={{flexDirection: 'row', backgroundColor: COLOR.defaultColor, alignItems: 'center'}}>
+                        <Text style={{
+                          paddingHorizontal: 8,
+                          paddingVertical: 4,
+                          color: '#FFF',
+                          fontStyle: 'italic'
+                        }}>{'Top ' + ((this.state.page + 1) * 50 + 1) + '-' + (this.state.page + 2) * 50}</Text>
+                        <Image source={ICON_RIGHT_ARROW}
+                               style={{backgroundColor: COLOR.defaultColor, height: 16, width: 28}}/>
+
+                      </View>}
+                    <View style={{...StyleSheet.absoluteFill, justifyContent: 'center', alignItems: 'center'}}>
+                      <Text style={{fontSize: 15}}>到底了</Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }
+            }}
+          />}
 
         {/*{this.showBottomView()}*/}
 
@@ -245,7 +254,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: 40
+    height: 40,
+    zIndex: 100
   },
   barContainer: {
     marginHorizontal: 20,
@@ -253,6 +263,7 @@ const styles = StyleSheet.create({
     height: 40,
     flexDirection: 'row',
     backgroundColor: '#FFF',
-    borderRadius: 10
+    borderRadius: 10,
+    // zIndex: 100
   },
 })
