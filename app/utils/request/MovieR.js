@@ -105,6 +105,29 @@ const getMovieDetailData = (movie_id) => {
   })
 }
 
+//获取影人条目信息
+const getCelebrityDetailData = (celebrityId) => {
+  if (!celebrityId) {
+    console.warn('celebrityId为空')
+    return;
+  }
+  return new Promise((resolve, reject) => {
+    fetch(URLS.MOVIE.Celebrity + celebrityId).then(
+      res => {
+        res.json().then(
+          result => {
+            resolve(result);
+          }, err => {
+            reject(err);
+          }
+        )
+      }, err => {
+        reject(new BanError(100));
+      }
+    )
+  })
+}
+
 
 export {
   getTop250,
@@ -114,4 +137,5 @@ export {
   getWeeklyMovies,
   getUSBoxMovies,
   getMovieDetailData,
+  getCelebrityDetailData,
 }

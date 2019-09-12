@@ -13,8 +13,8 @@ export const URLS = {
     Coming_Soon: BASE + '/movie/coming_soon',
     Weekly: BASE + '/movie/weekly',
     US_Box: BASE + '/movie/us_box',
-    Detail: BASE + '/movie/subject/'
-
+    Detail: BASE + '/movie/subject/',
+    Celebrity:BASE+'/movie/celebrity/',
   },
 
   MAP: {
