@@ -105,7 +105,7 @@ export default class Celebrity extends PureComponent {
                   <TouchableOpacity
                     key={index}
                     onPress={() => {
-                      this.props.navigation.push('MovieDetail', {item: item})
+                      this.props.navigation.push('MovieDetail', {item: item, type: 'back'})
                     }}
                     style={{
                       height: 185,
