@@ -47,7 +47,9 @@ export default class Celebrity extends PureComponent {
     try {
       let detailData = await getCelebrityDetailData(item.id);
       console.info('detailData', detailData)
-      this.setState({celebrity: detailData, loadState: ''})
+      if (detailData != undefined) {
+        this.setState({celebrity: detailData, loadState: ''})
+      }
     } catch (e) {
       console.warn(e)
       DealError(e);
@@ -105,7 +107,7 @@ export default class Celebrity extends PureComponent {
                   <TouchableOpacity
                     key={index}
                     onPress={() => {
-                      this.props.navigation.push('MovieDetail', {item: item, type: 'back'})
+                      this.props.navigation.push('MovieDetail', {item: item.subject})
                     }}
                     style={{
                       height: 185,

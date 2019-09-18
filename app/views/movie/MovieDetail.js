@@ -41,6 +41,7 @@ import SimpleProgress from "../../component/progress/SimpleProgress";
 import {connect} from 'react-redux';
 import {LoadingView, STATES} from "../loading/LoadingView";
 import {DealError} from "../../utils/BanError";
+import {ShowToast} from "../../utils/toast";
 
 //资源
 const ICON_BACK = require('../../constant/image/back.png');
@@ -74,10 +75,6 @@ class MovieDetail extends PureComponent {
   }
 
   async componentWillMount() {
-    console.info('MovieDetail[componentWillMount]')
-    const {item, type} = this.props.navigation.state.params;
-    console.info('MovieDetail[item]', item);
-    console.info('MovieDetail[type]', type);
     await this.freshData();
   }
 
@@ -93,7 +90,9 @@ class MovieDetail extends PureComponent {
     try {
       let movieDetailData = await getMovieDetailData(item.id);
       console.info('详情页数据', movieDetailData);
-      this.setState({detail: movieDetailData, loadState: ''})
+      if (movieDetailData != undefined) {
+        this.setState({detail: movieDetailData, loadState: ''})
+      }
     } catch (e) {
       DealError(e);
       this.setState({loadState: STATES.FAIL})
@@ -332,11 +331,20 @@ class MovieDetail extends PureComponent {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
               {directorsAndCasts.map((item, index) => {
-                const directorAndCastImage = item.avatars?.small ? {uri: item.avatars?.small} : ICON_NO_IMAGE;
+                //点击事件需要isDirectorAndCastImage变量，不写成三目运算符
+                const isDirectorAndCastImage = !!item.avatars?.small;
+                let directorAndCastImage = ICON_NO_IMAGE;
+                if (isDirectorAndCastImage) {
+                  directorAndCastImage = {uri: item.avatars?.small}
+                }
                 return (
                   <TouchableOpacity
                     onPress={() => {
-                      this.props.navigation.navigate('Celebrity', {item: item})
+                      if (isDirectorAndCastImage) {
+                        this.props.navigation.navigate('Celebrity', {item: item})
+                      } else {
+                        ShowToast('暂无相影人关信息')
+                      }
                     }}
                     key={index} style={{width: 90, height: 180, marginRight: 6, justifyContent: 'flex-start'}}>
                     <Image source={directorAndCastImage} resizeMode={'contain'}
@@ -443,11 +451,11 @@ class MovieDetail extends PureComponent {
                                     containerStyle={{width: 60, marginTop: 4}}/>
                       </View>
                     </View>
-                    <Text style={{color: '#9e9e9e'}}>{item.created_at?.split(' ')?.[0]}</Text>
+                    <Text style={{color: '#eae3db'}}>{item.created_at?.split(' ')?.[0]}</Text>
                   </View>
                   <Text style={styles.comment_text}
                         numberOfLines={4}>{item.content}</Text>
-                  <View style={{height: 1, backgroundColor: '#919191', marginTop: 15}}/>
+                  <View style={{height: StyleSheet.hairlineWidth, backgroundColor: '#e7e7e7', marginTop: 15}}/>
                 </View>
               ))}
             </View>
@@ -580,7 +588,8 @@ const styles = StyleSheet.create({
   comment_container: {
     marginHorizontal: 10,
     marginTop: 10,
-    borderRadius: 10
+    borderRadius: 10,
+    marginBottom: 20,
   },
   comment_author: {
     flexDirection: 'row',
