@@ -17,6 +17,8 @@ import Toolbar from '../../component/header/Toolbar';
 import LinearView from '../../component/linear/LinearView';
 import Swiper from 'react-native-swiper';
 import {connect} from 'react-redux';
+import ScrollableTabView, {ScrollableTabBar} from 'react-native-scrollable-tab-view';
+
 
 //数据
 import {COLOR, WIDTH} from "../../utils/contants";
@@ -27,6 +29,7 @@ import {operateComingMovies} from "../../redux/movies";
 import MovieSimpleItem from "../../component/movieItem/MovieSimpleItem";
 import {LoadingView, STATES} from "../loading/LoadingView";
 import {DealError} from "../../utils/BanError";
+import {MyPage} from "./PhotoList";
 
 
 //资源
@@ -78,7 +81,7 @@ class Movie extends PureComponent {
       await this.props.operateComingMovies(0);
       let weeklyMovies = await getWeeklyMovies();
       let usBoxMovies = await getUSBoxMovies();
-      this.setState({weeklyMovies: weeklyMovies.subjects, usBoxMovies: usBoxMovies.subjects,loadState:''})
+      this.setState({weeklyMovies: weeklyMovies.subjects, usBoxMovies: usBoxMovies.subjects, loadState: ''})
       // this.setState({loadState: ''})
       this.forceUpdate();
     } catch (e) {
@@ -211,48 +214,40 @@ class Movie extends PureComponent {
                   style={{paddingHorizontal: 5, paddingVertical: 5, borderRadius: 7}}>
                   <Image source={Icons[index]} style={styles.function_image}/>
                 </LinearView>
-                <Text style={{fontSize: 12, color: '#FFF', marginTop: 5}}>{item}</Text>
+                <Text style={{fontSize: 14, color: '#FFF', marginTop: 5}}>{item}</Text>
               </TouchableOpacity>
             );
           })}
         </View>
 
-        <LinearView
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 1}}
-          colors={['#8eaa9d', '#fdfff2', '#f2eec7']}
-          style={{marginTop: 10, height: 40, flexDirection: 'row', alignItems: 'center'}}
+        <ScrollableTabView
+          renderTabBar={() => <ScrollableTabBar someProp={'here'}/>}
+          style={{backgroundColor: '#FFF', flex: 1, height: 800, marginTop: 10}}
+          tabBarActiveTextColor={this.props.themeColor}
+          tabBarUnderlineStyle={{backgroundColor: this.props.themeColor}}
+          tabBarTextStyle={{fontSize: 15}}
         >
-          <Text>口碑榜</Text>
-        </LinearView>
-
-        <FlatList
-          extraData={[this.state, this.props.themeColor]}
-          renderItem={this.renderListMovie}
-          data={this.state.weeklyMovies}
-          numColumns={3}
-          keyExtractor={(item, index) => index.toString()}
-          getItemLayout={this.layoutItem}
-        />
-
-
-        <LinearView
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 1}}
-          colors={['#8eaa9d', '#fdfff2', '#f2eec7']}
-          style={{marginTop: 10, height: 40, flexDirection: 'row', alignItems: 'center'}}
-        >
-          <Text>豆瓣电影北美票房榜</Text>
-        </LinearView>
-
-        <FlatList
-          extraData={[this.state, this.props.themeColor]}
-          renderItem={this.renderListMovie}
-          data={this.state.usBoxMovies}
-          numColumns={3}
-          keyExtractor={(item, index) => index.toString()}
-          getItemLayout={this.layoutItem}
-        />
+          <View tabLabel="口碑榜">
+            <FlatList
+              extraData={[this.state, this.props.themeColor]}
+              renderItem={this.renderListMovie}
+              data={this.state.weeklyMovies}
+              numColumns={3}
+              keyExtractor={(item, index) => index.toString()}
+              getItemLayout={this.layoutItem}
+            />
+          </View>
+          <View tabLabel="一周票房榜">
+            <FlatList
+              extraData={[this.state, this.props.themeColor]}
+              renderItem={this.renderListMovie}
+              data={this.state.usBoxMovies}
+              numColumns={3}
+              keyExtractor={(item, index) => index.toString()}
+              getItemLayout={this.layoutItem}
+            />
+          </View>
+        </ScrollableTabView>
 
       </ScrollView>
     );
