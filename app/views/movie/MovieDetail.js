@@ -36,7 +36,7 @@ import ImageViewer from 'react-native-image-zoom-viewer';
 //数据
 import {PADDING_TOP, TOOLBAR_HEIGHT} from "../../component/header/Toolbar.style";
 import {getMovieDetailData} from "../../utils/request/MovieR";
-import {getDeeperColor, transformRateToValue} from "./util";
+import {getDeeperColor, transformRateToValue, transformToZoomImageData} from "./util";
 import SimpleProgress from "../../component/progress/SimpleProgress";
 import {connect} from 'react-redux';
 import {LoadingView, STATES} from "../loading/LoadingView";
@@ -67,7 +67,7 @@ class MovieDetail extends PureComponent {
       videoModalVisible: false,
       currentVideoUrl: '',
       imageModalVisible: false,
-      imageModalUrl: '',
+      imageModalIndex: 0,
       //头部透明度
       titleAlpha: alphaValues[0],
 
@@ -218,6 +218,11 @@ class MovieDetail extends PureComponent {
     const bigPhotos = detail.photos?.slice(0, 2) || [];
 
     const smallPhotos = detail.photos?.slice(2, 10) || [];
+
+    const allPhotos = bigPhotos.concat(smallPhotos);
+
+    // console.info('bigPhotos', bigPhotos)
+    // console.info('smallPhotos', smallPhotos)
 
     return (
       <View style={{flex: 1, backgroundColor: themeColor}}>
@@ -401,7 +406,7 @@ class MovieDetail extends PureComponent {
                 {bigPhotos?.map((item, index) => (
                   <TouchableOpacity
                     key={index} onPress={() => {
-                    this.setState({imageModalVisible: true, imageModalUrl: item.image})
+                    this.setState({imageModalVisible: true, imageModalIndex: index})
                   }}>
                     <Image
                       source={{uri: item.image}}
@@ -413,7 +418,7 @@ class MovieDetail extends PureComponent {
                     <TouchableOpacity
                       key={index}
                       onPress={() => {
-                        this.setState({imageModalVisible: true, imageModalUrl: item.image})
+                        this.setState({imageModalVisible: true, imageModalIndex: bigPhotos.length + index})
                       }}
                     >
                       <Image
@@ -455,7 +460,11 @@ class MovieDetail extends PureComponent {
                     </View>
                     <Text style={styles.comment_text}
                           numberOfLines={4}>{item.content}</Text>
-                    <View style={{height: StyleSheet.hairlineWidth, backgroundColor: '#e7e7e7', marginTop: 15}}/>
+                    <View style={{
+                      height: index === detail.popular_comments.length - 1 ? 0 : StyleSheet.hairlineWidth,
+                      backgroundColor: '#e7e7e7',
+                      marginTop: 15
+                    }}/>
                   </View>
                 ))}
               </View>
@@ -486,7 +495,27 @@ class MovieDetail extends PureComponent {
           enableSwipeDown={true}
           onBackdropPress={() => this.setState({imageModalVisible: false})}
         >
-          <ImageViewer imageUrls={[{url: this.state.imageModalUrl}]}/>
+          <ImageViewer
+            // imageUrls={[{url: this.state.imageModalUrl}]}
+            index={this.state.imageModalIndex}
+            imageUrls={transformToZoomImageData(allPhotos)}
+            renderHeader={() => (
+              <View style={{alignItems: 'flex-end'}}>
+                <TouchableOpacity
+                  style={[styles.modal_cancel_button, {
+                    backgroundColor: this.props.themeColor,
+                    marginTop: 8,
+                    marginRight: 8,
+                    marginBottom: 8
+                  }]}
+                  onPress={() => {
+                    this.setState({imageModalVisible: false})
+                  }}>
+                  <Image source={ICON_CANCEL} style={{width: 12, height: 12}} resizeMode={'contain'}/>
+                </TouchableOpacity>
+              </View>
+            )}
+          />
         </Modal>
 
       </View>

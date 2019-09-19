@@ -60,8 +60,8 @@ export default class Celebrity extends PureComponent {
   render() {
 
     const {celebrity, loadState} = this.state;
-    console.info('celebrity', celebrity)
-    console.info('loadState', loadState)
+    // console.info('celebrity', celebrity)
+    // console.info('loadState', loadState)
 
     return (
       <View style={{flex: 1}}>

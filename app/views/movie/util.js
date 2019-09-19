@@ -52,8 +52,25 @@ const getDeeperColor = (colorOfRgb) => {
   return '#' + newColorArray.join('');
 }
 
+//将 image 数据转化成适用于 react-native-image-zoom-viewer 的数据
+const transformToZoomImageData = (array) => {
+  if (!array) {
+    console.warn('transformToZoomImageData参数错误');
+    return [];
+  }
+  const imageData = array.map((item, index) => {
+    if (item.image) {
+      return {url: item.image}
+    } else {
+      return {props: require('../../constant/image/noPng.png')}
+    }
+  })
+  // console.info('imageData', imageData)
+  return imageData;
+}
 
 export {
   transformRateToValue,
   getDeeperColor,
+  transformToZoomImageData,
 }
