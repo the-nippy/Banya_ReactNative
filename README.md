@@ -28,8 +28,13 @@
  - react-native-linear-gradient　色彩渐变组件
  - react-native-image-zoom-viewer　图片预览查看组件
  - react-native-video　视频播放组件
- 
+ - react-native-scrollable-tab-view　滑动导航条tab-view组件
 
+### 下载安装
+
+[【瓣芽·Android】](https://fir.im/1aju)
+
+iOS 目前证书未完善，模拟机上可以运行。
 
 ### 待完善，持续更新中...
 
