@@ -80,14 +80,16 @@ class Movie extends PureComponent {
     try {
       await this.props.operateComingMovies(0);
       let weeklyMovies = await getWeeklyMovies();
-      let usBoxMovies = await getUSBoxMovies();
-      this.setState({weeklyMovies: weeklyMovies.subjects, usBoxMovies: usBoxMovies.subjects, loadState: ''})
+      // let usBoxMovies = await getUSBoxMovies();
+      this.setState({weeklyMovies: weeklyMovies.subjects,
+        // usBoxMovies: usBoxMovies.subjects,
+        loadState: ''})
       // this.setState({loadState: ''})
       this.forceUpdate();
     } catch (e) {
       // console.warn('catch error freshData', e);
-      DealError(e);
       this.setState({loadState: STATES.FAIL})
+      DealError(e);
     }
   }
 

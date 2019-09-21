@@ -2,8 +2,10 @@
  created by Lex. 2019/7/29
  **/
 
-const BASE = 'https://douban-api.uieee.com/v2';
+// const BASE = 'https://douban-api.uieee.com/v2';
+const BASE = 'https://douban.uieee.com/v2';
 // const BASE = 'https://douban-api.now.sh/v2';
+// const BASE = 'https://douban-api-git-master.zce.now.sh/V2';
 
 export const URLS = {
   MOVIE: {
@@ -14,7 +16,7 @@ export const URLS = {
     Weekly: BASE + '/movie/weekly',
     US_Box: BASE + '/movie/us_box',
     Detail: BASE + '/movie/subject/',
-    Celebrity:BASE+'/movie/celebrity/',
+    Celebrity: BASE + '/movie/celebrity/',
   },
 
   MAP: {

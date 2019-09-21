@@ -24,13 +24,11 @@ import {COLOR, WIDTH} from "../../utils/contants";
 import {NavigationEvents} from 'react-navigation'
 
 //组件
-// import {} from 'react-'
 import Video from 'react-native-video';
 import Modal from 'react-native-modal';
 import MovieSimpleItem from "../../component/movieItem/MovieSimpleItem";
 import {Rating} from "react-native-ratings";
 import StarRating from "../../component/starRating/StarRating";
-
 import ImageViewer from 'react-native-image-zoom-viewer';
 
 //数据
@@ -42,6 +40,7 @@ import {connect} from 'react-redux';
 import {LoadingView, STATES} from "../loading/LoadingView";
 import {DealError} from "../../utils/BanError";
 import {ShowToast} from "../../utils/toast";
+import {operateCollectMovies} from "../../redux/movies";
 
 //资源
 const ICON_BACK = require('../../constant/image/back.png');
@@ -49,6 +48,8 @@ const ICON_MENU = require('../../constant/image/menu_point.png');
 const ICON_NO_IMAGE = require('../../constant/image/noPng.png');
 const ICON_PLAY = require('../../constant/image/movie/play.png');
 const ICON_CANCEL = require('../../constant/image/cancel.png');
+const ICON_LOVE_RED = require('../../constant/image/movie/love_red.png');
+const ICON_LOVE_WHITE = require('../../constant/image/movie/love_white.png');
 
 
 const alphaValues = ['FF', '99'];
@@ -221,6 +222,12 @@ class MovieDetail extends PureComponent {
 
     const allPhotos = bigPhotos.concat(smallPhotos);
 
+    //是否已經被收藏
+    let isCurrentMovieCollected = false;
+    if (this.props.collectMovies) {
+      // isCurrentMovieCollected = this.props.collectMovies.has(item);
+    }
+
     // console.info('bigPhotos', bigPhotos)
     // console.info('smallPhotos', smallPhotos)
 
@@ -238,7 +245,12 @@ class MovieDetail extends PureComponent {
             <Text style={{color: '#dddddd', fontSize: 18}}>
               {item.title}
             </Text>
-            <Image source={ICON_MENU} style={{width: 18, height: 18}}/>
+            <TouchableOpacity onPress={() => {
+              this.props.operateCollectMovies(detail);
+            }}>
+              <Image source={isCurrentMovieCollected ? ICON_LOVE_RED : ICON_LOVE_WHITE}
+                     style={{width: 18, height: 18}}/>
+            </TouchableOpacity>
           </View>
 
         </View>
@@ -525,7 +537,10 @@ class MovieDetail extends PureComponent {
 
 export default connect((state) => ({
   themeColor: state.publicInfo.themeColor,
-}))(MovieDetail);
+  collectMovies: state.movies.collectMovies
+}), {
+  operateCollectMovies
+})(MovieDetail);
 
 const BORDER_PHOTO = 10;
 const styles = StyleSheet.create({

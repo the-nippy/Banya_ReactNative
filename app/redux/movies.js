@@ -3,6 +3,7 @@
  **/
 import {getComingMovies, getInTheaterMovies, getNewMovies, getTop250} from "../utils/request/MovieR";
 import {BanError} from "../utils/BanError";
+import {ShowToast} from "../utils/toast";
 
 //储存电影数据
 
@@ -21,7 +22,9 @@ const INITIAL_STATE = {
     //city没有被授权则为字符串 NOT_ALLOW_LOCATION,请求时默认北京
     city: NOT_ALLOW_LOCATION,
     movies: [],
-  }
+  },
+  //收藏的电影
+  collectMovies: new Set([])
 };
 
 //action type
@@ -37,6 +40,9 @@ const OPERATE_COMING_MOVIES = 'OPERATE_COMING_MOVIES';
 
 //正在上映数据，
 const CHANGE_IN_THEATER = 'CHANGE_IN_THEATER';
+
+//操作收藏的数据
+const OPERATE_COLLECT_MOVIES = 'OPERATE_COLLECT_MOVIES';
 
 export default function (state = INITIAL_STATE, action) {
 
@@ -68,6 +74,13 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state,
         inTheaterMovies: newInTheaterMovies
+      }
+    case OPERATE_COLLECT_MOVIES:
+      let currentCollectMovies = state.collectMovies;
+      const newCollectMovies = dealCollectMovies(currentCollectMovies, action);
+      return {
+        ...state,
+        collectMovies: newCollectMovies
       }
     default:
       return state;
@@ -159,7 +172,7 @@ export function operateComingMovies(startIndex) {
   }
 }
 
-
+//正在上映
 export function ReFreshInTheaterMovies(location_city) {
   return async function (dispatch) {
     let reqCity, city = location_city;
@@ -180,6 +193,36 @@ export function ReFreshInTheaterMovies(location_city) {
       throw new BanError(100)
     }
   }
+}
+
+
+//插入删除收藏数据
+// export const COLLECT_DELETE = 'COLLECT_DELETE';
+// export const COLLECT_INSERT = 'COLLECT_INSERT';
+
+//代理处理收藏数据
+function dealCollectMovies(currentCollectMovies = new Set([]), action) {
+
+  console.info('[dealCollectMovies]currentCollectMovies', currentCollectMovies)
+  //通过是否在set中，判断，已存在则删除，不存在则添加
+  if (currentCollectMovies.has(action.movie)) {
+    currentCollectMovies.delete(action.movie)
+  } else {
+    currentCollectMovies = currentCollectMovies.add(action.movie);
+  }
+  return currentCollectMovies;
+}
+
+export function operateCollectMovies(movieItem) {
+  // if (movieItem) {
+  //   ShowToast('传入的movieItem错误')
+  //   return ({type:});
+  // }
+  return ({
+    type: OPERATE_COLLECT_MOVIES,
+    movie: movieItem
+  })
+
 }
 
 
