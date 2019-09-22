@@ -25,6 +25,7 @@ import MovieDetail from '../views/movie/MovieDetail';
 import MovieVideo from '../views/movie/MovieVideo';
 import PhotoList from '../views/movie/PhotoList';
 import Celebrity from "../views/movie/Celebrity";
+import Collect from '../views/collect/collect';
 
 
 import Setting from '../views/setting/Setting';
@@ -81,6 +82,19 @@ const MyDrawerNavigator = createDrawerNavigator(
           ),
         })
       },
+    Collect: {
+      screen: Collect,
+      navigationOptions: ({navigation}) => ({
+        drawerLabel: '收藏',
+        gesturesEnabled: true,
+        drawerIcon: ({tintColor}) => (
+          <Image
+            source={require('../constant/image/circle_check_32px.png')}
+            style={[styles.icon, {tintColor: tintColor}]}
+          />
+        ),
+      })
+    },
     Setting: {
       screen: Setting,
       navigationOptions: ({navigation}) => ({
@@ -111,7 +125,7 @@ const MyDrawerNavigator = createDrawerNavigator(
 
   {
     initialRouteName: 'Movie',
-    order: ['Movie', 'History', 'Setting'],
+    order: ['Movie', 'Collect', 'History', 'Setting',],
     // swipeEnabled: true,
     animationEnabled: true,
     // lazy: false,
