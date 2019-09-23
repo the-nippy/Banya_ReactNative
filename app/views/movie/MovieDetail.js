@@ -5,7 +5,7 @@
  **/
 
 
-import React, {PureComponent} from 'react';
+import React, {PureComponent, Component} from 'react';
 import {
   View,
   Text,
@@ -79,6 +79,15 @@ class MovieDetail extends PureComponent {
     await this.freshData();
   }
 
+  // shouldComponentUpdate(nextProps: Readonly<P>, nextState: Readonly<S>, nextContext: any): boolean {
+  //   if (this.props.collectMovies.keys().length !== nextProps.collectMovies.keys().length) {
+  //     console.info('nextProps', nextProps)
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
 
   componentWillUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
@@ -90,7 +99,7 @@ class MovieDetail extends PureComponent {
     const {item} = this.props.navigation.state.params;
     try {
       let movieDetailData = await getMovieDetailData(item.id);
-      console.info('详情页数据', movieDetailData);
+      // console.info('详情页数据', movieDetailData);
       if (movieDetailData != undefined) {
         this.setState({detail: movieDetailData, loadState: ''})
       }
@@ -114,7 +123,7 @@ class MovieDetail extends PureComponent {
       for (let i = 0; i < keys.length; i++) {
         allCount = allCount + RatingDetail[keys[i]];
       }
-      console.info('allCount', allCount);
+      // console.info('allCount', allCount);
       if (allCount === 0) {
         percentArray = ['0%', '0%', '0%', '0%', '0%'];
       } else {
@@ -187,6 +196,7 @@ class MovieDetail extends PureComponent {
 
   render() {
     const {item} = this.props.navigation.state.params;
+    // console.info('item,', item)
 
     const themeColor = this.props.themeColor;
     const deepThemeColor = getDeeperColor(themeColor);
@@ -225,7 +235,9 @@ class MovieDetail extends PureComponent {
     //是否已經被收藏
     let isCurrentMovieCollected = false;
     if (this.props.collectMovies) {
-      // isCurrentMovieCollected = this.props.collectMovies.has(item);
+      // console.info('[this.props.collectMovies]', this.props.collectMovies)
+      // console.info(typeof (this.props.collectMovies))
+      isCurrentMovieCollected = this.props.collectMovies?.has(item.id);
     }
 
     // console.info('bigPhotos', bigPhotos)
@@ -246,7 +258,11 @@ class MovieDetail extends PureComponent {
               {item.title}
             </Text>
             <TouchableOpacity onPress={() => {
+              if (!detail) {
+                return;
+              }
               this.props.operateCollectMovies(detail);
+              this.forceUpdate()
             }}>
               <Image source={isCurrentMovieCollected ? ICON_LOVE_RED : ICON_LOVE_WHITE}
                      style={{width: 18, height: 18}}/>

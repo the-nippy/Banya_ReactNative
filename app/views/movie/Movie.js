@@ -93,14 +93,6 @@ class Movie extends PureComponent {
     }
   }
 
-  // RefreshWeeklyMovies = async () => {
-  //   let weeklyMovies = await getWeeklyMovies();
-  //   let usBoxMovies = await getUSBoxMovies();
-  //   console.info('usBoxMovies', usBoxMovies)
-  //   this.setState({weeklyMovies: weeklyMovies.subjects, usBoxMovies: usBoxMovies.subjects})
-  // }
-
-
   //Top250等function被点击
   onFunctionsPress = (index) => {
     switch (index) {

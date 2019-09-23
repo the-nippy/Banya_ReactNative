@@ -13,6 +13,8 @@ const count = 25;
 //标志位置未获取状态
 const NOT_ALLOW_LOCATION = 'NOT_ALLOW_LOCATION';
 
+const INITIAL_COLLECT = new Map();
+
 const INITIAL_STATE = {
   top250: [[], [], [], [], []],
   newMovies: {isAllowLocation: false, city: '', data: []},
@@ -24,7 +26,7 @@ const INITIAL_STATE = {
     movies: [],
   },
   //收藏的电影
-  collectMovies: new Set([])
+  collectMovies: INITIAL_COLLECT,
 };
 
 //action type
@@ -201,15 +203,16 @@ export function ReFreshInTheaterMovies(location_city) {
 // export const COLLECT_INSERT = 'COLLECT_INSERT';
 
 //代理处理收藏数据
-function dealCollectMovies(currentCollectMovies = new Set([]), action) {
+function dealCollectMovies(currentCollectMovies = INITIAL_COLLECT, action) {
 
-  console.info('[dealCollectMovies]currentCollectMovies', currentCollectMovies)
+  const movie = action.movie;
   //通过是否在set中，判断，已存在则删除，不存在则添加
-  if (currentCollectMovies.has(action.movie)) {
-    currentCollectMovies.delete(action.movie)
+  if (currentCollectMovies.has(movie.id)) {
+    currentCollectMovies.delete(movie.id)
   } else {
-    currentCollectMovies = currentCollectMovies.add(action.movie);
+    currentCollectMovies.set(movie.id, movie);
   }
+  console.info('[dealCollectMovies]currentCollectMovies', currentCollectMovies)
   return currentCollectMovies;
 }
 
