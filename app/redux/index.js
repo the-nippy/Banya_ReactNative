@@ -11,7 +11,7 @@ import constant from './constant';
 import movies from './movies';
 
 import publicInfo from './public';
-import collect from "../views/collect/collect";
+// import collect from "../views/collect/Collect";
 // import config from '../redux/config';
 // import user from '../redux/user';
 // import stores from '../redux/stores'

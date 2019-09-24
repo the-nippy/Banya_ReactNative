@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
+  Alert,
 } from 'react-native';
 
 //组件
@@ -19,6 +20,7 @@ import {WIDTH} from "../../utils/contants";
 import LinearView from "../../component/linear/LinearView";
 //数据
 import PropTypes from 'prop-types';
+import {operateCollectMovies} from "../../redux/movies";
 
 //资源
 const ITEM_WIDTH_HEIGHT = (WIDTH - 60) / 2;
@@ -48,6 +50,7 @@ class Collect extends PureComponent {
           key={key}
           item={value}
           isSelectMode={this.state.isSelectMode}
+          navigation={this.props.navigation}
           changeChildSelectedState={
             (isSelected, itemId) => {
               const selectedItemIds = this.state.selectedItemIds;
@@ -61,9 +64,11 @@ class Collect extends PureComponent {
                   selectedItemIds.splice(index, 1);
                 }
               }
-              this.setState({selectedItemIds}, () => {
-                console.info('this.state.selectedItemIds', this.state.selectedItemIds)
-              })
+              this.setState({selectedItemIds},
+                // () => {
+                //   console.info('this.state.selectedItemIds', this.state.selectedItemIds)
+                // }
+              )
             }
           }
           onItemLongPress={() => {
@@ -100,8 +105,28 @@ class Collect extends PureComponent {
 
           {
             this.state.isSelectMode ?
-              <TouchableOpacity style={styles.bottom_button}>
-                <Text style={{fontSize: 16, color: '#FFF'}}>{'删除所选' + '个收藏电影'}</Text>
+              <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => {
+                  Alert.alert('提示', '确认删除所选 '
+                    + this.state.selectedItemIds.length +
+                    ' 个电影吗? 删除后您可以在电影详情页重新收藏',
+                    [{
+                      text: '取消'
+                    }, {
+                      text: '确认',
+                      onPress: () => {
+                        this.props.operateCollectMovies({}, true, this.state.selectedItemIds);
+                        this.setState({isSelectMode: false})
+                      }
+                    }]
+                  )
+                }}
+                style={styles.bottom_button}>
+                <Text
+                  style={{fontSize: 16, color: '#FFF'}}>
+                  {'删除所选收藏电影'}
+                </Text>
               </TouchableOpacity>
               : null
           }
@@ -133,13 +158,15 @@ class CollectMovieView extends PureComponent {
   }
 
   render() {
-    const {item, isSelectMode, onItemLongPress, changeChildSelectedState} = this.props;
+    const {item, isSelectMode, onItemLongPress, changeChildSelectedState, navigation} = this.props;
     return (
       <TouchableOpacity
         onPress={() => {
           if (isSelectMode) {
             this.setState({isSelected: !this.state.isSelected},
               () => changeChildSelectedState(this.state.isSelected, item.id))
+          } else {
+            navigation.navigate('MovieDetail', {item: item});
           }
         }}
         onLongPress={() => {
@@ -151,7 +178,7 @@ class CollectMovieView extends PureComponent {
         <Image source={{uri: item.images.medium}}
                style={styles.item_image}/>
         <View style={styles.rest_text}>
-          <Text>{item.title}</Text>
+          <Text numberOfLines={1}>{item.title}</Text>
         </View>
 
         {isSelectMode ?
@@ -170,7 +197,9 @@ class CollectMovieView extends PureComponent {
 export default connect((state) => ({
   themeColor: state.publicInfo.themeColor,
   collectMovies: state.movies.collectMovies,
-}), {})(Collect);
+}), {
+  operateCollectMovies
+})(Collect);
 
 
 const styles = StyleSheet.create({

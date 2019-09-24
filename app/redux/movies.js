@@ -43,8 +43,9 @@ const OPERATE_COMING_MOVIES = 'OPERATE_COMING_MOVIES';
 //正在上映数据，
 const CHANGE_IN_THEATER = 'CHANGE_IN_THEATER';
 
-//操作收藏的数据
+//操作收藏的数据(单个收藏或取消收藏)
 const OPERATE_COLLECT_MOVIES = 'OPERATE_COLLECT_MOVIES';
+
 
 export default function (state = INITIAL_STATE, action) {
 
@@ -205,26 +206,41 @@ export function ReFreshInTheaterMovies(location_city) {
 //代理处理收藏数据
 function dealCollectMovies(currentCollectMovies = INITIAL_COLLECT, action) {
 
-  const movie = action.movie;
-  //通过是否在set中，判断，已存在则删除，不存在则添加
-  if (currentCollectMovies.has(movie.id)) {
-    currentCollectMovies.delete(movie.id)
-  } else {
-    currentCollectMovies.set(movie.id, movie);
+  //删除多个电影 通过id
+  if (action.isDeleteMultiple) {
+    const deleteIds = action.deleteIds;
+    if (deleteIds.length > 0) {
+      deleteIds.forEach((id) => {
+        if (currentCollectMovies.has(id)) {
+          currentCollectMovies.delete(id)
+        }
+      })
+    }
+  }
+  //操作单个电影的收藏或取消 （添加到Map或者移除）
+  else {
+    const movie = action.movie;
+    //通过是否在set中，判断，已存在则删除，不存在则添加
+    if (currentCollectMovies.has(movie.id)) {
+      currentCollectMovies.delete(movie.id)
+    } else {
+      currentCollectMovies.set(movie.id, movie);
+    }
   }
   console.info('[dealCollectMovies]currentCollectMovies', currentCollectMovies)
   return currentCollectMovies;
 }
 
-export function operateCollectMovies(movieItem) {
-  // if (movieItem) {
-  //   ShowToast('传入的movieItem错误')
-  //   return ({type:});
-  // }
+export function operateCollectMovies(movieItem, isDeleteMultiple, deleteIds) {
+  //操作单个时只传入 movieItem
+  //操作多个时，传入 isDeleteMultiple,deleteIds
   return ({
     type: OPERATE_COLLECT_MOVIES,
-    movie: movieItem
+    movie: movieItem,
+    isDeleteMultiple: isDeleteMultiple,
+    deleteIds: deleteIds,
   })
+
 
 }
 

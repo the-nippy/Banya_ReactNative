@@ -25,7 +25,7 @@ import MovieDetail from '../views/movie/MovieDetail';
 import MovieVideo from '../views/movie/MovieVideo';
 import PhotoList from '../views/movie/PhotoList';
 import Celebrity from "../views/movie/Celebrity";
-import Collect from '../views/collect/collect';
+import Collect from '../views/collect/Collect';
 
 
 import Setting from '../views/setting/Setting';
