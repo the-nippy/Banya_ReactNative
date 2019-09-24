@@ -45,20 +45,25 @@ class Collect extends PureComponent {
       // views.unshift(this.getCollectMovieView(value, key))
       views.unshift(
         <CollectMovieView
+          key={key}
           item={value}
           isSelectMode={this.state.isSelectMode}
           changeChildSelectedState={
             (isSelected, itemId) => {
               const selectedItemIds = this.state.selectedItemIds;
+              console.info('isSelected', isSelected)
               if (isSelected) {
                 selectedItemIds.push(itemId)
               } else {
                 const index = selectedItemIds.indexOf(itemId);
+                console.info('index', index)
                 if (index !== -1) {
-                  selectedItemIds.splice(itemId, 1);
+                  selectedItemIds.splice(index, 1);
                 }
               }
-              this.setState({selectedItemIds})
+              this.setState({selectedItemIds}, () => {
+                console.info('this.state.selectedItemIds', this.state.selectedItemIds)
+              })
             }
           }
           onItemLongPress={() => {
@@ -69,15 +74,13 @@ class Collect extends PureComponent {
         />)
     })
 
-    console.info('this.state.selectedItemIds', this.state.selectedItemIds)
-
     return (
       <View style={{flex: 1}}>
         <Toolbar
           title={'收藏'}
           rightButtons={[
             {
-              text: '多选',
+              text: this.state.isSelectMode ? '取消' : '多选',
               onPress: () => {
                 this.setState({isSelectMode: !this.state.isSelectMode})
               }
@@ -97,17 +100,7 @@ class Collect extends PureComponent {
 
           {
             this.state.isSelectMode ?
-              <TouchableOpacity style={{
-                marginHorizontal: 25,
-                width: WIDTH - 50,
-                height: 40,
-                backgroundColor: '#ae2d33',
-                position: 'absolute',
-                bottom: 20,
-                borderRadius: 5,
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}>
+              <TouchableOpacity style={styles.bottom_button}>
                 <Text style={{fontSize: 16, color: '#FFF'}}>{'删除所选' + '个收藏电影'}</Text>
               </TouchableOpacity>
               : null
@@ -146,46 +139,26 @@ class CollectMovieView extends PureComponent {
         onPress={() => {
           if (isSelectMode) {
             this.setState({isSelected: !this.state.isSelected},
-              changeChildSelectedState(this.state.isSelected, item.id))
+              () => changeChildSelectedState(this.state.isSelected, item.id))
           }
         }}
         onLongPress={() => {
           onItemLongPress();
           this.setState({isSelected: !this.state.isSelected},
-            changeChildSelectedState(this.state.isSelected, item.id))
+            () => changeChildSelectedState(this.state.isSelected, item.id))
         }}
-        style={{
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginHorizontal: 15,
-          borderRadius: 8,
-          backgroundColor: '#FFF',
-          height: ITEM_WIDTH_HEIGHT,
-          marginTop: 10,
-        }}>
+        style={styles.item_button}>
         <Image source={{uri: item.images.medium}}
-               style={{
-                 width: ITEM_WIDTH_HEIGHT,
-                 height: ITEM_WIDTH_HEIGHT - 30,
-                 borderTopRightRadius: 8,
-                 borderTopLeftRadius: 8
-               }}/>
-        <View>
+               style={styles.item_image}/>
+        <View style={styles.rest_text}>
           <Text>{item.title}</Text>
         </View>
 
         {isSelectMode ?
-          <View style={{...StyleSheet.absoluteFill, backgroundColor: '#9999'}}>
+          <View style={{...StyleSheet.absoluteFill, backgroundColor: '#AAA9', borderRadius: 8}}>
             <Image
               source={this.state.isSelected ? ICON_SELECTED : ICON_NOT_SELECTED}
-              style={{
-                width: 24,
-                height: 24,
-                position: 'absolute',
-                right: 5,
-                bottom: 5,
-                tintColor: '#c84438'
-              }}/>
+              style={styles.select_button}/>
           </View>
           : null}
       </TouchableOpacity>
@@ -198,3 +171,42 @@ export default connect((state) => ({
   themeColor: state.publicInfo.themeColor,
   collectMovies: state.movies.collectMovies,
 }), {})(Collect);
+
+
+const styles = StyleSheet.create({
+  item_button: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginHorizontal: 15,
+    borderRadius: 8,
+    backgroundColor: '#FFF',
+    height: ITEM_WIDTH_HEIGHT,
+    marginTop: 10,
+  },
+  item_image: {
+    width: ITEM_WIDTH_HEIGHT,
+    height: ITEM_WIDTH_HEIGHT - 30,
+    borderTopRightRadius: 8,
+    borderTopLeftRadius: 8
+  },
+  rest_text: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+  select_button: {
+    width: 24,
+    height: 24,
+    position: 'absolute',
+    right: 3,
+    bottom: 3,
+    tintColor: '#c84438'
+  },
+  bottom_button: {
+    marginHorizontal: 25,
+    width: WIDTH - 50,
+    height: 40,
+    backgroundColor: '#ae2d33',
+    position: 'absolute',
+    bottom: 20,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+})

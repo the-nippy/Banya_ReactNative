@@ -262,10 +262,11 @@ class MovieDetail extends PureComponent {
                 return;
               }
               this.props.operateCollectMovies(detail);
-              this.forceUpdate()
+              this.forceUpdate();
+              isCurrentMovieCollected ? ShowToast('已取消收藏') : ShowToast('已收藏，请到侧边栏[收藏]查看')
             }}>
               <Image source={isCurrentMovieCollected ? ICON_LOVE_RED : ICON_LOVE_WHITE}
-                     style={{width: 18, height: 18}}/>
+                     style={{width: 20, height: 20}}/>
             </TouchableOpacity>
           </View>
 

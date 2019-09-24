@@ -4,7 +4,7 @@ function ShowToast(text) {
   if (!text) {
     return;
   }
-  Toast.show(text, {duration: 1000, backgroundColor: '#9c9c9c', position: -50})
+  Toast.show(text, {duration: 1200, backgroundColor: '#9c9c9c', position: -50})
 }
 
 export {

@@ -3,7 +3,8 @@
 
  Top 250 数据实时请求，放在Redux做状态管理以及缓存
 
- 使用 react-native-ratings 而不是 react-native-star-rating , 因为 react-native-star-rating 依赖 react-native-vector-icons
+ 使用 react-native-ratings 而不是 react-native-star-rating ,
+ react-native-star-rating 依赖 react-native-vector-icons
  尽量选择轻型第三方库
 
  **/
