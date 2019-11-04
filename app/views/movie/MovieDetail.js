@@ -760,5 +760,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center'
   },
-  title_text: {maxWidth: WIDTH / 2, color: '#dddddd', fontSize: 18, textAlign: 'center'},
+  title_text: {
+    maxWidth: WIDTH / 2,
+    color: '#FFF',
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center'
+  },
 })

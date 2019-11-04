@@ -23,8 +23,8 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    color: 'white',
-    fontSize: 18,
+    color: '#FFF',
+    fontSize: 20,
     textAlign: 'center',
     textAlignVertical: 'center',
     backgroundColor: 'transparent',

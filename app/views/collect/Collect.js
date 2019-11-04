@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ScrollView,
 } from 'react-native';
 
 //组件
@@ -23,10 +24,11 @@ import PropTypes from 'prop-types';
 import {operateCollectMovies} from "../../redux/movies";
 
 //资源
-const ITEM_WIDTH_HEIGHT = (WIDTH - 60) / 2;
+const ITEM_WIDTH_HEIGHT = (WIDTH - 45) / 2;
 const ITEM_HEIGHT = ITEM_WIDTH_HEIGHT + 30;
 const ICON_SELECTED = require('../../constant/image/movie/select_on.png');
 const ICON_NOT_SELECTED = require('../../constant/image/movie/select_off.png');
+const ICON_TIME = require('../../constant/image/movie/time.png');
 
 class Collect extends PureComponent {
 
@@ -37,6 +39,21 @@ class Collect extends PureComponent {
       //已选中的项目的id
       selectedItemIds: []
     }
+  }
+
+  changeSelectState = (isSelected, itemId) => {
+    const selectedItemIds = this.state.selectedItemIds;
+    console.info('isSelected', isSelected)
+    if (isSelected) {
+      selectedItemIds.push(itemId)
+    } else {
+      const index = selectedItemIds.indexOf(itemId);
+      console.info('index', index)
+      if (index !== -1) {
+        selectedItemIds.splice(index, 1);
+      }
+    }
+    this.setState({selectedItemIds})
   }
 
   render() {
@@ -52,26 +69,8 @@ class Collect extends PureComponent {
           addTime={value.addTime}
           isSelectMode={this.state.isSelectMode}
           navigation={this.props.navigation}
-          changeChildSelectedState={
-            (isSelected, itemId) => {
-              const selectedItemIds = this.state.selectedItemIds;
-              console.info('isSelected', isSelected)
-              if (isSelected) {
-                selectedItemIds.push(itemId)
-              } else {
-                const index = selectedItemIds.indexOf(itemId);
-                console.info('index', index)
-                if (index !== -1) {
-                  selectedItemIds.splice(index, 1);
-                }
-              }
-              this.setState({selectedItemIds},
-                // () => {
-                //   console.info('this.state.selectedItemIds', this.state.selectedItemIds)
-                // }
-              )
-            }
-          }
+          timeColor={this.props.themeColor}
+          changeChildSelectedState={this.changeSelectState}
           onItemLongPress={() => {
             if (!this.state.isSelectMode) {
               this.setState({isSelectMode: true})
@@ -98,11 +97,13 @@ class Collect extends PureComponent {
           colors={['#cce0eb', '#FEE', '#dfdbab']}
           style={{flex: 1}}>
           {/*<Text>已收藏的电影列表</Text>*/}
-          <View
-            style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1}}
-          >
-            {views}
-          </View>
+          <ScrollView style={{flex: 1}}>
+            <View
+              style={{flexDirection: 'row', flexWrap: 'wrap', flex: 1, paddingBottom: 10}}
+            >
+              {views}
+            </View>
+          </ScrollView>
 
           {
             this.state.isSelectMode ?
@@ -134,7 +135,7 @@ class Collect extends PureComponent {
         </LinearView>
 
         <NavigationEvents
-          onWillFocus={() => {
+          onDidFocus={() => {
             this.forceUpdate()
           }}
         />
@@ -159,7 +160,7 @@ class CollectMovieView extends PureComponent {
   }
 
   render() {
-    const {item, isSelectMode, onItemLongPress, changeChildSelectedState, navigation, addTime} = this.props;
+    const {item, isSelectMode, onItemLongPress, changeChildSelectedState, navigation, addTime, timeColor} = this.props;
     return (
       <TouchableOpacity
         onPress={() => {
@@ -180,11 +181,14 @@ class CollectMovieView extends PureComponent {
                style={styles.item_image}/>
         <View style={styles.rest_text}>
           <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 16, color: '#555'}}>{item.title}</Text>
-          <Text>{addTime}</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Image source={ICON_TIME} style={{width: 15, height: 15, tintColor: timeColor}}/>
+            <Text style={{marginLeft: 5}}>{addTime}</Text>
+          </View>
         </View>
 
         {isSelectMode ?
-          <View style={{...StyleSheet.absoluteFill, backgroundColor: '#AAA9', borderRadius: 8}}>
+          <View style={{...StyleSheet.absoluteFill, backgroundColor: '#999B', borderRadius: 8}}>
             <Image
               source={this.state.isSelected ? ICON_SELECTED : ICON_NOT_SELECTED}
               style={styles.select_button}/>
@@ -208,7 +212,8 @@ const styles = StyleSheet.create({
   item_button: {
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginHorizontal: 15,
+    // marginHorizontal: 15,
+    marginLeft: 15,
     borderRadius: 8,
     backgroundColor: '#FFF',
     width: ITEM_WIDTH_HEIGHT,
@@ -228,12 +233,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5
   },
   select_button: {
-    width: 24,
-    height: 24,
+    width: 26,
+    height: 26,
     position: 'absolute',
-    right: 3,
-    bottom: 3,
-    tintColor: '#c84438'
+    right: 5,
+    bottom: 5,
+    tintColor: '#c84438',
+    borderColor: '#c84438',
+    borderRadius: 13,
+    borderWidth: 2,
   },
   bottom_button: {
     marginHorizontal: 25,
