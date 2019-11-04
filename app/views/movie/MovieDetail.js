@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
   ImageBackground,
   // Modal,
-  BackHandler,
+  Animated,
 } from 'react-native';
 
 import Toolbar from "../../component/header/Toolbar";
@@ -49,7 +49,7 @@ const ICON_NO_IMAGE = require('../../constant/image/noPng.png');
 const ICON_PLAY = require('../../constant/image/movie/play.png');
 const ICON_CANCEL = require('../../constant/image/cancel.png');
 const ICON_LOVE_RED = require('../../constant/image/movie/love_red.png');
-const ICON_LOVE_WHITE = require('../../constant/image/movie/love_white.png');
+const ICON_LOVE = require('../../constant/image/movie/love_white.png');
 
 
 const alphaValues = ['FF', '99'];
@@ -72,6 +72,9 @@ class MovieDetail extends PureComponent {
       //头部透明度
       titleAlpha: alphaValues[0],
 
+      //需要插值转换
+      collectLogoSize: new Animated.Value(1),
+
     }
   }
 
@@ -89,11 +92,6 @@ class MovieDetail extends PureComponent {
   // }
 
 
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
-    // this.backHandler.remove();
-  }
-
   freshData = async () => {
     this.setState({loadState: STATES.LOADING})
     const {item} = this.props.navigation.state.params;
@@ -108,6 +106,18 @@ class MovieDetail extends PureComponent {
       this.setState({loadState: STATES.FAIL})
       // console.warn('Detail error',e);
     }
+  }
+
+  //抖动动画
+  startCollectAnimated = () => {
+    this.state.collectLogoSize.setValue(0);
+    Animated.spring(
+      this.state.collectLogoSize,
+      {
+        toValue: 1,
+        duration: 800
+      }
+    ).start();
   }
 
   //计算评分占比  返回百分数数组
@@ -243,6 +253,12 @@ class MovieDetail extends PureComponent {
     // console.info('bigPhotos', bigPhotos)
     // console.info('smallPhotos', smallPhotos)
 
+    //对动画值插值转换
+    const imageSize = this.state.collectLogoSize.interpolate({
+      inputRange: [0, 0.2, 0.5, 0.8, 1],
+      outputRange: [22, 26, 28, 26, 22]
+    });
+
     return (
       <View style={{flex: 1, backgroundColor: themeColor}}>
         <View
@@ -254,19 +270,33 @@ class MovieDetail extends PureComponent {
             }}>
               <Image source={ICON_BACK} style={{width: 18, height: 18}} resizeMode='contain'/>
             </TouchableOpacity>
-            <Text style={{color: '#dddddd', fontSize: 18}}>
-              {item.title}
-            </Text>
-            <TouchableOpacity onPress={() => {
-              if (!detail) {
-                return;
-              }
-              this.props.operateCollectMovies(detail);
-              this.forceUpdate();
-              isCurrentMovieCollected ? ShowToast('已取消收藏') : ShowToast('已收藏，请到侧边栏[收藏]查看')
-            }}>
-              <Image source={isCurrentMovieCollected ? ICON_LOVE_RED : ICON_LOVE_WHITE}
-                     style={{width: 20, height: 20}}/>
+            <View style={styles.absolute_center}>
+              <Text
+                numberOfLines={1}
+                style={styles.title_text}>
+                {item.title}
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={styles.collect_container}
+              onPress={() => {
+                if (!detail) {
+                  return;
+                }
+                this.startCollectAnimated();
+                this.props.operateCollectMovies(detail);
+                if (isCurrentMovieCollected) {
+                  ShowToast('已取消收藏')
+                } else {
+                  ShowToast('已收藏，请到侧边栏[收藏]查看')
+                }
+                this.forceUpdate();
+              }}>
+              <Animated.Image
+                source={ICON_LOVE}
+                style={{
+                  width: imageSize, height: imageSize, tintColor: isCurrentMovieCollected ? '#f10a07' : '#FFF'
+                }}/>
             </TouchableOpacity>
           </View>
 
@@ -719,4 +749,16 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
   },
+  collect_container: {
+    width: 28,
+    height: 28,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  absolute_center: {
+    ...StyleSheet.absoluteFill,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  title_text: {maxWidth: WIDTH / 2, color: '#dddddd', fontSize: 18, textAlign: 'center'},
 })

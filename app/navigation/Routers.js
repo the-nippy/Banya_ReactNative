@@ -26,10 +26,10 @@ import MovieVideo from '../views/movie/MovieVideo';
 import PhotoList from '../views/movie/PhotoList';
 import Celebrity from "../views/movie/Celebrity";
 import Collect from '../views/collect/Collect';
-
-
 import Setting from '../views/setting/Setting';
 import History from '../views/history/History';
+
+import {store} from '../redux/index';
 
 // import HomePage from './home/HomePage';
 // import Weather from './weather/Weather';
@@ -42,6 +42,7 @@ import {
 }
   from 'react-navigation';
 import {WIDTH} from "../utils/contants";
+import publicInfo from "../redux/public";
 
 
 const styles = StyleSheet.create({
@@ -76,8 +77,8 @@ const MyDrawerNavigator = createDrawerNavigator(
           gesturesEnabled: true,
           drawerIcon: ({tintColor}) => (
             <Image
-              source={require('../constant/image/circle_check_32px.png')}
-              style={[styles.icon, {tintColor: tintColor}]}
+              source={require('../constant/image/movie/movie.png')}
+              style={[styles.icon]}
             />
           ),
         })
@@ -89,8 +90,8 @@ const MyDrawerNavigator = createDrawerNavigator(
         gesturesEnabled: true,
         drawerIcon: ({tintColor}) => (
           <Image
-            source={require('../constant/image/circle_check_32px.png')}
-            style={[styles.icon, {tintColor: tintColor}]}
+            source={require('../constant/image/movie/love_red.png')}
+            style={[styles.icon,]}
           />
         ),
       })
@@ -102,30 +103,32 @@ const MyDrawerNavigator = createDrawerNavigator(
         drawerLockMode: 'unlocked',
         drawerIcon: ({tintColor}) => (
           <Image
-            source={require('../constant/image/circle_check_32px.png')}
-            style={[styles.icon, {tintColor: tintColor}]}
+            source={require('../constant/image/movie/setting.png')}
+            style={[styles.icon]}
           />
         ),
       })
     },
-    History: {
-      screen: History,
-      navigationOptions: ({navigation}) => ({
-        drawerLabel: '历史',
-        drawerIcon: ({tintColor}) => (
-          <Image
-            source={require('../constant/image/circle_check_32px.png')}
-            style={[styles.icon, {tintColor: tintColor}]}
-          />
-        ),
-      })
-    }
+    // History: {
+    //   screen: History,
+    //   navigationOptions: ({navigation}) => ({
+    //     drawerLabel: '历史',
+    //     drawerIcon: ({tintColor}) => (
+    //       <Image
+    //         source={require('../constant/image/circle_check_32px.png')}
+    //         style={[styles.icon, {tintColor: tintColor}]}
+    //       />
+    //     ),
+    //   })
+    // }
     // Weather: {screen: Weather}
   },
 
   {
     initialRouteName: 'Movie',
-    order: ['Movie', 'Collect', 'History', 'Setting',],
+    order: ['Movie', 'Collect',
+      // 'History',
+      'Setting',],
     // swipeEnabled: true,
     animationEnabled: true,
     // lazy: false,
@@ -137,9 +140,18 @@ const MyDrawerNavigator = createDrawerNavigator(
     drawerBackgroundColor: '#FFF', //使用抽屉背景获取某种颜色。默认是white。
     contentOptions: {
       //未选中的侧边item背景色
-      // inactiveBackgroundColor:'#eee',
+      inactiveBackgroundColor: '#FFF',
       // activeBackgroundColor: '#efefef',
-      activeTintColor: '#FFF',
+      // activeTintColor: '#FFF',
+      activeTintColor: '#CCC',
+      labelStyle: {
+        color: '#555'
+      },
+      activeLabelStyle: {
+        color: '#222',
+        fontSize: 16,
+        fontWeight: 'bold'
+      }
     },
     contentComponent: props => {
       return (

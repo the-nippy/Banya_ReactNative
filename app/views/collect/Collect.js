@@ -48,7 +48,8 @@ class Collect extends PureComponent {
       views.unshift(
         <CollectMovieView
           key={key}
-          item={value}
+          item={value.movie}
+          addTime={value.addTime}
           isSelectMode={this.state.isSelectMode}
           navigation={this.props.navigation}
           changeChildSelectedState={
@@ -158,7 +159,7 @@ class CollectMovieView extends PureComponent {
   }
 
   render() {
-    const {item, isSelectMode, onItemLongPress, changeChildSelectedState, navigation} = this.props;
+    const {item, isSelectMode, onItemLongPress, changeChildSelectedState, navigation, addTime} = this.props;
     return (
       <TouchableOpacity
         onPress={() => {
@@ -178,7 +179,8 @@ class CollectMovieView extends PureComponent {
         <Image source={{uri: item.images.medium}}
                style={styles.item_image}/>
         <View style={styles.rest_text}>
-          <Text numberOfLines={1}>{item.title}</Text>
+          <Text numberOfLines={1} style={{fontWeight: 'bold', fontSize: 16, color: '#555'}}>{item.title}</Text>
+          <Text>{addTime}</Text>
         </View>
 
         {isSelectMode ?
@@ -209,16 +211,22 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     borderRadius: 8,
     backgroundColor: '#FFF',
-    height: ITEM_WIDTH_HEIGHT,
+    width: ITEM_WIDTH_HEIGHT,
+    height: ITEM_WIDTH_HEIGHT + 46,
     marginTop: 10,
   },
   item_image: {
     width: ITEM_WIDTH_HEIGHT,
-    height: ITEM_WIDTH_HEIGHT - 30,
+    height: ITEM_WIDTH_HEIGHT,
     borderTopRightRadius: 8,
     borderTopLeftRadius: 8
   },
-  rest_text: {flex: 1, justifyContent: 'center', alignItems: 'center'},
+  rest_text: {
+    flex: 1,
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingHorizontal: 5
+  },
   select_button: {
     width: 24,
     height: 24,

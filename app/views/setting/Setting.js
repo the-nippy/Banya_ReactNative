@@ -61,11 +61,21 @@ class Setting extends PureComponent {
   }
 
   render() {
+
+    const fadeIn = {
+      from: {
+        opacity: 0,
+      },
+      to: {
+        opacity: 1,
+      },
+    };
+
     return (
       <View style={{flex: 1}}>
         <Toolbar title={'主题设定'}/>
 
-        <Animatable.View animation={'bounceIn'} style={{flex: 1}}>
+        <Animatable.View animation={fadeIn} duration={1200} style={{flex: 1}}>
 
           <FlatList
             style={{marginBottom: 20}}

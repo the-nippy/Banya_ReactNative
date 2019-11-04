@@ -3,6 +3,7 @@
  **/
 import {getComingMovies, getInTheaterMovies, getNewMovies, getTop250} from "../utils/request/MovieR";
 import {BanError} from "../utils/BanError";
+import moment from 'moment';
 import {ShowToast} from "../utils/toast";
 
 //储存电影数据
@@ -224,7 +225,7 @@ function dealCollectMovies(currentCollectMovies = INITIAL_COLLECT, action) {
     if (currentCollectMovies.has(movie.id)) {
       currentCollectMovies.delete(movie.id)
     } else {
-      currentCollectMovies.set(movie.id, movie);
+      currentCollectMovies.set(movie.id, {movie: movie, addTime: moment().format('YYYY-MM-DD HH:mm')});
     }
   }
   console.info('[dealCollectMovies]currentCollectMovies', currentCollectMovies)
