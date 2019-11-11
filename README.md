@@ -10,7 +10,7 @@
  - 根据定位获取实时上映数据
  - 预告片播放，图片缩放查看
  - 数据存储，部分数据支持本地获取
- - 主题换肤，全局设置自定义颜色
+ - 主题换肤，全局设置不同主题色
 
 
 ### 基本配置：
@@ -29,6 +29,12 @@
  - react-native-image-zoom-viewer　图片预览查看组件
  - react-native-video　视频播放组件
  - react-native-scrollable-tab-view　滑动导航条tab-view组件
+
+### 运行截图
+
+<image src='https://ae01.alicdn.com/kf/Ha7b4695b9dbe4953a9fff6338d0a9432y.jpg' height='400' width='200'>
+<image src='https://ae01.alicdn.com/kf/H3d6ebef9b5ef4194b3d53e97e46324f0h.jpg' height='400' width='200'>
+<image src='https://ae01.alicdn.com/kf/H18d94afc82ae473c84f6b0dc03886eb4E.jpg' height='400' width='200'>
 
 ### 下载安装
 
