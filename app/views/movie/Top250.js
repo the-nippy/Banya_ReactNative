@@ -73,6 +73,10 @@ class Top250 extends PureComponent {
     }
   }
 
+  componentWillUnmount() {
+    cancelAnimationFrame(this.frame);
+  }
+
   //是追加数据时，拼接到原有数据
   freshData = async () => {
     //Todo  设置loading和处理error
@@ -169,7 +173,10 @@ class Top250 extends PureComponent {
               source={ICON_RIGHT} style={{transform: [{rotate: '180deg'}]}}
               isShow={this.state.page !== 0}
               onPress={() => {
-                this.setState({page: (this.state.page - 1)}, () => this.forceUpdate())
+                console.info('点击后退')
+                this.frame = requestAnimationFrame(() => {
+                  this.setState({page: (this.state.page - 1)}, () => this.forceUpdate())
+                });
               }}
             />
             <ImageButton

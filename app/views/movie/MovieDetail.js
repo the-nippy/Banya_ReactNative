@@ -73,7 +73,9 @@ class MovieDetail extends PureComponent {
       titleAlpha: alphaValues[0],
 
       //需要插值转换
-      collectLogoSize: new Animated.Value(1),
+      // collectLogoSize: new Animated.Value(1),
+
+      collectLogoScale: new Animated.Value(0),
 
     }
   }
@@ -110,9 +112,9 @@ class MovieDetail extends PureComponent {
 
   //抖动动画
   startCollectAnimated = () => {
-    this.state.collectLogoSize.setValue(0);
+    this.state.collectLogoScale.setValue(0);
     Animated.spring(
-      this.state.collectLogoSize,
+      this.state.collectLogoScale,
       {
         toValue: 1,
         duration: 800
@@ -254,9 +256,9 @@ class MovieDetail extends PureComponent {
     // console.info('smallPhotos', smallPhotos)
 
     //对动画值插值转换
-    const imageSize = this.state.collectLogoSize.interpolate({
+    const imageScale = this.state.collectLogoScale.interpolate({
       inputRange: [0, 0.2, 0.5, 0.8, 1],
-      outputRange: [22, 26, 28, 26, 22]
+      outputRange: [1, 1.2, 1.3, 1.2, 1]
     });
 
     return (
@@ -295,7 +297,9 @@ class MovieDetail extends PureComponent {
               <Animated.Image
                 source={ICON_LOVE}
                 style={{
-                  width: imageSize, height: imageSize, tintColor: isCurrentMovieCollected ? '#f10a07' : '#FFF'
+                  width: 24, height: 24,
+                  tintColor: isCurrentMovieCollected ? '#f10a07' : '#FFF',
+                  transform: [{scale: imageScale}]
                 }}/>
             </TouchableOpacity>
           </View>
