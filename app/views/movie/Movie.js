@@ -33,7 +33,12 @@ import {MyPage} from "./PhotoList";
 
 
 //资源
-const FUNCTIONS = ['Top250', '正在上映', '即将上映', '新片榜'];
+// const FUNCTIONS = ['Top250', '正在上映', '即将上映', '新片榜'];
+const FUNCTIONS = [
+  {text: 'Top250', colors: ['#eb5138', '#aa3928']},
+  {text: '正在上映', colors: ['#a366aa', '#8f40aa']},
+  {text: '即将上映', colors: ['#efc45b', '#ff973e']},
+  {text: '新片榜', colors: ['#78a0f4', '#7480f1']}];
 const ICON_250 = require('../../constant/image/movie/top250.png');
 const ICON_WILL = require('../../constant/image/movie/will.png');
 const ICON_PLAYING = require('../../constant/image/movie/playing.png');
@@ -81,9 +86,11 @@ class Movie extends PureComponent {
       await this.props.operateComingMovies(0);
       let weeklyMovies = await getWeeklyMovies();
       let usBoxMovies = await getUSBoxMovies();
-      this.setState({weeklyMovies: weeklyMovies.subjects,
+      this.setState({
+        weeklyMovies: weeklyMovies.subjects,
         usBoxMovies: usBoxMovies.subjects,
-        loadState: ''})
+        loadState: ''
+      })
       // this.setState({loadState: ''})
       this.forceUpdate();
     } catch (e) {
@@ -136,7 +143,7 @@ class Movie extends PureComponent {
           key={index}
           item={item}
           isShowGrade={false}
-          navigation={this.props.navigation}
+          style={{marginHorizontal: 6}}
         />))
     } else {
       return (
@@ -202,13 +209,13 @@ class Movie extends PureComponent {
                   this.onFunctionsPress(index)
                 }}>
                 <LinearView
-                  start={{x: 0, y: 0}}
-                  end={{x: 1, y: 1}}
-                  colors={['#4b7bab', '#263656', '#4b7bab']}
+                  start={{x: 0, y: 1}}
+                  end={{x: 1, y: 0}}
+                  colors={item.colors}
                   style={{paddingHorizontal: 5, paddingVertical: 5, borderRadius: 7}}>
                   <Image source={Icons[index]} style={styles.function_image}/>
                 </LinearView>
-                <Text style={{fontSize: 14, color: '#FFF', marginTop: 5}}>{item}</Text>
+                <Text style={{fontSize: 14, color: '#333', marginTop: 5}}>{item.text}</Text>
               </TouchableOpacity>
             );
           })}
@@ -250,7 +257,7 @@ class Movie extends PureComponent {
   render() {
 
     return (
-      <View style={{flex: 1, backgroundColor: '#ddd'}}>
+      <View style={{flex: 1, backgroundColor: '#f6f6f6'}}>
         <Toolbar
           title={'电影'}
           hideLeftButtons={true}
@@ -283,7 +290,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     // height: 60,
     borderRadius: 8,
-    backgroundColor: '#ded',
+    backgroundColor: '#FFF',
+    marginHorizontal: 6,
     paddingHorizontal: 6,
     paddingVertical: 8,
     marginTop: 10

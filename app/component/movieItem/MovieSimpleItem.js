@@ -42,7 +42,7 @@ class MovieSimpleItem extends PureComponent {
 
   render() {
 
-    const {item} = this.props;
+    const {item, style} = this.props;
 
     if (item === {} || item === undefined) {
       return null;
@@ -57,7 +57,7 @@ class MovieSimpleItem extends PureComponent {
         onPress={() => {
           this.props.navigation.navigate('MovieDetail', {item: item})
         }}
-        style={styles.movie_item}>
+        style={[styles.movie_item, style]}>
         <Image source={{uri: item.images?.small}} style={{width: ITEM_IMAGE_WIDTH, height: ITEM_IMAGE_HEIGHT}}
                resizeMode='contain'/>
 
