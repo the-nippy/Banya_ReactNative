@@ -32,9 +32,7 @@
 
 ### 运行截图
 
-<image src='https://ae01.alicdn.com/kf/Ha7b4695b9dbe4953a9fff6338d0a9432y.jpg' height='400' width='200'>
-<image src='https://ae01.alicdn.com/kf/H3d6ebef9b5ef4194b3d53e97e46324f0h.jpg' height='400' width='200'>
-<image src='https://ae01.alicdn.com/kf/H18d94afc82ae473c84f6b0dc03886eb4E.jpg' height='400' width='200'>
+<image src='https://ae01.alicdn.com/kf/Ha7b4695b9dbe4953a9fff6338d0a9432y.jpg' height='400' width='200'>   <image src='https://ae01.alicdn.com/kf/H3d6ebef9b5ef4194b3d53e97e46324f0h.jpg' height='400' width='200'>   <image src='https://ae01.alicdn.com/kf/H18d94afc82ae473c84f6b0dc03886eb4E.jpg' height='400' width='200'>
 
 ### 下载安装
 
