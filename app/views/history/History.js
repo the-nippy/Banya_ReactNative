@@ -6,7 +6,6 @@ import React, {PureComponent} from 'react';
 import {
   View,
   Text,
-  Image
 } from 'react-native';
 
 export default class History extends PureComponent {

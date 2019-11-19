@@ -4,13 +4,11 @@
 
 import React, {PureComponent} from 'react';
 import {
-  View,
   Text,
   Image,
   TouchableOpacity,
   ActivityIndicator,
 } from 'react-native';
-
 
 //组件
 import LinearView from "../../component/linear/LinearView";

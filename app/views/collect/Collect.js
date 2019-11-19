@@ -25,7 +25,6 @@ import {operateCollectMovies} from "../../redux/movies";
 
 //资源
 const ITEM_WIDTH_HEIGHT = (WIDTH - 45) / 2;
-const ITEM_HEIGHT = ITEM_WIDTH_HEIGHT + 30;
 const ICON_SELECTED = require('../../constant/image/movie/select_on.png');
 const ICON_NOT_SELECTED = require('../../constant/image/movie/select_off.png');
 const ICON_TIME = require('../../constant/image/movie/time.png');

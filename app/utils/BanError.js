@@ -31,7 +31,5 @@ export function DealError(error) {
     default:
       ShowToast('Error-' + error.toString());
       break;
-
   }
-
 }

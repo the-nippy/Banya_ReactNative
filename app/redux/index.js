@@ -2,26 +2,13 @@ import {createStore, applyMiddleware, combineReducers} from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import {persistStore, persistReducer, createTransform} from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-// import { createEpicMiddleware } from 'redux-observable';
 import {composeWithDevTools} from 'redux-devtools-extension/developmentOnly';
 
-//
+//子reducer
 import constant from './constant';
-
 import movies from './movies';
-
 import publicInfo from './public';
-// import collect from "../views/collect/Collect";
-// import config from '../redux/config';
-// import user from '../redux/user';
-// import stores from '../redux/stores'
-// import checkItem from '../redux/checkItem';
-// import inspectionItem from '../redux/inspectionItem';
-// import inspectionItemData from '../redux/inspectionItemData';
-// import comments from './comments';
-// import history from './history';
-// import constant from './constant';
-// import messageList from './messageList';
+
 
 const rootReducer = combineReducers({
   constant,
