@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 import {
-  AsyncStorage,
   StatusBar,
-  View,
 } from 'react-native';
 
 import AppNavigation from './navigation';
@@ -17,7 +15,7 @@ export default class App extends Component {
 
   componentDidMount(): void {
     if (!__DEV__) {
-      global.console = {
+      GLOBAL.console = {
         info: () => {
         },
         log: () => {
@@ -33,16 +31,6 @@ export default class App extends Component {
   }
 
   render() {
-
-    // return (
-    //   <View>
-    //     <StatusBar
-    //       barStyle={"light-content"}
-    //     />
-    //       <AppNavigation ref={navigator => NavigationService.setNavigator(navigator)}/>
-    //   </View>
-    // );
-
     return (
       <Provider store={store}>
         <StatusBar
