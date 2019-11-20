@@ -267,9 +267,11 @@ class MovieDetail extends PureComponent {
           // alpha={0.5}
           style={[styles.head_container, {backgroundColor: themeColor + this.state.titleAlpha}]}>
           <View style={styles.head_viewer}>
-            <TouchableOpacity onPress={() => {
-              this.props.navigation.goBack();
-            }}>
+            <TouchableOpacity
+              style={{zIndex: 100}}
+              onPress={() => {
+                this.props.navigation.goBack();
+              }}>
               <Image source={ICON_BACK} style={{width: 18, height: 18}} resizeMode='contain'/>
             </TouchableOpacity>
             <View style={styles.absolute_center}>
@@ -762,7 +764,8 @@ const styles = StyleSheet.create({
   absolute_center: {
     ...StyleSheet.absoluteFill,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginTop: PADDING_TOP
   },
   title_text: {
     maxWidth: WIDTH / 2,

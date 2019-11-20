@@ -85,7 +85,9 @@ class Movie extends PureComponent {
     try {
       await this.props.operateComingMovies(0);
       let weeklyMovies = await getWeeklyMovies();
+      // console.info('weeklyMovies', weeklyMovies);
       let usBoxMovies = await getUSBoxMovies();
+      // console.info('usBoxMovies', usBoxMovies);
       this.setState({
         weeklyMovies: weeklyMovies.subjects,
         usBoxMovies: usBoxMovies.subjects,

@@ -20,14 +20,14 @@ const rootReducer = combineReducers({
 const mapTransformer = config =>
   createTransform(
     dataIn => {
-      console.info('[createTransform]dataIn', dataIn)
+      // console.info('[createTransform]dataIn', dataIn)
       return {
         ...dataIn,
         collectMovies: JSON.stringify(Array.from(dataIn.collectMovies))
       }
     },
     dataOut => {
-      console.info('[createTransform]dataOut', dataOut)
+      // console.info('[createTransform]dataOut', dataOut)
       return {
         ...dataOut,
         collectMovies: new Map(JSON.parse(dataOut.collectMovies))
