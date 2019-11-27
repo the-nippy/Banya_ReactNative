@@ -73,6 +73,7 @@ const LoadingView = connect((state) => ({
 const STATES = {
   LOADING: 'LOADING',
   FAIL: 'FAIL',
+  SUCCESS: 'SUCCESS',
 }
 
 export {

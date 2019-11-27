@@ -103,6 +103,7 @@ class MovieDetail extends PureComponent {
       if (movieDetailData != undefined) {
         this.setState({detail: movieDetailData, loadState: ''})
       }
+      this.setState({ loadState: STATES.SUCCESS })
     } catch (e) {
       DealError(e);
       this.setState({loadState: STATES.FAIL})
@@ -296,13 +297,16 @@ class MovieDetail extends PureComponent {
                 }
                 this.forceUpdate();
               }}>
-              <Animated.Image
-                source={ICON_LOVE}
-                style={{
-                  width: 24, height: 24,
-                  tintColor: isCurrentMovieCollected ? '#f10a07' : '#FFF',
-                  transform: [{scale: imageScale}]
-                }}/>
+              {this.state.loadState === STATES.SUCCESS &&
+                <Animated.Image
+                  source={ICON_LOVE}
+                  style={{
+                    width: 24,
+                    height: 24,
+                    tintColor: isCurrentMovieCollected ? '#f10a07' : '#FFF',
+                    transform: [{ scale: imageScale }]
+                  }} />
+              }
             </TouchableOpacity>
           </View>
 
