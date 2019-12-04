@@ -284,6 +284,10 @@ class MovieDetail extends PureComponent {
             <TouchableOpacity
               style={styles.collect_container}
               onPress={() => {
+                if (this.state.loadState === STATES.LOADING) {
+                  ShowToast('请在加载完成后收藏');
+                  return;
+                }
                 if (!detail) {
                   return;
                 }
