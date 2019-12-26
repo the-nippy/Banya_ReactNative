@@ -5,6 +5,8 @@ import {getComingMovies, getInTheaterMovies, getNewMovies, getTop250} from "../u
 import {BanError} from "../utils/BanError";
 import moment from 'moment';
 import {ShowToast} from "../utils/toast";
+import {fromJS} from 'immutable';
+
 
 //储存电影数据
 

@@ -1,8 +1,9 @@
 import {createStore, applyMiddleware, combineReducers} from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import {persistStore, persistReducer, createTransform} from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
+import {persistStore, persistReducer, createTransform} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import {composeWithDevTools} from 'redux-devtools-extension/developmentOnly';
+import {fromJS} from 'immutable';
 
 //子reducer
 import constant from './constant';

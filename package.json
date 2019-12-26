@@ -7,6 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "immutable": "^4.0.0-rc.12",
     "moment": "^2.24.0",
     "prop-types": "^15.7.2",
     "react": "16.8.3",

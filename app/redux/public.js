@@ -3,6 +3,8 @@
 
  公共的状态
  **/
+import {fromJS} from 'immutable';
+
 
 const CHANGE_LOCATION = 'CHANGE_LOCATION';
 const CHANGE_THEME_COLOR = 'CHANGE_THEME_COLOR';
