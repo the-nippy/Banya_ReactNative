@@ -41,7 +41,7 @@
 
 ### 下载安装
 
-[【瓣芽·Android】](https://fir.im/1aju)
+[【瓣芽·Android】](http://d.7short.com/1aju)
 
 iOS 目前证书未完善，模拟机上可以运行。
 
