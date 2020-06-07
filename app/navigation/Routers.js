@@ -1,8 +1,3 @@
-/**
- * 重点   动画交互
- *
- * */
-
 
 import React, {PureComponent} from 'react';
 import {
@@ -31,11 +26,6 @@ import History from '../views/history/History';
 
 import {store} from '../redux/index';
 
-// import HomePage from './home/HomePage';
-// import Weather from './weather/Weather';
-
-import Modal from 'react-native-modal';
-import Swiper from 'react-native-swiper';
 
 import {
   createDrawerNavigator, createAppContainer, createStackNavigator, DrawerItems, SafeAreaView,
@@ -109,19 +99,6 @@ const MyDrawerNavigator = createDrawerNavigator(
         ),
       })
     },
-    // History: {
-    //   screen: History,
-    //   navigationOptions: ({navigation}) => ({
-    //     drawerLabel: '历史',
-    //     drawerIcon: ({tintColor}) => (
-    //       <Image
-    //         source={require('../constant/image/circle_check_32px.png')}
-    //         style={[styles.icon, {tintColor: tintColor}]}
-    //       />
-    //     ),
-    //   })
-    // }
-    // Weather: {screen: Weather}
   },
 
   {

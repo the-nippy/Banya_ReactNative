@@ -202,9 +202,6 @@ export function ReFreshInTheaterMovies(location_city) {
 }
 
 
-//插入删除收藏数据
-// export const COLLECT_DELETE = 'COLLECT_DELETE';
-// export const COLLECT_INSERT = 'COLLECT_INSERT';
 
 //代理处理收藏数据
 function dealCollectMovies(currentCollectMovies = INITIAL_COLLECT, action) {
